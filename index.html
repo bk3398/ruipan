@@ -201,21 +201,30 @@ body {
   margin-top: 2px;
   text-transform: uppercase;
 }
-/* Tagline - right side */
+/* Tagline - right side, bronze metal style */
 .rp-tagline {
-  font-size: 1.15rem;
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 900;
   letter-spacing: 6px;
-  color: rgba(56,189,248,0.7);
-  position: relative;
-  display: inline-block;
+  line-height: 1.2;
+  background: linear-gradient(
+    170deg,
+    #ffd700 0%, #daa520 12%, #cd7f32 25%, #ffd700 38%,
+    #b8860b 50%, #ffd700 62%, #cd7f32 75%, #daa520 88%, #ffd700 100%
+  );
+  background-size: 100% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rpBronzeShimmer 5s ease-in-out infinite;
+  filter: drop-shadow(1px 1px 0px #6b4c11) drop-shadow(2px 2px 1px rgba(107,76,17,0.5)) drop-shadow(0 0 15px rgba(205,127,50,0.3));
 }
 .rp-tagline::before, .rp-tagline::after {
   content: '';
   display: block;
   width: 60px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(56,189,248,0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(205,127,50,0.4), transparent);
   margin: 6px auto;
 }
 .rp-tagline::before { margin-bottom: 10px; }
