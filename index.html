@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RuiPan·锐盘 | 竞彩数据精算智库</title>
@@ -128,16 +131,16 @@ body {
 /* Main title */
 .rp-title {
   font-family: var(--font-display);
-  font-size: 3rem;
+  font-size: 4.5rem;
   font-weight: 900;
-  letter-spacing: 6px;
+  letter-spacing: 12px;
   background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 25%, #22d3ee 50%, #38bdf8 75%, #60a5fa 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: rpShimmer 3s linear infinite;
   text-shadow: none;
-  filter: drop-shadow(0 0 20px rgba(56,189,248,0.3));
+  filter: drop-shadow(0 0 30px rgba(56,189,248,0.5));
 }
 @keyframes rpShimmer {
   0% { background-position: 0% center; }
@@ -162,12 +165,13 @@ body {
 }
 /* English sub-brand */
 .rp-sub {
-  font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
   font-weight: 700;
-  letter-spacing: 8px;
-  color: rgba(56,189,248,0.5);
-  margin-top: 2px;
+  letter-spacing: 12px;
+  color: rgba(56,189,248,0.6);
+  margin-top: 4px;
+  text-transform: uppercase;
 }
 /* Tagline */
 .rp-tagline {
@@ -215,8 +219,8 @@ body {
 /* Mobile */
 @media (max-width: 768px) {
   .rp-banner { height: 120px; }
-  .rp-title { font-size: 2rem; letter-spacing: 4px; }
-  .rp-sub { font-size: 0.7rem; letter-spacing: 5px; }
+  .rp-title { font-size: 3rem; letter-spacing: 8px; }
+  .rp-sub { font-size: 0.9rem; letter-spacing: 8px; }
   .rp-tagline { font-size: 0.7rem; letter-spacing: 2px; }
   .rp-data-col { display: none; }
   .rp-odds-float { display: none; }
@@ -224,8 +228,8 @@ body {
 }
 @media (max-width: 480px) {
   .rp-banner { height: 100px; }
-  .rp-title { font-size: 1.6rem; letter-spacing: 3px; }
-  .rp-sub { font-size: 0.6rem; letter-spacing: 3px; }
+  .rp-title { font-size: 2.2rem; letter-spacing: 6px; }
+  .rp-sub { font-size: 0.7rem; letter-spacing: 5px; }
   .rp-tagline { font-size: 0.6rem; letter-spacing: 1px; margin-top: 4px; }
 }
 
@@ -1045,6 +1049,7 @@ W/D/L  MATRIX</div>
   <div class="rp-odds-float" style="top:50%;right:5%;animation-delay:5s;">Σ</div>
   <!-- Main content -->
   <div class="rp-banner-content">
+    <img src="https://bk3398.github.io/ruipan/logo.jpg" alt="RuiPan" style="width:120px;height:120px;border-radius:50%;object-fit:cover;box-shadow:0 0 30px rgba(255,215,0,0.3),0 0 60px rgba(0,230,118,0.15);margin-bottom:10px;">
     <div class="rp-title">锐盘</div>
     <div class="rp-sub">RUIPAN</div>
     <div class="rp-tagline">竞彩数据精算智库</div>
@@ -1055,7 +1060,10 @@ W/D/L  MATRIX</div>
 <div class="header">
   <div class="header-left">
     <div>
-      <div class="logo">RuiPan</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <img src="https://bk3398.github.io/ruipan/logo.jpg" alt="" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+        <div class="logo">RuiPan</div>
+      </div>
       <div class="logo-sub">锐盘 · 竞彩数据精算智库</div>
     </div>
   </div>
