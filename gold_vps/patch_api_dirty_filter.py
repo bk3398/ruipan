@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
-API层封盘脏数据过滤补丁
-在app.py的6条赔率SQL查询中添加有效值范围过滤：
-- 亚盘: home_odds/away_odds 必须在 [0.5, 3.0]
-- 欧赔: home_win/draw/away_win 必须在 [1.0, 25]
-脏数据（封盘归零/极端值如0.01/0.08/0.2/13.18）将被SQL层过滤，
-DISTINCT ON自动回退到initial记录。
+API层封盘脏数据过滤补丁 v2
+过滤范围：
+- 亚盘: home_odds/away_odds 必须在 [0.5, 2.0]
+- 欧赔: LEAST(home_win, draw, away_win) 最低赔率必须在 [1.0, 3.0]
+脏数据（封盘归零/极端值）被SQL层过滤，DISTINCT ON自动回退到initial。
 """
-import re, shutil, datetime, os, sys
+import shutil, datetime, sys
 
 APP = "/opt/ruipan/app.py"
 
@@ -22,14 +21,17 @@ print(f"备份: {bak}")
 
 patches_applied = 0
 
+ASIA_FILTER = "AND home_odds BETWEEN 0.5 AND 2.0 AND away_odds BETWEEN 0.5 AND 2.0"
+EURO_FILTER = "AND LEAST(home_win, draw, away_win) BETWEEN 1.0 AND 3.0"
+
 # ============================================================
 # 1. odds-timeline euro (L132-135)
 # ============================================================
 old1 = """        SELECT bookmaker, odds_type, home_win, draw, away_win, recorded_at
         FROM odds_euro WHERE match_id = $1 ORDER BY recorded_at ASC"""
-new1 = """        SELECT bookmaker, odds_type, home_win, draw, away_win, recorded_at
+new1 = f"""        SELECT bookmaker, odds_type, home_win, draw, away_win, recorded_at
         FROM odds_euro WHERE match_id = $1
-        AND home_win BETWEEN 1.0 AND 25 AND draw BETWEEN 1.0 AND 25 AND away_win BETWEEN 1.0 AND 25
+        {EURO_FILTER}
         ORDER BY recorded_at ASC"""
 if old1 in code:
     code = code.replace(old1, new1, 1)
@@ -43,9 +45,9 @@ else:
 # ============================================================
 old2 = """        SELECT bookmaker, odds_type, handicap, home_odds, away_odds, recorded_at
         FROM odds_asia WHERE match_id = $1 ORDER BY recorded_at ASC"""
-new2 = """        SELECT bookmaker, odds_type, handicap, home_odds, away_odds, recorded_at
+new2 = f"""        SELECT bookmaker, odds_type, handicap, home_odds, away_odds, recorded_at
         FROM odds_asia WHERE match_id = $1
-        AND home_odds BETWEEN 0.5 AND 3.0 AND away_odds BETWEEN 0.5 AND 3.0
+        {ASIA_FILTER}
         ORDER BY recorded_at ASC"""
 if old2 in code:
     code = code.replace(old2, new2, 1)
@@ -60,9 +62,9 @@ else:
 old3 = """        SELECT bookmaker, odds_type, home_win, draw, away_win, recorded_at
         FROM odds_euro WHERE match_id = $1
         ORDER BY bookmaker, recorded_at DESC"""
-new3 = """        SELECT bookmaker, odds_type, home_win, draw, away_win, recorded_at
+new3 = f"""        SELECT bookmaker, odds_type, home_win, draw, away_win, recorded_at
         FROM odds_euro WHERE match_id = $1
-        AND home_win BETWEEN 1.0 AND 25 AND draw BETWEEN 1.0 AND 25 AND away_win BETWEEN 1.0 AND 25
+        {EURO_FILTER}
         ORDER BY bookmaker, recorded_at DESC"""
 if old3 in code:
     code = code.replace(old3, new3, 1)
@@ -77,9 +79,9 @@ else:
 old4 = """        SELECT bookmaker, odds_type, handicap, home_odds, away_odds, recorded_at
         FROM odds_asia WHERE match_id = $1
         ORDER BY bookmaker, recorded_at DESC"""
-new4 = """        SELECT bookmaker, odds_type, handicap, home_odds, away_odds, recorded_at
+new4 = f"""        SELECT bookmaker, odds_type, handicap, home_odds, away_odds, recorded_at
         FROM odds_asia WHERE match_id = $1
-        AND home_odds BETWEEN 0.5 AND 3.0 AND away_odds BETWEEN 0.5 AND 3.0
+        {ASIA_FILTER}
         ORDER BY bookmaker, recorded_at DESC"""
 if old4 in code:
     code = code.replace(old4, new4, 1)
@@ -94,9 +96,9 @@ else:
 old5 = """        SELECT DISTINCT ON (bookmaker) bookmaker, odds_type, home_win, draw, away_win
         FROM odds_euro WHERE match_id = $1
         ORDER BY bookmaker, recorded_at DESC"""
-new5 = """        SELECT DISTINCT ON (bookmaker) bookmaker, odds_type, home_win, draw, away_win
+new5 = f"""        SELECT DISTINCT ON (bookmaker) bookmaker, odds_type, home_win, draw, away_win
         FROM odds_euro WHERE match_id = $1
-        AND home_win BETWEEN 1.0 AND 25 AND draw BETWEEN 1.0 AND 25 AND away_win BETWEEN 1.0 AND 25
+        {EURO_FILTER}
         ORDER BY bookmaker, recorded_at DESC"""
 if old5 in code:
     code = code.replace(old5, new5, 1)
@@ -111,9 +113,9 @@ else:
 old6 = """        SELECT DISTINCT ON (bookmaker) bookmaker, odds_type, handicap, home_odds, away_odds
         FROM odds_asia WHERE match_id = $1
         ORDER BY bookmaker, recorded_at DESC"""
-new6 = """        SELECT DISTINCT ON (bookmaker) bookmaker, odds_type, handicap, home_odds, away_odds
+new6 = f"""        SELECT DISTINCT ON (bookmaker) bookmaker, odds_type, handicap, home_odds, away_odds
         FROM odds_asia WHERE match_id = $1
-        AND home_odds BETWEEN 0.5 AND 3.0 AND away_odds BETWEEN 0.5 AND 3.0
+        {ASIA_FILTER}
         ORDER BY bookmaker, recorded_at DESC"""
 if old6 in code:
     code = code.replace(old6, new6, 1)
