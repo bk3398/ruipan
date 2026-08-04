@@ -86,7 +86,7 @@ else:
 
 # 4. Also check if tab-analysis element ID uses different naming
 # Search for how the tab container is created
-tab_id_patterns = re.findall(r'id=["\\']tab-[^"\\']*["\\']', html)
+tab_id_patterns = re.findall(r"""id=["']tab-[^"']*["']""", html)
 unique_tab_ids = set(tab_id_patterns)
 print(f"\n页面中所有tab元素ID模式: {unique_tab_ids}")
 
