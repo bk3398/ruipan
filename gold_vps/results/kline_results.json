@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-08-05T04:39:57.466252",
-  "source_export": "2026-08-05T04:30:03.521000",
+  "generated_at": "2026-08-05T05:09:17.146555",
+  "source_export": "2026-08-05T05:00:03.372590",
   "stats": {
     "matches_processed": 68,
-    "timeline_snapshots": 34466,
-    "kline_candles": 2839,
+    "timeline_snapshots": 36391,
+    "kline_candles": 2942,
     "patterns_extracted": 164,
     "patterns_labeled": 55,
     "tag_distribution": {
       "盘口坚定": 141,
-      "尾盘回落": 6,
+      "尾盘回落": 5,
       "频繁变盘": 6,
       "缩量企稳": 2,
-      "上影试探": 2,
+      "上影试探": 6,
       "尾盘拉升": 7,
       "分歧扩大": 8,
       "常态波动": 3,
@@ -66,6 +66,17 @@
     },
     {
       "match_id": "2916520",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 2
+    },
+    {
+      "match_id": "2916520",
       "kline_type": "euro_dispersion",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -106,6 +117,17 @@
       "high": 0.045,
       "low": 0.045,
       "close": 0.045,
+      "volume": 34
+    },
+    {
+      "match_id": "2916520",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0451,
+      "high": 0.0451,
+      "low": 0.0447,
+      "close": 0.0447,
       "volume": 34
     },
     {
@@ -139,7 +161,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2916520",
@@ -169,10 +191,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.045,
-      "high": 0.045,
-      "low": 0.045,
-      "close": 0.045,
-      "volume": 34
+      "high": 0.0451,
+      "low": 0.0447,
+      "close": 0.0447,
+      "volume": 68
     },
     {
       "match_id": "2916520",
@@ -194,7 +216,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2916520",
@@ -213,10 +235,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.045,
-      "high": 0.045,
-      "low": 0.045,
-      "close": 0.045,
-      "volume": 34
+      "high": 0.0451,
+      "low": 0.0447,
+      "close": 0.0447,
+      "volume": 68
     },
     {
       "match_id": "2916534",
@@ -256,6 +278,17 @@
       "kline_type": "div_asia_crown",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.26,
+      "high": 0.26,
+      "low": 0.26,
+      "close": 0.26,
+      "volume": 2
+    },
+    {
+      "match_id": "2916534",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.26,
       "high": 0.26,
       "low": 0.26,
@@ -308,6 +341,17 @@
     },
     {
       "match_id": "2916534",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0222,
+      "high": 0.0223,
+      "low": 0.0222,
+      "close": 0.0223,
+      "volume": 32
+    },
+    {
+      "match_id": "2916534",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -337,7 +381,7 @@
       "high": 0.26,
       "low": 0.26,
       "close": 0.26,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2916534",
@@ -369,8 +413,8 @@
       "open": 0.0234,
       "high": 0.0234,
       "low": 0.0222,
-      "close": 0.0222,
-      "volume": 32
+      "close": 0.0223,
+      "volume": 64
     },
     {
       "match_id": "2916534",
@@ -392,7 +436,7 @@
       "high": 0.26,
       "low": 0.26,
       "close": 0.26,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2916534",
@@ -413,8 +457,8 @@
       "open": 0.0234,
       "high": 0.0234,
       "low": 0.0222,
-      "close": 0.0222,
-      "volume": 32
+      "close": 0.0223,
+      "volume": 64
     },
     {
       "match_id": "2924613",
@@ -1144,6 +1188,17 @@
     },
     {
       "match_id": "2924615",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.18,
+      "high": 0.18,
+      "low": 0.18,
+      "close": 0.18,
+      "volume": 2
+    },
+    {
+      "match_id": "2924615",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -1188,6 +1243,17 @@
     },
     {
       "match_id": "2924615",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.14,
+      "close": 0.14,
+      "volume": 2
+    },
+    {
+      "match_id": "2924615",
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -1226,6 +1292,17 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.175,
       "high": 0.175,
+      "low": 0.145,
+      "close": 0.145,
+      "volume": 2
+    },
+    {
+      "match_id": "2924615",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.145,
+      "high": 0.145,
       "low": 0.145,
       "close": 0.145,
       "volume": 2
@@ -1276,6 +1353,17 @@
     },
     {
       "match_id": "2924615",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0324,
+      "high": 0.0324,
+      "low": 0.0303,
+      "close": 0.0303,
+      "volume": 38
+    },
+    {
+      "match_id": "2924615",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -1305,7 +1393,7 @@
       "high": 0.18,
       "low": 0.18,
       "close": 0.18,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2924615",
@@ -1338,7 +1426,7 @@
       "high": 0.14,
       "low": 0.14,
       "close": 0.14,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2924615",
@@ -1371,7 +1459,7 @@
       "high": 0.175,
       "low": 0.145,
       "close": 0.145,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2924615",
@@ -1402,9 +1490,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0336,
       "high": 0.0336,
-      "low": 0.0332,
-      "close": 0.0332,
-      "volume": 38
+      "low": 0.0303,
+      "close": 0.0303,
+      "volume": 76
     },
     {
       "match_id": "2924615",
@@ -1426,7 +1514,7 @@
       "high": 0.18,
       "low": 0.18,
       "close": 0.18,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2924615",
@@ -1448,7 +1536,7 @@
       "high": 0.14,
       "low": 0.14,
       "close": 0.14,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2924615",
@@ -1470,7 +1558,7 @@
       "high": 0.175,
       "low": 0.145,
       "close": 0.145,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2924615",
@@ -1490,9 +1578,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0336,
       "high": 0.0336,
-      "low": 0.0332,
-      "close": 0.0332,
-      "volume": 38
+      "low": 0.0303,
+      "close": 0.0303,
+      "volume": 76
     },
     {
       "match_id": "2924616",
@@ -1540,6 +1628,17 @@
     },
     {
       "match_id": "2924616",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.02,
+      "high": 0.02,
+      "low": 0.02,
+      "close": 0.02,
+      "volume": 2
+    },
+    {
+      "match_id": "2924616",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -1576,6 +1675,17 @@
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.02,
+      "high": 0.02,
+      "low": 0.02,
+      "close": 0.02,
+      "volume": 2
+    },
+    {
+      "match_id": "2924616",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.02,
       "high": 0.02,
       "low": 0.02,
@@ -1623,6 +1733,17 @@
       "open": 0.06,
       "high": 0.09,
       "low": 0.06,
+      "close": 0.09,
+      "volume": 2
+    },
+    {
+      "match_id": "2924616",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.09,
+      "high": 0.09,
+      "low": 0.09,
       "close": 0.09,
       "volume": 2
     },
@@ -1672,6 +1793,17 @@
     },
     {
       "match_id": "2924616",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 38
+    },
+    {
+      "match_id": "2924616",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -1701,7 +1833,7 @@
       "high": 0.02,
       "low": 0.02,
       "close": 0.02,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2924616",
@@ -1734,7 +1866,7 @@
       "high": 0.02,
       "low": 0.02,
       "close": 0.02,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2924616",
@@ -1767,7 +1899,7 @@
       "high": 0.09,
       "low": 0.06,
       "close": 0.09,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2924616",
@@ -1800,7 +1932,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 38
+      "volume": 76
     },
     {
       "match_id": "2924616",
@@ -1822,7 +1954,7 @@
       "high": 0.02,
       "low": 0.02,
       "close": 0.02,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2924616",
@@ -1844,7 +1976,7 @@
       "high": 0.02,
       "low": 0.02,
       "close": 0.02,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2924616",
@@ -1866,7 +1998,7 @@
       "high": 0.09,
       "low": 0.06,
       "close": 0.09,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2924616",
@@ -1888,7 +2020,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 38
+      "volume": 76
     },
     {
       "match_id": "2926261",
@@ -2288,6 +2420,17 @@
     },
     {
       "match_id": "2942488",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.12,
+      "high": 0.24,
+      "low": 0.12,
+      "close": 0.24,
+      "volume": 2
+    },
+    {
+      "match_id": "2942488",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -2324,6 +2467,17 @@
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.12,
+      "high": 0.12,
+      "low": 0.12,
+      "close": 0.12,
+      "volume": 2
+    },
+    {
+      "match_id": "2942488",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.12,
       "high": 0.12,
       "low": 0.12,
@@ -2372,6 +2526,17 @@
       "high": 0.09,
       "low": 0.03,
       "close": 0.09,
+      "volume": 2
+    },
+    {
+      "match_id": "2942488",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.09,
+      "high": 0.15,
+      "low": 0.09,
+      "close": 0.15,
       "volume": 2
     },
     {
@@ -2420,6 +2585,17 @@
     },
     {
       "match_id": "2942488",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0302,
+      "high": 0.0302,
+      "low": 0.0301,
+      "close": 0.0301,
+      "volume": 28
+    },
+    {
+      "match_id": "2942488",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -2446,10 +2622,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.12,
-      "high": 0.12,
+      "high": 0.24,
       "low": 0.12,
-      "close": 0.12,
-      "volume": 2
+      "close": 0.24,
+      "volume": 4
     },
     {
       "match_id": "2942488",
@@ -2482,7 +2658,7 @@
       "high": 0.12,
       "low": 0.12,
       "close": 0.12,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2942488",
@@ -2512,10 +2688,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.03,
-      "high": 0.09,
+      "high": 0.15,
       "low": 0.03,
-      "close": 0.09,
-      "volume": 2
+      "close": 0.15,
+      "volume": 4
     },
     {
       "match_id": "2942488",
@@ -2547,8 +2723,8 @@
       "open": 0.03,
       "high": 0.0302,
       "low": 0.03,
-      "close": 0.0302,
-      "volume": 28
+      "close": 0.0301,
+      "volume": 56
     },
     {
       "match_id": "2942488",
@@ -2567,10 +2743,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.12,
-      "high": 0.12,
+      "high": 0.24,
       "low": 0.12,
-      "close": 0.12,
-      "volume": 2
+      "close": 0.24,
+      "volume": 4
     },
     {
       "match_id": "2942488",
@@ -2592,7 +2768,7 @@
       "high": 0.12,
       "low": 0.12,
       "close": 0.12,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2942488",
@@ -2611,10 +2787,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.03,
-      "high": 0.09,
+      "high": 0.15,
       "low": 0.03,
-      "close": 0.09,
-      "volume": 2
+      "close": 0.15,
+      "volume": 4
     },
     {
       "match_id": "2942488",
@@ -2635,8 +2811,8 @@
       "open": 0.03,
       "high": 0.0302,
       "low": 0.03,
-      "close": 0.0302,
-      "volume": 28
+      "close": 0.0301,
+      "volume": 56
     },
     {
       "match_id": "2942540",
@@ -2684,6 +2860,17 @@
     },
     {
       "match_id": "2942540",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 2
+    },
+    {
+      "match_id": "2942540",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -2720,6 +2907,17 @@
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.02,
+      "high": 0.02,
+      "low": 0.02,
+      "close": 0.02,
+      "volume": 2
+    },
+    {
+      "match_id": "2942540",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.02,
       "high": 0.02,
       "low": 0.02,
@@ -2768,6 +2966,17 @@
       "high": 0.09,
       "low": 0.03,
       "close": 0.09,
+      "volume": 2
+    },
+    {
+      "match_id": "2942540",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.1,
+      "high": 0.1,
+      "low": 0.1,
+      "close": 0.1,
       "volume": 2
     },
     {
@@ -2816,6 +3025,17 @@
     },
     {
       "match_id": "2942540",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0222,
+      "high": 0.0229,
+      "low": 0.0222,
+      "close": 0.0229,
+      "volume": 34
+    },
+    {
+      "match_id": "2942540",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -2843,9 +3063,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.02,
       "high": 0.02,
-      "low": 0.02,
-      "close": 0.02,
-      "volume": 2
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 4
     },
     {
       "match_id": "2942540",
@@ -2878,7 +3098,7 @@
       "high": 0.02,
       "low": 0.02,
       "close": 0.02,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2942540",
@@ -2908,10 +3128,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.03,
-      "high": 0.09,
+      "high": 0.1,
       "low": 0.03,
-      "close": 0.09,
-      "volume": 2
+      "close": 0.1,
+      "volume": 4
     },
     {
       "match_id": "2942540",
@@ -2941,10 +3161,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0219,
-      "high": 0.0219,
+      "high": 0.0229,
       "low": 0.0209,
-      "close": 0.0209,
-      "volume": 34
+      "close": 0.0229,
+      "volume": 68
     },
     {
       "match_id": "2942540",
@@ -2964,9 +3184,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.02,
       "high": 0.02,
-      "low": 0.02,
-      "close": 0.02,
-      "volume": 2
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 4
     },
     {
       "match_id": "2942540",
@@ -2988,7 +3208,7 @@
       "high": 0.02,
       "low": 0.02,
       "close": 0.02,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2942540",
@@ -3007,10 +3227,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.03,
-      "high": 0.09,
+      "high": 0.1,
       "low": 0.03,
-      "close": 0.09,
-      "volume": 2
+      "close": 0.1,
+      "volume": 4
     },
     {
       "match_id": "2942540",
@@ -3029,496 +3249,562 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0219,
-      "high": 0.0219,
+      "high": 0.0229,
       "low": 0.0209,
-      "close": 0.0209,
+      "close": 0.0229,
+      "volume": 68
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T02:30:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.14,
+      "close": 0.14,
+      "volume": 1
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T03:00:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.14,
+      "close": 0.14,
+      "volume": 2
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T03:30:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.14,
+      "close": 0.14,
+      "volume": 2
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.13,
+      "close": 0.13,
+      "volume": 2
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.13,
+      "high": 0.13,
+      "low": 0.13,
+      "close": 0.13,
+      "volume": 2
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T02:30:00",
+      "open": 0.016,
+      "high": 0.016,
+      "low": 0.016,
+      "close": 0.016,
+      "volume": 15
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T03:00:00",
+      "open": 0.016,
+      "high": 0.016,
+      "low": 0.016,
+      "close": 0.016,
+      "volume": 30
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T03:30:00",
+      "open": 0.016,
+      "high": 0.016,
+      "low": 0.016,
+      "close": 0.016,
+      "volume": 30
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.016,
+      "high": 0.0175,
+      "low": 0.016,
+      "close": 0.0175,
+      "volume": 31
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0163,
+      "high": 0.0228,
+      "low": 0.0163,
+      "close": 0.0228,
+      "volume": 32
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 60,
+      "bucket_time": "2026-08-05T02:00:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.14,
+      "close": 0.14,
+      "volume": 1
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 60,
+      "bucket_time": "2026-08-05T03:00:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.14,
+      "close": 0.14,
+      "volume": 4
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 60,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.13,
+      "close": 0.13,
+      "volume": 4
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 60,
+      "bucket_time": "2026-08-05T02:00:00",
+      "open": 0.016,
+      "high": 0.016,
+      "low": 0.016,
+      "close": 0.016,
+      "volume": 15
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 60,
+      "bucket_time": "2026-08-05T03:00:00",
+      "open": 0.016,
+      "high": 0.016,
+      "low": 0.016,
+      "close": 0.016,
+      "volume": 60
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 60,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.016,
+      "high": 0.0228,
+      "low": 0.016,
+      "close": 0.0228,
+      "volume": 63
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 120,
+      "bucket_time": "2026-08-05T02:00:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.14,
+      "close": 0.14,
+      "volume": 5
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 120,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.13,
+      "close": 0.13,
+      "volume": 4
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 120,
+      "bucket_time": "2026-08-05T02:00:00",
+      "open": 0.016,
+      "high": 0.016,
+      "low": 0.016,
+      "close": 0.016,
+      "volume": 75
+    },
+    {
+      "match_id": "2943252",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 120,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.016,
+      "high": 0.0228,
+      "low": 0.016,
+      "close": 0.0228,
+      "volume": 63
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T02:30:00",
+      "open": 0.06,
+      "high": 0.06,
+      "low": 0.06,
+      "close": 0.06,
+      "volume": 1
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T03:00:00",
+      "open": 0.06,
+      "high": 0.06,
+      "low": 0.06,
+      "close": 0.06,
+      "volume": 2
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T03:30:00",
+      "open": 0.06,
+      "high": 0.06,
+      "low": 0.06,
+      "close": 0.06,
+      "volume": 2
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.06,
+      "high": 0.06,
+      "low": 0.05,
+      "close": 0.05,
+      "volume": 2
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.05,
+      "high": 0.05,
+      "low": 0.05,
+      "close": 0.05,
+      "volume": 2
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T02:30:00",
+      "open": 0.0131,
+      "high": 0.0131,
+      "low": 0.0131,
+      "close": 0.0131,
+      "volume": 15
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T03:00:00",
+      "open": 0.0131,
+      "high": 0.0131,
+      "low": 0.0131,
+      "close": 0.0131,
+      "volume": 30
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T03:30:00",
+      "open": 0.0131,
+      "high": 0.0131,
+      "low": 0.0131,
+      "close": 0.0131,
+      "volume": 30
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.0131,
+      "high": 0.014,
+      "low": 0.0131,
+      "close": 0.014,
+      "volume": 31
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0144,
+      "high": 0.0144,
+      "low": 0.014,
+      "close": 0.014,
+      "volume": 32
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 60,
+      "bucket_time": "2026-08-05T02:00:00",
+      "open": 0.06,
+      "high": 0.06,
+      "low": 0.06,
+      "close": 0.06,
+      "volume": 1
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 60,
+      "bucket_time": "2026-08-05T03:00:00",
+      "open": 0.06,
+      "high": 0.06,
+      "low": 0.06,
+      "close": 0.06,
+      "volume": 4
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 60,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.06,
+      "high": 0.06,
+      "low": 0.05,
+      "close": 0.05,
+      "volume": 4
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 60,
+      "bucket_time": "2026-08-05T02:00:00",
+      "open": 0.0131,
+      "high": 0.0131,
+      "low": 0.0131,
+      "close": 0.0131,
+      "volume": 15
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 60,
+      "bucket_time": "2026-08-05T03:00:00",
+      "open": 0.0131,
+      "high": 0.0131,
+      "low": 0.0131,
+      "close": 0.0131,
+      "volume": 60
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 60,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.0131,
+      "high": 0.0144,
+      "low": 0.0131,
+      "close": 0.014,
+      "volume": 63
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 120,
+      "bucket_time": "2026-08-05T02:00:00",
+      "open": 0.06,
+      "high": 0.06,
+      "low": 0.06,
+      "close": 0.06,
+      "volume": 5
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 120,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.06,
+      "high": 0.06,
+      "low": 0.05,
+      "close": 0.05,
+      "volume": 4
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 120,
+      "bucket_time": "2026-08-05T02:00:00",
+      "open": 0.0131,
+      "high": 0.0131,
+      "low": 0.0131,
+      "close": 0.0131,
+      "volume": 75
+    },
+    {
+      "match_id": "2943253",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 120,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.0131,
+      "high": 0.0144,
+      "low": 0.0131,
+      "close": 0.014,
+      "volume": 63
+    },
+    {
+      "match_id": "2943254",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T02:30:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.14,
+      "close": 0.14,
+      "volume": 1
+    },
+    {
+      "match_id": "2943254",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T03:00:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.14,
+      "close": 0.14,
+      "volume": 2
+    },
+    {
+      "match_id": "2943254",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T03:30:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.14,
+      "close": 0.14,
+      "volume": 2
+    },
+    {
+      "match_id": "2943254",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.13,
+      "close": 0.13,
+      "volume": 2
+    },
+    {
+      "match_id": "2943254",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.13,
+      "high": 0.13,
+      "low": 0.13,
+      "close": 0.13,
+      "volume": 2
+    },
+    {
+      "match_id": "2943254",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T02:30:00",
+      "open": 0.0254,
+      "high": 0.0254,
+      "low": 0.0254,
+      "close": 0.0254,
+      "volume": 16
+    },
+    {
+      "match_id": "2943254",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T03:00:00",
+      "open": 0.0254,
+      "high": 0.0254,
+      "low": 0.0254,
+      "close": 0.0254,
+      "volume": 32
+    },
+    {
+      "match_id": "2943254",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T03:30:00",
+      "open": 0.0254,
+      "high": 0.0254,
+      "low": 0.0254,
+      "close": 0.0254,
+      "volume": 32
+    },
+    {
+      "match_id": "2943254",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.0254,
+      "high": 0.03,
+      "low": 0.0254,
+      "close": 0.03,
+      "volume": 33
+    },
+    {
+      "match_id": "2943254",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0302,
+      "high": 0.0302,
+      "low": 0.0302,
+      "close": 0.0302,
       "volume": 34
     },
     {
-      "match_id": "2943252",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T02:30:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.14,
-      "close": 0.14,
-      "volume": 1
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T03:00:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.14,
-      "close": 0.14,
-      "volume": 2
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T03:30:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.14,
-      "close": 0.14,
-      "volume": 2
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.13,
-      "close": 0.13,
-      "volume": 2
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T02:30:00",
-      "open": 0.016,
-      "high": 0.016,
-      "low": 0.016,
-      "close": 0.016,
-      "volume": 15
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T03:00:00",
-      "open": 0.016,
-      "high": 0.016,
-      "low": 0.016,
-      "close": 0.016,
-      "volume": 30
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T03:30:00",
-      "open": 0.016,
-      "high": 0.016,
-      "low": 0.016,
-      "close": 0.016,
-      "volume": 30
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.016,
-      "high": 0.0175,
-      "low": 0.016,
-      "close": 0.0175,
-      "volume": 31
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 60,
-      "bucket_time": "2026-08-05T02:00:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.14,
-      "close": 0.14,
-      "volume": 1
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 60,
-      "bucket_time": "2026-08-05T03:00:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.14,
-      "close": 0.14,
-      "volume": 4
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 60,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.13,
-      "close": 0.13,
-      "volume": 2
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 60,
-      "bucket_time": "2026-08-05T02:00:00",
-      "open": 0.016,
-      "high": 0.016,
-      "low": 0.016,
-      "close": 0.016,
-      "volume": 15
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 60,
-      "bucket_time": "2026-08-05T03:00:00",
-      "open": 0.016,
-      "high": 0.016,
-      "low": 0.016,
-      "close": 0.016,
-      "volume": 60
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 60,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.016,
-      "high": 0.0175,
-      "low": 0.016,
-      "close": 0.0175,
-      "volume": 31
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 120,
-      "bucket_time": "2026-08-05T02:00:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.14,
-      "close": 0.14,
-      "volume": 5
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 120,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.13,
-      "close": 0.13,
-      "volume": 2
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 120,
-      "bucket_time": "2026-08-05T02:00:00",
-      "open": 0.016,
-      "high": 0.016,
-      "low": 0.016,
-      "close": 0.016,
-      "volume": 75
-    },
-    {
-      "match_id": "2943252",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 120,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.016,
-      "high": 0.0175,
-      "low": 0.016,
-      "close": 0.0175,
-      "volume": 31
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T02:30:00",
-      "open": 0.06,
-      "high": 0.06,
-      "low": 0.06,
-      "close": 0.06,
-      "volume": 1
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T03:00:00",
-      "open": 0.06,
-      "high": 0.06,
-      "low": 0.06,
-      "close": 0.06,
-      "volume": 2
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T03:30:00",
-      "open": 0.06,
-      "high": 0.06,
-      "low": 0.06,
-      "close": 0.06,
-      "volume": 2
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.06,
-      "high": 0.06,
-      "low": 0.05,
-      "close": 0.05,
-      "volume": 2
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T02:30:00",
-      "open": 0.0131,
-      "high": 0.0131,
-      "low": 0.0131,
-      "close": 0.0131,
-      "volume": 15
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T03:00:00",
-      "open": 0.0131,
-      "high": 0.0131,
-      "low": 0.0131,
-      "close": 0.0131,
-      "volume": 30
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T03:30:00",
-      "open": 0.0131,
-      "high": 0.0131,
-      "low": 0.0131,
-      "close": 0.0131,
-      "volume": 30
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.0131,
-      "high": 0.014,
-      "low": 0.0131,
-      "close": 0.014,
-      "volume": 31
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 60,
-      "bucket_time": "2026-08-05T02:00:00",
-      "open": 0.06,
-      "high": 0.06,
-      "low": 0.06,
-      "close": 0.06,
-      "volume": 1
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 60,
-      "bucket_time": "2026-08-05T03:00:00",
-      "open": 0.06,
-      "high": 0.06,
-      "low": 0.06,
-      "close": 0.06,
-      "volume": 4
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 60,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.06,
-      "high": 0.06,
-      "low": 0.05,
-      "close": 0.05,
-      "volume": 2
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 60,
-      "bucket_time": "2026-08-05T02:00:00",
-      "open": 0.0131,
-      "high": 0.0131,
-      "low": 0.0131,
-      "close": 0.0131,
-      "volume": 15
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 60,
-      "bucket_time": "2026-08-05T03:00:00",
-      "open": 0.0131,
-      "high": 0.0131,
-      "low": 0.0131,
-      "close": 0.0131,
-      "volume": 60
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 60,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.0131,
-      "high": 0.014,
-      "low": 0.0131,
-      "close": 0.014,
-      "volume": 31
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 120,
-      "bucket_time": "2026-08-05T02:00:00",
-      "open": 0.06,
-      "high": 0.06,
-      "low": 0.06,
-      "close": 0.06,
-      "volume": 5
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 120,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.06,
-      "high": 0.06,
-      "low": 0.05,
-      "close": 0.05,
-      "volume": 2
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 120,
-      "bucket_time": "2026-08-05T02:00:00",
-      "open": 0.0131,
-      "high": 0.0131,
-      "low": 0.0131,
-      "close": 0.0131,
-      "volume": 75
-    },
-    {
-      "match_id": "2943253",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 120,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.0131,
-      "high": 0.014,
-      "low": 0.0131,
-      "close": 0.014,
-      "volume": 31
-    },
-    {
-      "match_id": "2943254",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T02:30:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.14,
-      "close": 0.14,
-      "volume": 1
-    },
-    {
-      "match_id": "2943254",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T03:00:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.14,
-      "close": 0.14,
-      "volume": 2
-    },
-    {
-      "match_id": "2943254",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T03:30:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.14,
-      "close": 0.14,
-      "volume": 2
-    },
-    {
-      "match_id": "2943254",
-      "kline_type": "div_asia_crown",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.14,
-      "high": 0.14,
-      "low": 0.13,
-      "close": 0.13,
-      "volume": 2
-    },
-    {
-      "match_id": "2943254",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T02:30:00",
-      "open": 0.0254,
-      "high": 0.0254,
-      "low": 0.0254,
-      "close": 0.0254,
-      "volume": 16
-    },
-    {
-      "match_id": "2943254",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T03:00:00",
-      "open": 0.0254,
-      "high": 0.0254,
-      "low": 0.0254,
-      "close": 0.0254,
-      "volume": 32
-    },
-    {
-      "match_id": "2943254",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T03:30:00",
-      "open": 0.0254,
-      "high": 0.0254,
-      "low": 0.0254,
-      "close": 0.0254,
-      "volume": 32
-    },
-    {
-      "match_id": "2943254",
-      "kline_type": "euro_dispersion",
-      "window_minutes": 30,
-      "bucket_time": "2026-08-05T04:00:00",
-      "open": 0.0254,
-      "high": 0.03,
-      "low": 0.0254,
-      "close": 0.03,
-      "volume": 33
-    },
-    {
       "match_id": "2943254",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
@@ -3549,7 +3835,7 @@
       "high": 0.14,
       "low": 0.13,
       "close": 0.13,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2943254",
@@ -3579,10 +3865,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0254,
-      "high": 0.03,
+      "high": 0.0302,
       "low": 0.0254,
-      "close": 0.03,
-      "volume": 33
+      "close": 0.0302,
+      "volume": 67
     },
     {
       "match_id": "2943254",
@@ -3604,7 +3890,7 @@
       "high": 0.14,
       "low": 0.13,
       "close": 0.13,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2943254",
@@ -3623,10 +3909,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0254,
-      "high": 0.03,
+      "high": 0.0302,
       "low": 0.0254,
-      "close": 0.03,
-      "volume": 33
+      "close": 0.0302,
+      "volume": 67
     },
     {
       "match_id": "2943255",
@@ -3668,6 +3954,17 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.16,
       "high": 0.16,
+      "low": 0.15,
+      "close": 0.15,
+      "volume": 2
+    },
+    {
+      "match_id": "2943255",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.15,
+      "high": 0.15,
       "low": 0.15,
       "close": 0.15,
       "volume": 2
@@ -3718,6 +4015,17 @@
     },
     {
       "match_id": "2943255",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0134,
+      "high": 0.0136,
+      "low": 0.0134,
+      "close": 0.0136,
+      "volume": 34
+    },
+    {
+      "match_id": "2943255",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -3747,7 +4055,7 @@
       "high": 0.16,
       "low": 0.15,
       "close": 0.15,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2943255",
@@ -3778,9 +4086,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0137,
       "high": 0.0139,
-      "low": 0.0137,
-      "close": 0.0139,
-      "volume": 33
+      "low": 0.0134,
+      "close": 0.0136,
+      "volume": 67
     },
     {
       "match_id": "2943255",
@@ -3802,7 +4110,7 @@
       "high": 0.16,
       "low": 0.15,
       "close": 0.15,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2943255",
@@ -3822,9 +4130,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0137,
       "high": 0.0139,
-      "low": 0.0137,
-      "close": 0.0139,
-      "volume": 33
+      "low": 0.0134,
+      "close": 0.0136,
+      "volume": 67
     },
     {
       "match_id": "2943256",
@@ -3872,6 +4180,17 @@
     },
     {
       "match_id": "2943256",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.31,
+      "high": 0.31,
+      "low": 0.23,
+      "close": 0.23,
+      "volume": 2
+    },
+    {
+      "match_id": "2943256",
       "kline_type": "euro_dispersion",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -3912,6 +4231,17 @@
       "high": 0.0271,
       "low": 0.0238,
       "close": 0.0238,
+      "volume": 30
+    },
+    {
+      "match_id": "2943256",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0222,
+      "high": 0.0248,
+      "low": 0.0222,
+      "close": 0.0248,
       "volume": 30
     },
     {
@@ -3943,9 +4273,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.32,
       "high": 0.32,
-      "low": 0.31,
-      "close": 0.31,
-      "volume": 2
+      "low": 0.23,
+      "close": 0.23,
+      "volume": 4
     },
     {
       "match_id": "2943256",
@@ -3976,9 +4306,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0271,
       "high": 0.0271,
-      "low": 0.0238,
-      "close": 0.0238,
-      "volume": 30
+      "low": 0.0222,
+      "close": 0.0248,
+      "volume": 60
     },
     {
       "match_id": "2943256",
@@ -3998,9 +4328,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.32,
       "high": 0.32,
-      "low": 0.31,
-      "close": 0.31,
-      "volume": 2
+      "low": 0.23,
+      "close": 0.23,
+      "volume": 4
     },
     {
       "match_id": "2943256",
@@ -4020,9 +4350,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0271,
       "high": 0.0271,
-      "low": 0.0238,
-      "close": 0.0238,
-      "volume": 30
+      "low": 0.0222,
+      "close": 0.0248,
+      "volume": 60
     },
     {
       "match_id": "2943446",
@@ -4774,6 +5104,17 @@
     },
     {
       "match_id": "2944211",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.3,
+      "high": 0.3,
+      "low": 0.3,
+      "close": 0.3,
+      "volume": 2
+    },
+    {
+      "match_id": "2944211",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -4810,6 +5151,17 @@
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.16,
+      "high": 0.16,
+      "low": 0.16,
+      "close": 0.16,
+      "volume": 2
+    },
+    {
+      "match_id": "2944211",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.16,
       "high": 0.16,
       "low": 0.16,
@@ -4858,6 +5210,17 @@
       "high": 0.02,
       "low": 0.02,
       "close": 0.02,
+      "volume": 2
+    },
+    {
+      "match_id": "2944211",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.07,
+      "high": 0.07,
+      "low": 0.07,
+      "close": 0.07,
       "volume": 2
     },
     {
@@ -4906,6 +5269,17 @@
     },
     {
       "match_id": "2944211",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0294,
+      "high": 0.0296,
+      "low": 0.0294,
+      "close": 0.0296,
+      "volume": 36
+    },
+    {
+      "match_id": "2944211",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -4932,10 +5306,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.2,
-      "high": 0.2,
+      "high": 0.3,
       "low": 0.2,
-      "close": 0.2,
-      "volume": 2
+      "close": 0.3,
+      "volume": 4
     },
     {
       "match_id": "2944211",
@@ -4968,7 +5342,7 @@
       "high": 0.16,
       "low": 0.16,
       "close": 0.16,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2944211",
@@ -4998,10 +5372,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.02,
-      "high": 0.02,
+      "high": 0.07,
       "low": 0.02,
-      "close": 0.02,
-      "volume": 2
+      "close": 0.07,
+      "volume": 4
     },
     {
       "match_id": "2944211",
@@ -5032,9 +5406,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0307,
       "high": 0.0355,
-      "low": 0.0307,
-      "close": 0.0355,
-      "volume": 36
+      "low": 0.0294,
+      "close": 0.0296,
+      "volume": 72
     },
     {
       "match_id": "2944211",
@@ -5053,10 +5427,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.2,
-      "high": 0.2,
+      "high": 0.3,
       "low": 0.2,
-      "close": 0.2,
-      "volume": 2
+      "close": 0.3,
+      "volume": 4
     },
     {
       "match_id": "2944211",
@@ -5078,7 +5452,7 @@
       "high": 0.16,
       "low": 0.16,
       "close": 0.16,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2944211",
@@ -5097,10 +5471,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.02,
-      "high": 0.02,
+      "high": 0.07,
       "low": 0.02,
-      "close": 0.02,
-      "volume": 2
+      "close": 0.07,
+      "volume": 4
     },
     {
       "match_id": "2944211",
@@ -5120,9 +5494,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0307,
       "high": 0.0355,
-      "low": 0.0307,
-      "close": 0.0355,
-      "volume": 36
+      "low": 0.0294,
+      "close": 0.0296,
+      "volume": 72
     },
     {
       "match_id": "2961238",
@@ -5162,6 +5536,17 @@
       "kline_type": "euro_dispersion",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 20
+    },
+    {
+      "match_id": "2961238",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.0,
       "high": 0.0,
       "low": 0.0,
@@ -5199,7 +5584,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 20
+      "volume": 40
     },
     {
       "match_id": "2961238",
@@ -5221,7 +5606,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 20
+      "volume": 40
     },
     {
       "match_id": "2961239",
@@ -5270,6 +5655,17 @@
     {
       "match_id": "2961239",
       "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0275,
+      "high": 0.0277,
+      "low": 0.0275,
+      "close": 0.0277,
+      "volume": 24
+    },
+    {
+      "match_id": "2961239",
+      "kline_type": "euro_dispersion",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
       "open": 0.0428,
@@ -5296,9 +5692,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0277,
       "high": 0.0277,
-      "low": 0.0277,
+      "low": 0.0275,
       "close": 0.0277,
-      "volume": 24
+      "volume": 48
     },
     {
       "match_id": "2961239",
@@ -5318,9 +5714,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0277,
       "high": 0.0277,
-      "low": 0.0277,
+      "low": 0.0275,
       "close": 0.0277,
-      "volume": 24
+      "volume": 48
     },
     {
       "match_id": "2961349",
@@ -5369,6 +5765,17 @@
     {
       "match_id": "2961349",
       "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0145,
+      "high": 0.0149,
+      "low": 0.0145,
+      "close": 0.0149,
+      "volume": 22
+    },
+    {
+      "match_id": "2961349",
+      "kline_type": "euro_dispersion",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
       "open": 0.0149,
@@ -5394,10 +5801,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0145,
-      "high": 0.0145,
+      "high": 0.0149,
       "low": 0.0145,
-      "close": 0.0145,
-      "volume": 22
+      "close": 0.0149,
+      "volume": 44
     },
     {
       "match_id": "2961349",
@@ -5416,10 +5823,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0145,
-      "high": 0.0145,
+      "high": 0.0149,
       "low": 0.0145,
-      "close": 0.0145,
-      "volume": 22
+      "close": 0.0149,
+      "volume": 44
     },
     {
       "match_id": "2961369",
@@ -5468,6 +5875,17 @@
     {
       "match_id": "2961369",
       "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0125,
+      "high": 0.0125,
+      "low": 0.0125,
+      "close": 0.0125,
+      "volume": 18
+    },
+    {
+      "match_id": "2961369",
+      "kline_type": "euro_dispersion",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
       "open": 0.0125,
@@ -5496,7 +5914,7 @@
       "high": 0.0125,
       "low": 0.0125,
       "close": 0.0125,
-      "volume": 18
+      "volume": 36
     },
     {
       "match_id": "2961369",
@@ -5518,7 +5936,7 @@
       "high": 0.0125,
       "low": 0.0125,
       "close": 0.0125,
-      "volume": 18
+      "volume": 36
     },
     {
       "match_id": "2961372",
@@ -5567,6 +5985,17 @@
     {
       "match_id": "2961372",
       "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0165,
+      "high": 0.0165,
+      "low": 0.0165,
+      "close": 0.0165,
+      "volume": 18
+    },
+    {
+      "match_id": "2961372",
+      "kline_type": "euro_dispersion",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
       "open": 0.0165,
@@ -5595,7 +6024,7 @@
       "high": 0.0165,
       "low": 0.0165,
       "close": 0.0165,
-      "volume": 18
+      "volume": 36
     },
     {
       "match_id": "2961372",
@@ -5617,7 +6046,7 @@
       "high": 0.0165,
       "low": 0.0165,
       "close": 0.0165,
-      "volume": 18
+      "volume": 36
     },
     {
       "match_id": "2962521",
@@ -5665,6 +6094,17 @@
     },
     {
       "match_id": "2962521",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.27,
+      "high": 0.32,
+      "low": 0.27,
+      "close": 0.32,
+      "volume": 2
+    },
+    {
+      "match_id": "2962521",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -5709,6 +6149,17 @@
     },
     {
       "match_id": "2962521",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "close": 0.22,
+      "volume": 2
+    },
+    {
+      "match_id": "2962521",
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -5749,6 +6200,17 @@
       "high": 0.265,
       "low": 0.265,
       "close": 0.265,
+      "volume": 2
+    },
+    {
+      "match_id": "2962521",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.265,
+      "high": 0.285,
+      "low": 0.265,
+      "close": 0.285,
       "volume": 2
     },
     {
@@ -5797,6 +6259,17 @@
     },
     {
       "match_id": "2962521",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0239,
+      "high": 0.0239,
+      "low": 0.0228,
+      "close": 0.0228,
+      "volume": 38
+    },
+    {
+      "match_id": "2962521",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -5823,10 +6296,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.26,
-      "high": 0.27,
+      "high": 0.32,
       "low": 0.26,
-      "close": 0.27,
-      "volume": 2
+      "close": 0.32,
+      "volume": 4
     },
     {
       "match_id": "2962521",
@@ -5859,7 +6332,7 @@
       "high": 0.22,
       "low": 0.22,
       "close": 0.22,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2962521",
@@ -5889,10 +6362,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.265,
-      "high": 0.265,
+      "high": 0.285,
       "low": 0.265,
-      "close": 0.265,
-      "volume": 2
+      "close": 0.285,
+      "volume": 4
     },
     {
       "match_id": "2962521",
@@ -5924,8 +6397,8 @@
       "open": 0.022,
       "high": 0.0249,
       "low": 0.022,
-      "close": 0.0249,
-      "volume": 38
+      "close": 0.0228,
+      "volume": 76
     },
     {
       "match_id": "2962521",
@@ -5944,10 +6417,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.26,
-      "high": 0.27,
+      "high": 0.32,
       "low": 0.26,
-      "close": 0.27,
-      "volume": 2
+      "close": 0.32,
+      "volume": 4
     },
     {
       "match_id": "2962521",
@@ -5969,7 +6442,7 @@
       "high": 0.22,
       "low": 0.22,
       "close": 0.22,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2962521",
@@ -5988,10 +6461,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.265,
-      "high": 0.265,
+      "high": 0.285,
       "low": 0.265,
-      "close": 0.265,
-      "volume": 2
+      "close": 0.285,
+      "volume": 4
     },
     {
       "match_id": "2962521",
@@ -6012,8 +6485,8 @@
       "open": 0.022,
       "high": 0.0249,
       "low": 0.022,
-      "close": 0.0249,
-      "volume": 38
+      "close": 0.0228,
+      "volume": 76
     },
     {
       "match_id": "2962531",
@@ -6056,6 +6529,17 @@
       "open": 0.39,
       "high": 0.41,
       "low": 0.39,
+      "close": 0.41,
+      "volume": 2
+    },
+    {
+      "match_id": "2962531",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.41,
+      "high": 0.41,
+      "low": 0.41,
       "close": 0.41,
       "volume": 2
     },
@@ -6105,6 +6589,17 @@
     },
     {
       "match_id": "2962531",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.34,
+      "high": 0.34,
+      "low": 0.34,
+      "close": 0.34,
+      "volume": 2
+    },
+    {
+      "match_id": "2962531",
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -6141,6 +6636,17 @@
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.385,
+      "high": 0.385,
+      "low": 0.385,
+      "close": 0.385,
+      "volume": 2
+    },
+    {
+      "match_id": "2962531",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.385,
       "high": 0.385,
       "low": 0.385,
@@ -6193,6 +6699,17 @@
     },
     {
       "match_id": "2962531",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0308,
+      "high": 0.0308,
+      "low": 0.0244,
+      "close": 0.0244,
+      "volume": 38
+    },
+    {
+      "match_id": "2962531",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -6222,7 +6739,7 @@
       "high": 0.41,
       "low": 0.39,
       "close": 0.41,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2962531",
@@ -6255,7 +6772,7 @@
       "high": 0.34,
       "low": 0.34,
       "close": 0.34,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2962531",
@@ -6288,7 +6805,7 @@
       "high": 0.385,
       "low": 0.385,
       "close": 0.385,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2962531",
@@ -6318,10 +6835,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0253,
-      "high": 0.0264,
-      "low": 0.0253,
-      "close": 0.0264,
-      "volume": 38
+      "high": 0.0308,
+      "low": 0.0244,
+      "close": 0.0244,
+      "volume": 76
     },
     {
       "match_id": "2962531",
@@ -6343,7 +6860,7 @@
       "high": 0.41,
       "low": 0.39,
       "close": 0.41,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2962531",
@@ -6365,7 +6882,7 @@
       "high": 0.34,
       "low": 0.34,
       "close": 0.34,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2962531",
@@ -6387,7 +6904,7 @@
       "high": 0.385,
       "low": 0.385,
       "close": 0.385,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2962531",
@@ -6406,10 +6923,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0253,
-      "high": 0.0264,
-      "low": 0.0253,
-      "close": 0.0264,
-      "volume": 38
+      "high": 0.0308,
+      "low": 0.0244,
+      "close": 0.0244,
+      "volume": 76
     },
     {
       "match_id": "2962535",
@@ -7857,6 +8374,17 @@
       "kline_type": "euro_dispersion",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.0261,
+      "high": 0.0261,
+      "low": 0.0261,
+      "close": 0.0261,
+      "volume": 16
+    },
+    {
+      "match_id": "2967665",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.0261,
       "high": 0.0261,
       "low": 0.0261,
@@ -7894,7 +8422,7 @@
       "high": 0.0261,
       "low": 0.0261,
       "close": 0.0261,
-      "volume": 16
+      "volume": 32
     },
     {
       "match_id": "2967665",
@@ -7916,7 +8444,7 @@
       "high": 0.0261,
       "low": 0.0261,
       "close": 0.0261,
-      "volume": 16
+      "volume": 32
     },
     {
       "match_id": "2991117",
@@ -8316,6 +8844,17 @@
     },
     {
       "match_id": "2991121",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.21,
+      "high": 0.21,
+      "low": 0.21,
+      "close": 0.21,
+      "volume": 2
+    },
+    {
+      "match_id": "2991121",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -8360,6 +8899,17 @@
     },
     {
       "match_id": "2991121",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "close": 0.22,
+      "volume": 2
+    },
+    {
+      "match_id": "2991121",
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -8396,6 +8946,17 @@
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.05,
+      "high": 0.05,
+      "low": 0.05,
+      "close": 0.05,
+      "volume": 2
+    },
+    {
+      "match_id": "2991121",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.05,
       "high": 0.05,
       "low": 0.05,
@@ -8448,6 +9009,17 @@
     },
     {
       "match_id": "2991121",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0215,
+      "high": 0.0215,
+      "low": 0.0215,
+      "close": 0.0215,
+      "volume": 38
+    },
+    {
+      "match_id": "2991121",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -8477,7 +9049,7 @@
       "high": 0.22,
       "low": 0.21,
       "close": 0.21,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991121",
@@ -8510,7 +9082,7 @@
       "high": 0.22,
       "low": 0.22,
       "close": 0.22,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991121",
@@ -8543,7 +9115,7 @@
       "high": 0.05,
       "low": 0.05,
       "close": 0.05,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991121",
@@ -8575,8 +9147,8 @@
       "open": 0.0199,
       "high": 0.0216,
       "low": 0.0199,
-      "close": 0.0216,
-      "volume": 38
+      "close": 0.0215,
+      "volume": 76
     },
     {
       "match_id": "2991121",
@@ -8598,7 +9170,7 @@
       "high": 0.22,
       "low": 0.21,
       "close": 0.21,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991121",
@@ -8620,7 +9192,7 @@
       "high": 0.22,
       "low": 0.22,
       "close": 0.22,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991121",
@@ -8642,7 +9214,7 @@
       "high": 0.05,
       "low": 0.05,
       "close": 0.05,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991121",
@@ -8663,8 +9235,8 @@
       "open": 0.0199,
       "high": 0.0216,
       "low": 0.0199,
-      "close": 0.0216,
-      "volume": 38
+      "close": 0.0215,
+      "volume": 76
     },
     {
       "match_id": "2991122",
@@ -8707,6 +9279,17 @@
       "open": 0.16,
       "high": 0.17,
       "low": 0.16,
+      "close": 0.17,
+      "volume": 2
+    },
+    {
+      "match_id": "2991122",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.17,
+      "high": 0.17,
+      "low": 0.17,
       "close": 0.17,
       "volume": 2
     },
@@ -8756,6 +9339,17 @@
     },
     {
       "match_id": "2991122",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "close": 0.22,
+      "volume": 2
+    },
+    {
+      "match_id": "2991122",
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -8795,6 +9389,17 @@
       "open": 0.02,
       "high": 0.03,
       "low": 0.02,
+      "close": 0.03,
+      "volume": 2
+    },
+    {
+      "match_id": "2991122",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.03,
+      "high": 0.03,
+      "low": 0.03,
       "close": 0.03,
       "volume": 2
     },
@@ -8844,6 +9449,17 @@
     },
     {
       "match_id": "2991122",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.019,
+      "high": 0.019,
+      "low": 0.019,
+      "close": 0.019,
+      "volume": 38
+    },
+    {
+      "match_id": "2991122",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -8873,7 +9489,7 @@
       "high": 0.17,
       "low": 0.16,
       "close": 0.17,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991122",
@@ -8906,7 +9522,7 @@
       "high": 0.22,
       "low": 0.22,
       "close": 0.22,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991122",
@@ -8939,7 +9555,7 @@
       "high": 0.03,
       "low": 0.02,
       "close": 0.03,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991122",
@@ -8970,9 +9586,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0218,
       "high": 0.0218,
-      "low": 0.0202,
-      "close": 0.0202,
-      "volume": 38
+      "low": 0.019,
+      "close": 0.019,
+      "volume": 76
     },
     {
       "match_id": "2991122",
@@ -8994,7 +9610,7 @@
       "high": 0.17,
       "low": 0.16,
       "close": 0.17,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991122",
@@ -9016,7 +9632,7 @@
       "high": 0.22,
       "low": 0.22,
       "close": 0.22,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991122",
@@ -9038,7 +9654,7 @@
       "high": 0.03,
       "low": 0.02,
       "close": 0.03,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991122",
@@ -9058,9 +9674,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0218,
       "high": 0.0218,
-      "low": 0.0202,
-      "close": 0.0202,
-      "volume": 38
+      "low": 0.019,
+      "close": 0.019,
+      "volume": 76
     },
     {
       "match_id": "2991123",
@@ -9108,6 +9724,17 @@
     },
     {
       "match_id": "2991123",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.23,
+      "high": 0.23,
+      "low": 0.21,
+      "close": 0.21,
+      "volume": 2
+    },
+    {
+      "match_id": "2991123",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -9144,6 +9771,17 @@
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.26,
+      "high": 0.26,
+      "low": 0.26,
+      "close": 0.26,
+      "volume": 2
+    },
+    {
+      "match_id": "2991123",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.26,
       "high": 0.26,
       "low": 0.26,
@@ -9192,6 +9830,17 @@
       "high": 0.04,
       "low": 0.03,
       "close": 0.04,
+      "volume": 2
+    },
+    {
+      "match_id": "2991123",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.04,
+      "high": 0.04,
+      "low": 0.03,
+      "close": 0.03,
       "volume": 2
     },
     {
@@ -9240,6 +9889,17 @@
     },
     {
       "match_id": "2991123",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0259,
+      "high": 0.026,
+      "low": 0.0259,
+      "close": 0.026,
+      "volume": 36
+    },
+    {
+      "match_id": "2991123",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -9267,9 +9927,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.22,
       "high": 0.23,
-      "low": 0.22,
-      "close": 0.23,
-      "volume": 2
+      "low": 0.21,
+      "close": 0.21,
+      "volume": 4
     },
     {
       "match_id": "2991123",
@@ -9302,7 +9962,7 @@
       "high": 0.26,
       "low": 0.26,
       "close": 0.26,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991123",
@@ -9334,8 +9994,8 @@
       "open": 0.03,
       "high": 0.04,
       "low": 0.03,
-      "close": 0.04,
-      "volume": 2
+      "close": 0.03,
+      "volume": 4
     },
     {
       "match_id": "2991123",
@@ -9365,10 +10025,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0238,
-      "high": 0.0255,
+      "high": 0.026,
       "low": 0.0238,
-      "close": 0.0255,
-      "volume": 36
+      "close": 0.026,
+      "volume": 72
     },
     {
       "match_id": "2991123",
@@ -9388,9 +10048,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.22,
       "high": 0.23,
-      "low": 0.22,
-      "close": 0.23,
-      "volume": 2
+      "low": 0.21,
+      "close": 0.21,
+      "volume": 4
     },
     {
       "match_id": "2991123",
@@ -9412,7 +10072,7 @@
       "high": 0.26,
       "low": 0.26,
       "close": 0.26,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991123",
@@ -9433,8 +10093,8 @@
       "open": 0.03,
       "high": 0.04,
       "low": 0.03,
-      "close": 0.04,
-      "volume": 2
+      "close": 0.03,
+      "volume": 4
     },
     {
       "match_id": "2991123",
@@ -9453,10 +10113,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0238,
-      "high": 0.0255,
+      "high": 0.026,
       "low": 0.0238,
-      "close": 0.0255,
-      "volume": 36
+      "close": 0.026,
+      "volume": 72
     },
     {
       "match_id": "2991125",
@@ -10252,6 +10912,17 @@
     },
     {
       "match_id": "2991125",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0269,
+      "high": 0.0269,
+      "low": 0.0269,
+      "close": 0.0269,
+      "volume": 38
+    },
+    {
+      "match_id": "2991125",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-04T18:00:00",
@@ -10666,7 +11337,7 @@
       "high": 0.0269,
       "low": 0.0269,
       "close": 0.0269,
-      "volume": 38
+      "volume": 76
     },
     {
       "match_id": "2991125",
@@ -10897,7 +11568,7 @@
       "high": 0.0269,
       "low": 0.0269,
       "close": 0.0269,
-      "volume": 38
+      "volume": 76
     },
     {
       "match_id": "2991126",
@@ -12177,6 +12848,17 @@
     },
     {
       "match_id": "2991127",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.25,
+      "high": 0.25,
+      "low": 0.25,
+      "close": 0.25,
+      "volume": 2
+    },
+    {
+      "match_id": "2991127",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -12213,6 +12895,17 @@
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.28,
+      "high": 0.28,
+      "low": 0.28,
+      "close": 0.28,
+      "volume": 2
+    },
+    {
+      "match_id": "2991127",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.28,
       "high": 0.28,
       "low": 0.28,
@@ -12261,6 +12954,17 @@
       "high": 0.375,
       "low": 0.365,
       "close": 0.375,
+      "volume": 2
+    },
+    {
+      "match_id": "2991127",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.395,
+      "high": 0.395,
+      "low": 0.395,
+      "close": 0.395,
       "volume": 2
     },
     {
@@ -12309,6 +13013,17 @@
     },
     {
       "match_id": "2991127",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 38
+    },
+    {
+      "match_id": "2991127",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -12335,10 +13050,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.2,
-      "high": 0.21,
+      "high": 0.25,
       "low": 0.2,
-      "close": 0.21,
-      "volume": 2
+      "close": 0.25,
+      "volume": 4
     },
     {
       "match_id": "2991127",
@@ -12371,7 +13086,7 @@
       "high": 0.28,
       "low": 0.28,
       "close": 0.28,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991127",
@@ -12401,10 +13116,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.365,
-      "high": 0.375,
+      "high": 0.395,
       "low": 0.365,
-      "close": 0.375,
-      "volume": 2
+      "close": 0.395,
+      "volume": 4
     },
     {
       "match_id": "2991127",
@@ -12437,7 +13152,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 38
+      "volume": 76
     },
     {
       "match_id": "2991127",
@@ -12456,10 +13171,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.2,
-      "high": 0.21,
+      "high": 0.25,
       "low": 0.2,
-      "close": 0.21,
-      "volume": 2
+      "close": 0.25,
+      "volume": 4
     },
     {
       "match_id": "2991127",
@@ -12481,7 +13196,7 @@
       "high": 0.28,
       "low": 0.28,
       "close": 0.28,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "2991127",
@@ -12500,10 +13215,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.365,
-      "high": 0.375,
+      "high": 0.395,
       "low": 0.365,
-      "close": 0.375,
-      "volume": 2
+      "close": 0.395,
+      "volume": 4
     },
     {
       "match_id": "2991127",
@@ -12525,7 +13240,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 38
+      "volume": 76
     },
     {
       "match_id": "3011778",
@@ -14575,6 +15290,17 @@
     },
     {
       "match_id": "3011782",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.28,
+      "high": 0.28,
+      "low": 0.28,
+      "close": 0.28,
+      "volume": 2
+    },
+    {
+      "match_id": "3011782",
       "kline_type": "euro_dispersion",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -14619,6 +15345,17 @@
     },
     {
       "match_id": "3011782",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0115,
+      "high": 0.0115,
+      "low": 0.0108,
+      "close": 0.0108,
+      "volume": 34
+    },
+    {
+      "match_id": "3011782",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -14648,7 +15385,7 @@
       "high": 0.28,
       "low": 0.28,
       "close": 0.28,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3011782",
@@ -14679,9 +15416,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0112,
       "high": 0.0115,
-      "low": 0.0112,
-      "close": 0.0115,
-      "volume": 34
+      "low": 0.0108,
+      "close": 0.0108,
+      "volume": 68
     },
     {
       "match_id": "3011782",
@@ -14703,7 +15440,7 @@
       "high": 0.28,
       "low": 0.28,
       "close": 0.28,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3011782",
@@ -14723,9 +15460,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0112,
       "high": 0.0115,
-      "low": 0.0112,
-      "close": 0.0115,
-      "volume": 34
+      "low": 0.0108,
+      "close": 0.0108,
+      "volume": 68
     },
     {
       "match_id": "3011783",
@@ -16731,6 +17468,17 @@
     },
     {
       "match_id": "3011784",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0206,
+      "high": 0.0206,
+      "low": 0.0206,
+      "close": 0.0206,
+      "volume": 38
+    },
+    {
+      "match_id": "3011784",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-04T18:00:00",
@@ -17178,7 +17926,7 @@
       "high": 0.0206,
       "low": 0.0206,
       "close": 0.0206,
-      "volume": 38
+      "volume": 76
     },
     {
       "match_id": "3011784",
@@ -17409,7 +18157,7 @@
       "high": 0.0206,
       "low": 0.0206,
       "close": 0.0206,
-      "volume": 38
+      "volume": 76
     },
     {
       "match_id": "3011785",
@@ -17457,6 +18205,17 @@
     },
     {
       "match_id": "3011785",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.24,
+      "high": 0.24,
+      "low": 0.24,
+      "close": 0.24,
+      "volume": 2
+    },
+    {
+      "match_id": "3011785",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -17501,6 +18260,17 @@
     },
     {
       "match_id": "3011785",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.26,
+      "high": 0.26,
+      "low": 0.26,
+      "close": 0.26,
+      "volume": 2
+    },
+    {
+      "match_id": "3011785",
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -17537,6 +18307,17 @@
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.06,
+      "high": 0.06,
+      "low": 0.06,
+      "close": 0.06,
+      "volume": 2
+    },
+    {
+      "match_id": "3011785",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.06,
       "high": 0.06,
       "low": 0.06,
@@ -17589,6 +18370,17 @@
     },
     {
       "match_id": "3011785",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0208,
+      "high": 0.0208,
+      "low": 0.0208,
+      "close": 0.0208,
+      "volume": 38
+    },
+    {
+      "match_id": "3011785",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -17618,7 +18410,7 @@
       "high": 0.24,
       "low": 0.24,
       "close": 0.24,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3011785",
@@ -17651,7 +18443,7 @@
       "high": 0.26,
       "low": 0.26,
       "close": 0.26,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3011785",
@@ -17684,7 +18476,7 @@
       "high": 0.06,
       "low": 0.06,
       "close": 0.06,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3011785",
@@ -17717,7 +18509,7 @@
       "high": 0.0212,
       "low": 0.0208,
       "close": 0.0208,
-      "volume": 38
+      "volume": 76
     },
     {
       "match_id": "3011785",
@@ -17739,7 +18531,7 @@
       "high": 0.24,
       "low": 0.24,
       "close": 0.24,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3011785",
@@ -17761,7 +18553,7 @@
       "high": 0.26,
       "low": 0.26,
       "close": 0.26,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3011785",
@@ -17783,7 +18575,7 @@
       "high": 0.06,
       "low": 0.06,
       "close": 0.06,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3011785",
@@ -17805,7 +18597,7 @@
       "high": 0.0212,
       "low": 0.0208,
       "close": 0.0208,
-      "volume": 38
+      "volume": 76
     },
     {
       "match_id": "3011786",
@@ -17853,6 +18645,17 @@
     },
     {
       "match_id": "3011786",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "close": 0.22,
+      "volume": 2
+    },
+    {
+      "match_id": "3011786",
       "kline_type": "euro_dispersion",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -17889,6 +18692,17 @@
       "kline_type": "euro_dispersion",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 12
+    },
+    {
+      "match_id": "3011786",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.0,
       "high": 0.0,
       "low": 0.0,
@@ -17926,7 +18740,7 @@
       "high": 0.22,
       "low": 0.22,
       "close": 0.22,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3011786",
@@ -17959,7 +18773,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 12
+      "volume": 24
     },
     {
       "match_id": "3011786",
@@ -17981,7 +18795,7 @@
       "high": 0.22,
       "low": 0.22,
       "close": 0.22,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3011786",
@@ -18003,7 +18817,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 12
+      "volume": 24
     },
     {
       "match_id": "3013008",
@@ -19459,6 +20273,17 @@
     },
     {
       "match_id": "3013009",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 2
+    },
+    {
+      "match_id": "3013009",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -19503,6 +20328,17 @@
     },
     {
       "match_id": "3013009",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 2
+    },
+    {
+      "match_id": "3013009",
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -19539,6 +20375,17 @@
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.02,
+      "high": 0.02,
+      "low": 0.02,
+      "close": 0.02,
+      "volume": 2
+    },
+    {
+      "match_id": "3013009",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.02,
       "high": 0.02,
       "low": 0.02,
@@ -19591,6 +20438,17 @@
     },
     {
       "match_id": "3013009",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0237,
+      "high": 0.0237,
+      "low": 0.0227,
+      "close": 0.0227,
+      "volume": 22
+    },
+    {
+      "match_id": "3013009",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -19620,7 +20478,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013009",
@@ -19653,7 +20511,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013009",
@@ -19686,7 +20544,7 @@
       "high": 0.02,
       "low": 0.02,
       "close": 0.02,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013009",
@@ -19718,8 +20576,8 @@
       "open": 0.0207,
       "high": 0.0237,
       "low": 0.0207,
-      "close": 0.0237,
-      "volume": 22
+      "close": 0.0227,
+      "volume": 44
     },
     {
       "match_id": "3013009",
@@ -19741,7 +20599,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013009",
@@ -19763,7 +20621,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013009",
@@ -19785,7 +20643,7 @@
       "high": 0.02,
       "low": 0.02,
       "close": 0.02,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013009",
@@ -19806,8 +20664,8 @@
       "open": 0.0207,
       "high": 0.0237,
       "low": 0.0207,
-      "close": 0.0237,
-      "volume": 22
+      "close": 0.0227,
+      "volume": 44
     },
     {
       "match_id": "3013020",
@@ -19855,6 +20713,17 @@
     },
     {
       "match_id": "3013020",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.12,
+      "high": 0.12,
+      "low": 0.12,
+      "close": 0.12,
+      "volume": 2
+    },
+    {
+      "match_id": "3013020",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -19899,6 +20768,17 @@
     },
     {
       "match_id": "3013020",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.18,
+      "high": 0.18,
+      "low": 0.18,
+      "close": 0.18,
+      "volume": 2
+    },
+    {
+      "match_id": "3013020",
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -19935,6 +20815,17 @@
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "close": 0.01,
+      "volume": 2
+    },
+    {
+      "match_id": "3013020",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.01,
       "high": 0.01,
       "low": 0.01,
@@ -19987,6 +20878,17 @@
     },
     {
       "match_id": "3013020",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 22
+    },
+    {
+      "match_id": "3013020",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -20016,7 +20918,7 @@
       "high": 0.12,
       "low": 0.12,
       "close": 0.12,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013020",
@@ -20049,7 +20951,7 @@
       "high": 0.18,
       "low": 0.18,
       "close": 0.18,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013020",
@@ -20082,7 +20984,7 @@
       "high": 0.01,
       "low": 0.01,
       "close": 0.01,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013020",
@@ -20115,7 +21017,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 22
+      "volume": 44
     },
     {
       "match_id": "3013020",
@@ -20137,7 +21039,7 @@
       "high": 0.12,
       "low": 0.12,
       "close": 0.12,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013020",
@@ -20159,7 +21061,7 @@
       "high": 0.18,
       "low": 0.18,
       "close": 0.18,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013020",
@@ -20181,7 +21083,7 @@
       "high": 0.01,
       "low": 0.01,
       "close": 0.01,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013020",
@@ -20203,7 +21105,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 22
+      "volume": 44
     },
     {
       "match_id": "3013021",
@@ -20251,6 +21153,17 @@
     },
     {
       "match_id": "3013021",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.24,
+      "high": 0.24,
+      "low": 0.24,
+      "close": 0.24,
+      "volume": 2
+    },
+    {
+      "match_id": "3013021",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -20295,6 +21208,17 @@
     },
     {
       "match_id": "3013021",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.24,
+      "high": 0.24,
+      "low": 0.24,
+      "close": 0.24,
+      "volume": 2
+    },
+    {
+      "match_id": "3013021",
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -20331,6 +21255,17 @@
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.335,
+      "high": 0.335,
+      "low": 0.335,
+      "close": 0.335,
+      "volume": 2
+    },
+    {
+      "match_id": "3013021",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.335,
       "high": 0.335,
       "low": 0.335,
@@ -20383,6 +21318,17 @@
     },
     {
       "match_id": "3013021",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0203,
+      "high": 0.0203,
+      "low": 0.0203,
+      "close": 0.0203,
+      "volume": 22
+    },
+    {
+      "match_id": "3013021",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -20412,7 +21358,7 @@
       "high": 0.24,
       "low": 0.24,
       "close": 0.24,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013021",
@@ -20445,7 +21391,7 @@
       "high": 0.24,
       "low": 0.24,
       "close": 0.24,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013021",
@@ -20478,7 +21424,7 @@
       "high": 0.335,
       "low": 0.335,
       "close": 0.335,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013021",
@@ -20510,8 +21456,8 @@
       "open": 0.0214,
       "high": 0.0214,
       "low": 0.0195,
-      "close": 0.0195,
-      "volume": 22
+      "close": 0.0203,
+      "volume": 44
     },
     {
       "match_id": "3013021",
@@ -20533,7 +21479,7 @@
       "high": 0.24,
       "low": 0.24,
       "close": 0.24,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013021",
@@ -20555,7 +21501,7 @@
       "high": 0.24,
       "low": 0.24,
       "close": 0.24,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013021",
@@ -20577,7 +21523,7 @@
       "high": 0.335,
       "low": 0.335,
       "close": 0.335,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013021",
@@ -20598,8 +21544,8 @@
       "open": 0.0214,
       "high": 0.0214,
       "low": 0.0195,
-      "close": 0.0195,
-      "volume": 22
+      "close": 0.0203,
+      "volume": 44
     },
     {
       "match_id": "3013032",
@@ -21351,6 +22297,17 @@
     },
     {
       "match_id": "3013033",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.14,
+      "close": 0.14,
+      "volume": 2
+    },
+    {
+      "match_id": "3013033",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -21395,6 +22352,17 @@
     },
     {
       "match_id": "3013033",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.14,
+      "high": 0.14,
+      "low": 0.14,
+      "close": 0.14,
+      "volume": 2
+    },
+    {
+      "match_id": "3013033",
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -21431,6 +22399,17 @@
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.02,
+      "high": 0.02,
+      "low": 0.02,
+      "close": 0.02,
+      "volume": 2
+    },
+    {
+      "match_id": "3013033",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.02,
       "high": 0.02,
       "low": 0.02,
@@ -21483,6 +22462,17 @@
     },
     {
       "match_id": "3013033",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0193,
+      "high": 0.0193,
+      "low": 0.0178,
+      "close": 0.0178,
+      "volume": 22
+    },
+    {
+      "match_id": "3013033",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -21512,7 +22502,7 @@
       "high": 0.14,
       "low": 0.14,
       "close": 0.14,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013033",
@@ -21545,7 +22535,7 @@
       "high": 0.14,
       "low": 0.14,
       "close": 0.14,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013033",
@@ -21578,7 +22568,7 @@
       "high": 0.02,
       "low": 0.02,
       "close": 0.02,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013033",
@@ -21609,9 +22599,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0196,
       "high": 0.0196,
-      "low": 0.0193,
-      "close": 0.0193,
-      "volume": 22
+      "low": 0.0178,
+      "close": 0.0178,
+      "volume": 44
     },
     {
       "match_id": "3013033",
@@ -21633,7 +22623,7 @@
       "high": 0.14,
       "low": 0.14,
       "close": 0.14,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013033",
@@ -21655,7 +22645,7 @@
       "high": 0.14,
       "low": 0.14,
       "close": 0.14,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013033",
@@ -21677,7 +22667,7 @@
       "high": 0.02,
       "low": 0.02,
       "close": 0.02,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3013033",
@@ -21697,9 +22687,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0196,
       "high": 0.0196,
-      "low": 0.0193,
-      "close": 0.0193,
-      "volume": 22
+      "low": 0.0178,
+      "close": 0.0178,
+      "volume": 44
     },
     {
       "match_id": "3013044",
@@ -24465,6 +25455,17 @@
     {
       "match_id": "3027053",
       "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0449,
+      "high": 0.0453,
+      "low": 0.0449,
+      "close": 0.0453,
+      "volume": 24
+    },
+    {
+      "match_id": "3027053",
+      "kline_type": "euro_dispersion",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
       "open": 0.0434,
@@ -24490,10 +25491,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0421,
-      "high": 0.0421,
+      "high": 0.0453,
       "low": 0.0421,
-      "close": 0.0421,
-      "volume": 24
+      "close": 0.0453,
+      "volume": 48
     },
     {
       "match_id": "3027053",
@@ -24512,10 +25513,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0421,
-      "high": 0.0421,
+      "high": 0.0453,
       "low": 0.0421,
-      "close": 0.0421,
-      "volume": 24
+      "close": 0.0453,
+      "volume": 48
     },
     {
       "match_id": "3027054",
@@ -26323,6 +27324,17 @@
     },
     {
       "match_id": "3027065",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.4,
+      "high": 0.4,
+      "low": 0.4,
+      "close": 0.4,
+      "volume": 2
+    },
+    {
+      "match_id": "3027065",
       "kline_type": "euro_dispersion",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -26367,6 +27379,17 @@
     },
     {
       "match_id": "3027065",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 32
+    },
+    {
+      "match_id": "3027065",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -26396,7 +27419,7 @@
       "high": 0.4,
       "low": 0.4,
       "close": 0.4,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3027065",
@@ -26429,7 +27452,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 28
+      "volume": 60
     },
     {
       "match_id": "3027065",
@@ -26451,7 +27474,7 @@
       "high": 0.4,
       "low": 0.4,
       "close": 0.4,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3027065",
@@ -26473,7 +27496,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 28
+      "volume": 60
     },
     {
       "match_id": "3027067",
@@ -27930,6 +28953,17 @@
     {
       "match_id": "3027072",
       "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0,
+      "high": 0.0,
+      "low": 0.0,
+      "close": 0.0,
+      "volume": 24
+    },
+    {
+      "match_id": "3027072",
+      "kline_type": "euro_dispersion",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
       "open": 0.0,
@@ -27958,7 +28992,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 24
+      "volume": 48
     },
     {
       "match_id": "3027072",
@@ -27980,7 +29014,7 @@
       "high": 0.0,
       "low": 0.0,
       "close": 0.0,
-      "volume": 24
+      "volume": 48
     },
     {
       "match_id": "3027078",
@@ -28733,6 +29767,17 @@
     {
       "match_id": "3046347",
       "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0208,
+      "high": 0.0209,
+      "low": 0.0208,
+      "close": 0.0209,
+      "volume": 22
+    },
+    {
+      "match_id": "3046347",
+      "kline_type": "euro_dispersion",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
       "open": 0.012,
@@ -28758,10 +29803,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0189,
-      "high": 0.0189,
+      "high": 0.0209,
       "low": 0.0186,
-      "close": 0.0186,
-      "volume": 22
+      "close": 0.0209,
+      "volume": 44
     },
     {
       "match_id": "3046347",
@@ -28780,10 +29825,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0189,
-      "high": 0.0189,
+      "high": 0.0209,
       "low": 0.0186,
-      "close": 0.0186,
-      "volume": 22
+      "close": 0.0209,
+      "volume": 44
     },
     {
       "match_id": "3046355",
@@ -29183,6 +30228,17 @@
     },
     {
       "match_id": "3049759",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.24,
+      "high": 0.24,
+      "low": 0.24,
+      "close": 0.24,
+      "volume": 2
+    },
+    {
+      "match_id": "3049759",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -29219,6 +30275,17 @@
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.24,
+      "high": 0.24,
+      "low": 0.24,
+      "close": 0.24,
+      "volume": 2
+    },
+    {
+      "match_id": "3049759",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.24,
       "high": 0.24,
       "low": 0.24,
@@ -29263,6 +30330,17 @@
       "kline_type": "div_cross_crown_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.03,
+      "high": 0.03,
+      "low": 0.03,
+      "close": 0.03,
+      "volume": 2
+    },
+    {
+      "match_id": "3049759",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.03,
       "high": 0.03,
       "low": 0.03,
@@ -29315,6 +30393,17 @@
     },
     {
       "match_id": "3049759",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0168,
+      "high": 0.0175,
+      "low": 0.0168,
+      "close": 0.0175,
+      "volume": 38
+    },
+    {
+      "match_id": "3049759",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -29344,7 +30433,7 @@
       "high": 0.24,
       "low": 0.24,
       "close": 0.24,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3049759",
@@ -29377,7 +30466,7 @@
       "high": 0.24,
       "low": 0.24,
       "close": 0.24,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3049759",
@@ -29410,7 +30499,7 @@
       "high": 0.03,
       "low": 0.03,
       "close": 0.03,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3049759",
@@ -29440,10 +30529,10 @@
       "window_minutes": 60,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0169,
-      "high": 0.0169,
+      "high": 0.0175,
       "low": 0.0138,
-      "close": 0.0138,
-      "volume": 38
+      "close": 0.0175,
+      "volume": 76
     },
     {
       "match_id": "3049759",
@@ -29465,7 +30554,7 @@
       "high": 0.24,
       "low": 0.24,
       "close": 0.24,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3049759",
@@ -29487,7 +30576,7 @@
       "high": 0.24,
       "low": 0.24,
       "close": 0.24,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3049759",
@@ -29509,7 +30598,7 @@
       "high": 0.03,
       "low": 0.03,
       "close": 0.03,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3049759",
@@ -29528,10 +30617,10 @@
       "window_minutes": 120,
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0169,
-      "high": 0.0169,
+      "high": 0.0175,
       "low": 0.0138,
-      "close": 0.0138,
-      "volume": 38
+      "close": 0.0175,
+      "volume": 76
     },
     {
       "match_id": "3049771",
@@ -29579,6 +30668,17 @@
     },
     {
       "match_id": "3049771",
+      "kline_type": "div_asia_crown",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.1,
+      "high": 0.1,
+      "low": 0.1,
+      "close": 0.1,
+      "volume": 2
+    },
+    {
+      "match_id": "3049771",
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -29615,6 +30715,17 @@
       "kline_type": "div_asia_macau",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T04:00:00",
+      "open": 0.24,
+      "high": 0.24,
+      "low": 0.24,
+      "close": 0.24,
+      "volume": 2
+    },
+    {
+      "match_id": "3049771",
+      "kline_type": "div_asia_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
       "open": 0.24,
       "high": 0.24,
       "low": 0.24,
@@ -29667,6 +30778,17 @@
     },
     {
       "match_id": "3049771",
+      "kline_type": "div_cross_crown_macau",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.215,
+      "high": 0.215,
+      "low": 0.215,
+      "close": 0.215,
+      "volume": 2
+    },
+    {
+      "match_id": "3049771",
       "kline_type": "euro_dispersion",
       "window_minutes": 30,
       "bucket_time": "2026-08-05T02:30:00",
@@ -29711,6 +30833,17 @@
     },
     {
       "match_id": "3049771",
+      "kline_type": "euro_dispersion",
+      "window_minutes": 30,
+      "bucket_time": "2026-08-05T04:30:00",
+      "open": 0.0179,
+      "high": 0.018,
+      "low": 0.0179,
+      "close": 0.018,
+      "volume": 38
+    },
+    {
+      "match_id": "3049771",
       "kline_type": "div_asia_crown",
       "window_minutes": 60,
       "bucket_time": "2026-08-05T02:00:00",
@@ -29740,7 +30873,7 @@
       "high": 0.22,
       "low": 0.1,
       "close": 0.1,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3049771",
@@ -29773,7 +30906,7 @@
       "high": 0.24,
       "low": 0.24,
       "close": 0.24,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3049771",
@@ -29806,7 +30939,7 @@
       "high": 0.275,
       "low": 0.215,
       "close": 0.215,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3049771",
@@ -29837,9 +30970,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0186,
       "high": 0.0186,
-      "low": 0.0182,
-      "close": 0.0182,
-      "volume": 38
+      "low": 0.0179,
+      "close": 0.018,
+      "volume": 76
     },
     {
       "match_id": "3049771",
@@ -29861,7 +30994,7 @@
       "high": 0.22,
       "low": 0.1,
       "close": 0.1,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3049771",
@@ -29883,7 +31016,7 @@
       "high": 0.24,
       "low": 0.24,
       "close": 0.24,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3049771",
@@ -29905,7 +31038,7 @@
       "high": 0.275,
       "low": 0.215,
       "close": 0.215,
-      "volume": 2
+      "volume": 4
     },
     {
       "match_id": "3049771",
@@ -29925,9 +31058,9 @@
       "bucket_time": "2026-08-05T04:00:00",
       "open": 0.0186,
       "high": 0.0186,
-      "low": 0.0182,
-      "close": 0.0182,
-      "volume": 38
+      "low": 0.0179,
+      "close": 0.018,
+      "volume": 76
     },
     {
       "match_id": "3049780",
@@ -31262,7 +32395,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31280,19 +32413,19 @@
       "match_id": "2916520",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.00015,
+        "trend_slope": 0.0,
         "trend": "flat",
-        "amplitude": 0.0067,
+        "amplitude": 0.0089,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 1,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0.0,
+        "tail_direction": 0,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.125,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0447,
-        "end_value": 0.045,
-        "net_change": 0.0003,
+        "end_value": 0.0447,
+        "net_change": 0.0,
         "tags": [
           "盘口坚定"
         ]
@@ -31310,7 +32443,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31328,19 +32461,19 @@
       "match_id": "2916534",
       "bookmaker": "market",
       "features": {
-        "trend_slope": -0.00065,
+        "trend_slope": -0.0006,
         "trend": "flat",
         "amplitude": 0.0564,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": -2,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0235,
-        "end_value": 0.0222,
-        "net_change": -0.0013,
+        "end_value": 0.0223,
+        "net_change": -0.0012,
         "tags": [
           "尾盘回落",
           "盘口坚定"
@@ -31474,7 +32607,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31498,7 +32631,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31522,7 +32655,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": -1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31540,19 +32673,19 @@
       "match_id": "2924615",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.00045,
-        "trend": "flat",
-        "amplitude": 0.0575,
+        "trend_slope": -0.001,
+        "trend": "down",
+        "amplitude": 0.1029,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0323,
-        "end_value": 0.0332,
-        "net_change": 0.0009,
+        "end_value": 0.0303,
+        "net_change": -0.002,
         "tags": [
           "盘口坚定"
         ]
@@ -31570,7 +32703,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31594,7 +32727,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31618,7 +32751,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31642,7 +32775,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31684,19 +32817,19 @@
       "match_id": "2942488",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": 0.0,
-        "trend": "flat",
-        "amplitude": 0.0,
+        "trend_slope": 0.06,
+        "trend": "up",
+        "amplitude": 0.75,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 0,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0,
+        "tail_direction": 1,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.12,
-        "end_value": 0.12,
-        "net_change": 0.0,
+        "end_value": 0.24,
+        "net_change": 0.12,
         "tags": [
           "盘口坚定"
         ]
@@ -31714,7 +32847,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31732,19 +32865,19 @@
       "match_id": "2942488",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": 0.03,
+        "trend_slope": 0.06,
         "trend": "up",
-        "amplitude": 1.2,
+        "amplitude": 1.7143,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.03,
-        "end_value": 0.09,
-        "net_change": 0.06,
+        "end_value": 0.15,
+        "net_change": 0.12,
         "tags": [
           "盘口坚定"
         ]
@@ -31756,20 +32889,21 @@
       "match_id": "2942488",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.0001,
+        "trend_slope": 5e-05,
         "trend": "flat",
         "amplitude": 0.0067,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0.0,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.5,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.03,
-        "end_value": 0.0302,
-        "net_change": 0.0002,
+        "end_value": 0.0301,
+        "net_change": 0.0001,
         "tags": [
+          "上影试探",
           "盘口坚定"
         ]
       },
@@ -31780,19 +32914,19 @@
       "match_id": "2942540",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": 0.0,
-        "trend": "flat",
-        "amplitude": 0.0,
+        "trend_slope": -0.01,
+        "trend": "down",
+        "amplitude": 1.5,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 0,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0,
+        "tail_direction": -1,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.02,
-        "end_value": 0.02,
-        "net_change": 0.0,
+        "end_value": 0.0,
+        "net_change": -0.02,
         "tags": [
           "盘口坚定"
         ]
@@ -31810,7 +32944,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31828,19 +32962,19 @@
       "match_id": "2942540",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": 0.03,
+        "trend_slope": 0.035,
         "trend": "up",
-        "amplitude": 1.2,
+        "amplitude": 1.3125,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.03,
-        "end_value": 0.09,
-        "net_change": 0.06,
+        "end_value": 0.1,
+        "net_change": 0.07,
         "tags": [
           "盘口坚定"
         ]
@@ -31852,21 +32986,20 @@
       "match_id": "2942540",
       "bookmaker": "market",
       "features": {
-        "trend_slope": -0.0009,
+        "trend_slope": 0.0001,
         "trend": "flat",
-        "amplitude": 0.0824,
+        "amplitude": 0.0889,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": -2,
-        "volume_trend": 3.0,
+        "tail_direction": 0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0227,
-        "end_value": 0.0209,
-        "net_change": -0.0018,
+        "end_value": 0.0229,
+        "net_change": 0.0002,
         "tags": [
-          "尾盘回落",
           "盘口坚定"
         ]
       },
@@ -31883,7 +33016,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": -1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31901,19 +33034,19 @@
       "match_id": "2943252",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.00075,
-        "trend": "flat",
-        "amplitude": 0.0909,
+        "trend_slope": 0.0034,
+        "trend": "up",
+        "amplitude": 0.3723,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.033,
+        "volume_trend": 4.1,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.016,
-        "end_value": 0.0175,
-        "net_change": 0.0015,
+        "end_value": 0.0228,
+        "net_change": 0.0068,
         "tags": [
           "盘口坚定"
         ]
@@ -31931,7 +33064,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": -1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31951,12 +33084,12 @@
       "features": {
         "trend_slope": 0.00045,
         "trend": "flat",
-        "amplitude": 0.0672,
+        "amplitude": 0.097,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.033,
-        "avg_upper_shadow": 0.0,
+        "volume_trend": 4.1,
+        "avg_upper_shadow": 0.308,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0131,
@@ -31979,7 +33112,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": -1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -31997,19 +33130,19 @@
       "match_id": "2943254",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.0023,
+        "trend_slope": 0.0024,
         "trend": "up",
-        "amplitude": 0.1708,
+        "amplitude": 0.1778,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.031,
+        "volume_trend": 4.094,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0254,
-        "end_value": 0.03,
-        "net_change": 0.0046,
+        "end_value": 0.0302,
+        "net_change": 0.0048,
         "tags": [
           "盘口坚定"
         ]
@@ -32027,7 +33160,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": -1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32045,19 +33178,19 @@
       "match_id": "2943255",
       "bookmaker": "market",
       "features": {
-        "trend_slope": -0.001,
+        "trend_slope": -0.00115,
         "trend": "down",
-        "amplitude": 0.1444,
+        "amplitude": 0.1652,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 1,
-        "volume_trend": 3.031,
-        "avg_upper_shadow": 0.0,
+        "tail_direction": -1,
+        "volume_trend": 4.094,
+        "avg_upper_shadow": 0.4,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0159,
-        "end_value": 0.0139,
-        "net_change": -0.002,
+        "end_value": 0.0136,
+        "net_change": -0.0023,
         "tags": [
           "盘口坚定"
         ]
@@ -32069,19 +33202,19 @@
       "match_id": "2943256",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": -0.005,
+        "trend_slope": -0.045,
         "trend": "down",
-        "amplitude": 0.0316,
+        "amplitude": 0.3103,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": -1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.32,
-        "end_value": 0.31,
-        "net_change": -0.01,
+        "end_value": 0.23,
+        "net_change": -0.09,
         "tags": [
           "盘口坚定"
         ]
@@ -32093,19 +33226,19 @@
       "match_id": "2943256",
       "bookmaker": "market",
       "features": {
-        "trend_slope": -0.00165,
+        "trend_slope": -0.00115,
         "trend": "down",
-        "amplitude": 0.1269,
+        "amplitude": 0.1861,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": -1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0271,
-        "end_value": 0.0238,
-        "net_change": -0.0033,
+        "end_value": 0.0248,
+        "net_change": -0.0023,
         "tags": [
           "盘口坚定"
         ]
@@ -32173,20 +33306,21 @@
       "match_id": "2944211",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": 0.02,
+        "trend_slope": 0.07,
         "trend": "up",
-        "amplitude": 0.2143,
+        "amplitude": 0.6364,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 1,
-        "volume_trend": 3.0,
+        "tail_direction": 2,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.16,
-        "end_value": 0.2,
-        "net_change": 0.04,
+        "end_value": 0.3,
+        "net_change": 0.14,
         "tags": [
+          "尾盘拉升",
           "盘口坚定"
         ]
       },
@@ -32203,7 +33337,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32221,20 +33355,21 @@
       "match_id": "2944211",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": 0.01,
+        "trend_slope": 0.035,
         "trend": "up",
-        "amplitude": 1.5,
+        "amplitude": 2.3333,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 1,
-        "volume_trend": 3.0,
+        "tail_direction": 2,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0,
-        "end_value": 0.02,
-        "net_change": 0.02,
+        "end_value": 0.07,
+        "net_change": 0.07,
         "tags": [
+          "尾盘拉升",
           "盘口坚定"
         ]
       },
@@ -32245,21 +33380,20 @@
       "match_id": "2944211",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.0057,
+        "trend_slope": 0.00275,
         "trend": "up",
-        "amplitude": 0.3909,
+        "amplitude": 0.4191,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 2,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0.0,
+        "tail_direction": 0,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.393,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0241,
-        "end_value": 0.0355,
-        "net_change": 0.0114,
+        "end_value": 0.0296,
+        "net_change": 0.0055,
         "tags": [
-          "尾盘拉升",
           "盘口坚定"
         ]
       },
@@ -32276,7 +33410,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32296,12 +33430,12 @@
       "features": {
         "trend_slope": -0.00755,
         "trend": "down",
-        "amplitude": 0.4613,
+        "amplitude": 0.4674,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0428,
@@ -32318,19 +33452,19 @@
       "match_id": "2961349",
       "bookmaker": "market",
       "features": {
-        "trend_slope": -0.0002,
+        "trend_slope": 0.0,
         "trend": "flat",
-        "amplitude": 0.041,
+        "amplitude": 0.0406,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": -1,
-        "volume_trend": 3.0,
+        "tail_direction": 0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0149,
-        "end_value": 0.0145,
-        "net_change": -0.0004,
+        "end_value": 0.0149,
+        "net_change": 0.0,
         "tags": [
           "盘口坚定"
         ]
@@ -32348,7 +33482,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32372,7 +33506,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32390,19 +33524,19 @@
       "match_id": "2962521",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": 0.005,
+        "trend_slope": 0.03,
         "trend": "up",
-        "amplitude": 0.038,
+        "amplitude": 0.2143,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.26,
-        "end_value": 0.27,
-        "net_change": 0.01,
+        "end_value": 0.32,
+        "net_change": 0.06,
         "tags": [
           "盘口坚定"
         ]
@@ -32420,7 +33554,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32438,19 +33572,19 @@
       "match_id": "2962521",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": 0.0,
-        "trend": "flat",
-        "amplitude": 0.0,
+        "trend_slope": 0.01,
+        "trend": "up",
+        "amplitude": 0.0736,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 0,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0,
+        "tail_direction": 1,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.265,
-        "end_value": 0.265,
-        "net_change": 0.0,
+        "end_value": 0.285,
+        "net_change": 0.02,
         "tags": [
           "盘口坚定"
         ]
@@ -32462,19 +33596,19 @@
       "match_id": "2962521",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.0011,
-        "trend": "up",
-        "amplitude": 0.1232,
+        "trend_slope": 5e-05,
+        "trend": "flat",
+        "amplitude": 0.127,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 2,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0.0,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.362,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0227,
-        "end_value": 0.0249,
-        "net_change": 0.0022,
+        "end_value": 0.0228,
+        "net_change": 0.0001,
         "tags": [
           "尾盘拉升",
           "盘口坚定"
@@ -32493,7 +33627,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32517,7 +33651,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32541,7 +33675,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32559,20 +33693,22 @@
       "match_id": "2962531",
       "bookmaker": "market",
       "features": {
-        "trend_slope": -0.00015,
-        "trend": "flat",
-        "amplitude": 0.0536,
+        "trend_slope": -0.00115,
+        "trend": "down",
+        "amplitude": 0.2513,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 0,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0.0,
+        "tail_direction": -2,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.43,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0267,
-        "end_value": 0.0264,
-        "net_change": -0.0003,
+        "end_value": 0.0244,
+        "net_change": -0.0023,
         "tags": [
+          "尾盘回落",
+          "上影试探",
           "盘口坚定"
         ]
       },
@@ -32685,7 +33821,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32733,7 +33869,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": -1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32757,7 +33893,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32781,7 +33917,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32799,19 +33935,19 @@
       "match_id": "2991121",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.00125,
+        "trend_slope": 0.0012,
         "trend": "up",
-        "amplitude": 0.1238,
+        "amplitude": 0.124,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0.0,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.059,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0191,
-        "end_value": 0.0216,
-        "net_change": 0.0025,
+        "end_value": 0.0215,
+        "net_change": 0.0024,
         "tags": [
           "盘口坚定"
         ]
@@ -32829,7 +33965,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32853,7 +33989,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32877,7 +34013,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32895,19 +34031,19 @@
       "match_id": "2991122",
       "bookmaker": "market",
       "features": {
-        "trend_slope": -0.0001,
+        "trend_slope": -0.0007,
         "trend": "flat",
-        "amplitude": 0.1154,
+        "amplitude": 0.1765,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.174,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0204,
-        "end_value": 0.0202,
-        "net_change": -0.0002,
+        "end_value": 0.019,
+        "net_change": -0.0014,
         "tags": [
           "盘口坚定"
         ]
@@ -32919,21 +34055,20 @@
       "match_id": "2991123",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": 0.045,
+        "trend_slope": 0.035,
         "trend": "up",
-        "amplitude": 0.4576,
+        "amplitude": 0.4737,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 2,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0.0,
+        "tail_direction": 0,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.25,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.14,
-        "end_value": 0.23,
-        "net_change": 0.09,
+        "end_value": 0.21,
+        "net_change": 0.07,
         "tags": [
-          "尾盘拉升",
           "盘口坚定"
         ]
       },
@@ -32950,7 +34085,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -32968,21 +34103,21 @@
       "match_id": "2991123",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": 0.015,
+        "trend_slope": 0.01,
         "trend": "up",
-        "amplitude": 1.125,
+        "amplitude": 1.2857,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 2,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0.0,
+        "tail_direction": 1,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.5,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.01,
-        "end_value": 0.04,
-        "net_change": 0.03,
+        "end_value": 0.03,
+        "net_change": 0.02,
         "tags": [
-          "尾盘拉升",
+          "上影试探",
           "盘口坚定"
         ]
       },
@@ -32993,19 +34128,19 @@
       "match_id": "2991123",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.00015,
+        "trend_slope": 0.0004,
         "trend": "flat",
-        "amplitude": 0.1367,
+        "amplitude": 0.1558,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0252,
-        "end_value": 0.0255,
-        "net_change": 0.0003,
+        "end_value": 0.026,
+        "net_change": 0.0008,
         "tags": [
           "盘口坚定"
         ]
@@ -33107,7 +34242,7 @@
         "convergence_ratio": 2.475,
         "pattern": "divergence",
         "tail_direction": 0,
-        "volume_trend": 0.917,
+        "volume_trend": 1.0,
         "avg_upper_shadow": 0.212,
         "handicap_changes": 0,
         "candle_count": 11,
@@ -33241,19 +34376,19 @@
       "match_id": "2991127",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": 0.005,
+        "trend_slope": 0.025,
         "trend": "up",
-        "amplitude": 0.0492,
+        "amplitude": 0.2308,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.2,
-        "end_value": 0.21,
-        "net_change": 0.01,
+        "end_value": 0.25,
+        "net_change": 0.05,
         "tags": [
           "盘口坚定"
         ]
@@ -33271,7 +34406,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -33289,19 +34424,19 @@
       "match_id": "2991127",
       "bookmaker": "crown",
       "features": {
-        "trend_slope": 0.005,
+        "trend_slope": 0.015,
         "trend": "up",
-        "amplitude": 0.0271,
+        "amplitude": 0.08,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.365,
-        "end_value": 0.375,
-        "net_change": 0.01,
+        "end_value": 0.395,
+        "net_change": 0.03,
         "tags": [
           "盘口坚定"
         ]
@@ -33319,7 +34454,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -33503,7 +34638,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -33521,20 +34656,21 @@
       "match_id": "3011782",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.00015,
+        "trend_slope": -0.0002,
         "trend": "flat",
-        "amplitude": 0.0265,
+        "amplitude": 0.0633,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 1,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0.0,
+        "tail_direction": -1,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.429,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0112,
-        "end_value": 0.0115,
-        "net_change": 0.0003,
+        "end_value": 0.0108,
+        "net_change": -0.0004,
         "tags": [
+          "上影试探",
           "盘口坚定"
         ]
       },
@@ -33752,7 +34888,7 @@
         "convergence_ratio": 2.608,
         "pattern": "divergence",
         "tail_direction": 0,
-        "volume_trend": 0.917,
+        "volume_trend": 1.0,
         "avg_upper_shadow": 0.065,
         "handicap_changes": 0,
         "candle_count": 11,
@@ -33780,7 +34916,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -33804,7 +34940,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -33828,7 +34964,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -33852,7 +34988,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": -1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -33876,7 +35012,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -33900,7 +35036,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34036,7 +35172,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34060,7 +35196,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34084,7 +35220,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34102,19 +35238,19 @@
       "match_id": "3013009",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.0033,
+        "trend_slope": 0.0028,
         "trend": "up",
-        "amplitude": 0.3616,
+        "amplitude": 0.3679,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 2,
-        "volume_trend": 3.0,
-        "avg_upper_shadow": 0.0,
+        "volume_trend": 4.0,
+        "avg_upper_shadow": 0.167,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0171,
-        "end_value": 0.0237,
-        "net_change": 0.0066,
+        "end_value": 0.0227,
+        "net_change": 0.0056,
         "tags": [
           "尾盘拉升",
           "盘口坚定"
@@ -34133,7 +35269,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34157,7 +35293,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34181,7 +35317,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34205,7 +35341,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34229,7 +35365,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34253,7 +35389,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34277,7 +35413,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34295,19 +35431,19 @@
       "match_id": "3013021",
       "bookmaker": "market",
       "features": {
-        "trend_slope": -0.0011,
-        "trend": "down",
-        "amplitude": 0.1054,
+        "trend_slope": -0.0007,
+        "trend": "flat",
+        "amplitude": 0.1041,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0217,
-        "end_value": 0.0195,
-        "net_change": -0.0022,
+        "end_value": 0.0203,
+        "net_change": -0.0014,
         "tags": [
           "盘口坚定"
         ]
@@ -34381,7 +35517,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34405,7 +35541,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34429,7 +35565,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34447,19 +35583,19 @@
       "match_id": "3013033",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.0001,
+        "trend_slope": -0.00065,
         "trend": "flat",
-        "amplitude": 0.0983,
+        "amplitude": 0.1009,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0191,
-        "end_value": 0.0193,
-        "net_change": 0.0002,
+        "end_value": 0.0178,
+        "net_change": -0.0013,
         "tags": [
           "盘口坚定"
         ]
@@ -34666,19 +35802,19 @@
       "match_id": "3027053",
       "bookmaker": "market",
       "features": {
-        "trend_slope": -0.00065,
+        "trend_slope": 0.00095,
         "trend": "flat",
-        "amplitude": 0.0306,
+        "amplitude": 0.0734,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": -1,
-        "volume_trend": 3.0,
+        "tail_direction": 0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0434,
-        "end_value": 0.0421,
-        "net_change": -0.0013,
+        "end_value": 0.0453,
+        "net_change": 0.0019,
         "tags": [
           "盘口坚定"
         ]
@@ -34833,7 +35969,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34857,7 +35993,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.143,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -34992,7 +36128,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -35066,20 +36202,21 @@
       "match_id": "3046347",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.0033,
+        "trend_slope": 0.00445,
         "trend": "up",
-        "amplitude": 1.05,
+        "amplitude": 1.0,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": 0,
-        "volume_trend": 3.0,
+        "tail_direction": 2,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.394,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.012,
-        "end_value": 0.0186,
-        "net_change": 0.0066,
+        "end_value": 0.0209,
+        "net_change": 0.0089,
         "tags": [
+          "尾盘拉升",
           "盘口坚定"
         ]
       },
@@ -35124,7 +36261,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -35148,7 +36285,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -35172,7 +36309,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 1,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -35190,21 +36327,20 @@
       "match_id": "3049759",
       "bookmaker": "market",
       "features": {
-        "trend_slope": -0.0061,
+        "trend_slope": -0.00425,
         "trend": "down",
-        "amplitude": 0.8316,
+        "amplitude": 0.7809,
         "convergence_ratio": 1.0,
         "pattern": "stable",
-        "tail_direction": -2,
-        "volume_trend": 3.0,
+        "tail_direction": 0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.026,
-        "end_value": 0.0138,
-        "net_change": -0.0122,
+        "end_value": 0.0175,
+        "net_change": -0.0085,
         "tags": [
-          "尾盘回落",
           "盘口坚定"
         ]
       },
@@ -35221,7 +36357,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": -2,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 1,
         "candle_count": 3,
@@ -35245,7 +36381,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -35269,7 +36405,7 @@
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
@@ -35287,19 +36423,19 @@
       "match_id": "3049771",
       "bookmaker": "market",
       "features": {
-        "trend_slope": 0.00175,
+        "trend_slope": 0.00165,
         "trend": "up",
-        "amplitude": 0.2378,
+        "amplitude": 0.2388,
         "convergence_ratio": 1.0,
         "pattern": "stable",
         "tail_direction": 0,
-        "volume_trend": 3.0,
+        "volume_trend": 4.0,
         "avg_upper_shadow": 0.0,
         "handicap_changes": 0,
         "candle_count": 3,
         "start_value": 0.0147,
-        "end_value": 0.0182,
-        "net_change": 0.0035,
+        "end_value": 0.018,
+        "net_change": 0.0033,
         "tags": [
           "盘口坚定"
         ]
