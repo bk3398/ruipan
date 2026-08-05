@@ -16,8 +16,18 @@ import json
 import sys
 import os
 import logging
+from datetime import datetime
 
 import asyncpg
+
+
+def _parse_dt(v):
+    """将ISO格式字符串转为datetime，asyncpg需要原生datetime对象"""
+    if v is None or isinstance(v, datetime):
+        return v
+    if isinstance(v, str):
+        return datetime.fromisoformat(v)
+    return v
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 logger = logging.getLogger(__name__)
@@ -40,7 +50,7 @@ async def import_klines(conn, data):
                 DO UPDATE SET open=$5, high=$6, low=$7, close=$8, volume=$9,
                               aggregated_at=NOW()
             """, r['match_id'], r['kline_type'], r['window_minutes'],
-                r['bucket_time'], r['open'], r['high'], r['low'],
+                _parse_dt(r['bucket_time']), r['open'], r['high'], r['low'],
                 r['close'], r.get('volume', 0))
             count += 1
         except Exception as e:
@@ -99,7 +109,7 @@ async def import_team_form(conn, data):
                     rolling_gd=$16, rolling_win_rate=$17,
                     attack_strength=$18, defense_strength=$19
             """, r['team_name'], r.get('league'), r.get('season'),
-                r['match_id'], r['match_date'], r['is_home'],
+                r['match_id'], _parse_dt(r.get('match_date')), r['is_home'],
                 r.get('opponent'), r['gf'], r['ga'], r['result'],
                 r['cumulative_points'], r['points_per_game'], r['form_ema'],
                 r['rolling_gf'], r['rolling_ga'], r['rolling_gd'],
