@@ -1647,16 +1647,28 @@ function switchTab(fid, tab, btn) {
 
 async function loadOddsData(fid) {
   try {
-    const [tlResp, anResp, fundResp, oqResp] = await Promise.all([
+    const [tlResp, anResp, oqResp] = await Promise.all([
       fetch(`/api/v1/matches/${fid}/odds-timeline`),
       fetch(`/api/v1/matches/${fid}/analysis`),
-      fetch(`/api/v1/matches/${fid}/fundamental`),
       fetch(`/api/v1/matches/${fid}/odds-quick`)
     ]);
     const tlData = await tlResp.json();
     const anData = await anResp.json();
-    const fundData = await fundResp.json();
     const oqData = await oqResp.json();
+
+    // fundamental: bypass fetch interceptor to get live API data (preloaded cache is placeholder)
+    let fundData;
+    try {
+      fundData = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `/api/v1/matches/${fid}/fundamental`, true);
+        xhr.onload = () => { try { resolve(JSON.parse(xhr.responseText)); } catch(e) { reject(e); } };
+        xhr.onerror = () => reject(new Error('xhr failed'));
+        xhr.send();
+      });
+    } catch(e) {
+      fundData = (await (await fetch(`/api/v1/matches/${fid}/fundamental`)).json());
+    }
 
     // Find the match to determine if it's live
     const match = matchData.find(m => m.fixture_id === fid);
@@ -2077,61 +2089,222 @@ function renderSignal(s) {
 }
 
 // ===================== FUNDAMENTAL TAB (V6) =====================
+// side: 'home' 正常从左到右；'away' 水平镜像（最新比赛贴近中间VS）
+function renderMiniTrendSVG(recentMatches, color, side) {
+  if (!recentMatches || recentMatches.length < 2) {
+    return '<div style="font-size:0.6rem;color:var(--text-muted);text-align:center;padding:8px 0;">暂无走势数据</div>';
+  }
+  // 主队：旧→新（左→右）；客队：新→旧（左→右），这样最新一场都在中间
+  const matches = side === 'away' ? [...recentMatches] : [...recentMatches].reverse();
+  const n = matches.length;
+  const W = 200, H = 52, padL = 6, padR = 6, padT = 8, padB = 16;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+  const pts = matches.map(m => m.result === 'W' ? 3 : (m.result === 'D' ? 1 : 0));
+  const smooth = [];
+  for (let i = 0; i < n; i++) {
+    const s = Math.max(0, i - 1);
+    const e = Math.min(n - 1, i + 1);
+    let sum = 0, cnt = 0;
+    for (let j = s; j <= e; j++) { sum += pts[j]; cnt++; }
+    smooth.push(sum / cnt);
+  }
+  const yMin = 0, yMax = 3;
+  const xStep = chartW / Math.max(1, n - 1);
+  const points = smooth.map((v, i) => {
+    const x = padL + i * xStep;
+    const y = padT + chartH - ((v - yMin) / (yMax - yMin)) * chartH;
+    return [x, y];
+  });
+  const pathD = points.map((p, i) => (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const areaD = pathD + ` L ${points[points.length-1][0].toFixed(1)},${(padT+chartH)} L ${points[0][0].toFixed(1)},${(padT+chartH)} Z`;
+  const gid = 'g-' + color.replace('#','') + '-' + side;
+  const dots = points.map((p, i) => {
+    const r = matches[i].result;
+    const c = r === 'W' ? '#00e676' : (r === 'D' ? '#ffd700' : '#ff5252');
+    return `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.8" fill="${c}" stroke="rgba(0,0,0,0.5)" stroke-width="0.6"/>`;
+  }).join('');
+  const labels = matches.map((m, i) => {
+    const x = padL + i * xStep;
+    const score = `${m.score_for}-${m.score_against}`;
+    const venue = m.is_home ? '' : '客';
+    return `<text x="${x.toFixed(1)}" y="${H-3}" text-anchor="middle" font-size="6.5" fill="var(--text-muted)" font-family="var(--font-mono)">${score}${venue?'<tspan fill="#666" font-size="5.5">'+venue+'</tspan>':''}</text>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="none" style="display:block;">
+    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${color}" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+    </linearGradient></defs>
+    <path d="${areaD}" fill="url(#${gid})"/>
+    <path d="${pathD}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}
+    ${labels}
+  </svg>`;
+}
+
 function renderFundamentalTab(fid, fundData, match) {
   const el = document.getElementById(`tab-fundamental-${fid}`);
   if (!el) return;
 
-  if (!fundData || fundData.error || !fundData.home_attack) {
+  if (!fundData || fundData.error) {
     el.innerHTML = `<div class="empty-state" style="padding:20px;"><span style="color:var(--text-muted);">暂无基本面数据</span></div>`;
     return;
   }
 
-  const homeName = match ? match.home_team : '主队';
-  const awayName = match ? match.away_team : '客队';
+  const isNewFormat = !!fundData.home_team_form || !!fundData.match_info;
+  const homeName = isNewFormat ? (fundData.match_info?.home_team || (match ? match.home_team : '主队')) : (match ? match.home_team : '主队');
+  const awayName = isNewFormat ? (fundData.match_info?.away_team || (match ? match.away_team : '客队')) : (match ? match.away_team : '客队');
 
-  let html = `<div class="fund-summary">
-    <div class="fund-team-card">
-      <div class="fund-team-name">${esc(homeName)}</div>
-      <div class="fund-stats">
-        <div class="fund-stat-item">
-          <div class="fund-stat-val attack">${fundData.home_attack.toFixed(2)}</div>
-          <div class="fund-stat-label">攻击力</div>
+  const homeForm = fundData.home_team_form || null;
+  const awayForm = fundData.away_team_form || null;
+  const homeRecent = homeForm?.recent_matches || [];
+  const awayRecent = awayForm?.recent_matches || [];
+  const homeSummary = homeForm?.summary || {};
+  const awaySummary = awayForm?.summary || {};
+
+  // 旧格式
+  const hasLegacy = fundData.home_attack !== undefined && fundData.home_attack !== 1.0;
+  const homeAttack = fundData.home_attack;
+  const awayAttack = fundData.away_attack;
+  const homeDefense = fundData.home_defense;
+  const awayDefense = fundData.away_defense;
+  const homeFormBadges = fundData.home_form || [];
+  const awayFormBadges = fundData.away_form || [];
+
+  const trendArrow = (t) => {
+    if (!t || t === 'stable') return { icon: '→', cls: 'var(--text-muted)' };
+    if (t === 'improving') return { icon: '▲', cls: '#00e676' };
+    if (t === 'declining') return { icon: '▼', cls: '#ff5252' };
+    return { icon: '•', cls: 'var(--text-muted)' };
+  };
+
+  const renderBadges = (matches, reverse) => {
+    if (!matches || matches.length === 0) return '<span style="color:var(--text-muted);font-size:0.7rem;">无数据</span>';
+    // 主队 badges 旧→新；客队新→旧（与走势图方向一致）
+    const list = reverse ? [...matches] : [...matches].reverse();
+    return list.slice(0, 6).map(m => `<span class="mini-badge ${m.result}" title="${m.date} ${m.is_home?'主':'客'} vs ${m.opponent} ${m.score_for}-${m.score_against}">${m.result}</span>`).join('');
+  };
+
+  // 构造一侧的统计块
+  const buildStatBlock = (summary, isHome) => {
+    if (hasLegacy) {
+      const atk = isHome ? homeAttack : awayAttack;
+      const def = isHome ? homeDefense : awayDefense;
+      return `<div style="display:flex;gap:10px;justify-content:center;">
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-mono);font-size:1.1rem;font-weight:700;color:var(--accent-green);">${atk.toFixed(2)}</div>
+          <div style="font-size:0.6rem;color:var(--text-muted);">攻击力</div>
         </div>
-        <div class="fund-stat-item">
-          <div class="fund-stat-val defense">${fundData.home_defense.toFixed(2)}</div>
-          <div class="fund-stat-label">防御力</div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-mono);font-size:1.1rem;font-weight:700;color:var(--accent-blue);">${def.toFixed(2)}</div>
+          <div style="font-size:0.6rem;color:var(--text-muted);">防御力</div>
         </div>
-      </div>
-      <div class="fund-form-row">
-        <span class="fund-form-label">近5场:</span>
-        <div class="fund-form-badges">
-          ${(fundData.home_form || []).map(c => `<span class="mini-badge ${c}">${c}</span>`).join('')}
-          ${(!fundData.home_form || fundData.home_form.length === 0) ? '<span style="color:var(--text-muted);font-size:0.7rem;">无数据</span>' : ''}
+      </div>`;
+    }
+    if (summary.wins !== undefined) {
+      const total = (summary.wins||0)+(summary.draws||0)+(summary.losses||0);
+      const winPct = total ? ((summary.wins/total)*100).toFixed(0) : '-';
+      return `<div style="display:flex;gap:10px;justify-content:center;">
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-mono);font-size:1.05rem;font-weight:700;color:var(--accent-green);">${summary.wins||0}<span style="font-size:0.55rem;color:var(--text-muted);">胜</span></div>
+          <div style="font-size:0.6rem;color:var(--text-muted);">${summary.wins||0}/${summary.draws||0}/${summary.losses||0}</div>
         </div>
-      </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-mono);font-size:1.05rem;font-weight:700;color:var(--accent-cyan);">${winPct}%</div>
+          <div style="font-size:0.6rem;color:var(--text-muted);">胜率</div>
+        </div>
+      </div>`;
+    }
+    return '';
+  };
+
+  const buildFormRow = (summary) => {
+    if (summary.goals_for_avg === undefined) return '';
+    return `<div style="display:flex;justify-content:space-between;font-size:0.62rem;padding:2px 4px;background:rgba(255,255,255,0.02);border-radius:3px;margin-top:4px;">
+      <span style="color:var(--text-muted);">进/失</span>
+      <span style="font-family:var(--font-mono);color:var(--text-secondary);">${(summary.goals_for_avg||0).toFixed(2)} / ${(summary.goals_against_avg||0).toFixed(2)}</span>
+    </div>`;
+  };
+
+  const hArrow = trendArrow(homeForm?.trend);
+  const aArrow = trendArrow(awayForm?.trend);
+  const homeN = Math.max(homeRecent.length, homeFormBadges.length);
+  const awayN = Math.max(awayRecent.length, awayFormBadges.length);
+
+  let html = `<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;margin-bottom:8px;">`;
+
+  // === 左侧：主队（左对齐） ===
+  html += `<div style="background:var(--bg-card);border:1px solid var(--border-primary);border-radius:8px 0 0 8px;padding:10px 12px;border-right:none;">
+    <div style="display:flex;align-items:center;gap:4px;margin-bottom:8px;">
+      <span style="font-size:0.82rem;font-weight:600;color:var(--text-primary);">${esc(homeName)}</span>
+      <span style="font-size:0.7rem;color:${hArrow.cls};">${hArrow.icon}</span>
     </div>
-    <div class="fund-team-card">
-      <div class="fund-team-name">${esc(awayName)}</div>
-      <div class="fund-stats">
-        <div class="fund-stat-item">
-          <div class="fund-stat-val attack">${fundData.away_attack.toFixed(2)}</div>
-          <div class="fund-stat-label">攻击力</div>
-        </div>
-        <div class="fund-stat-item">
-          <div class="fund-stat-val defense">${fundData.away_defense.toFixed(2)}</div>
-          <div class="fund-stat-label">防御力</div>
-        </div>
-      </div>
-      <div class="fund-form-row">
-        <span class="fund-form-label">近5场:</span>
-        <div class="fund-form-badges">
-          ${(fundData.away_form || []).map(c => `<span class="mini-badge ${c}">${c}</span>`).join('')}
-          ${(!fundData.away_form || fundData.away_form.length === 0) ? '<span style="color:var(--text-muted);font-size:0.7rem;">无数据</span>' : ''}
-        </div>
-      </div>
+    ${buildStatBlock(homeSummary, true)}
+    <div style="margin-top:8px;display:flex;align-items:center;gap:5px;">
+      <span style="font-size:0.62rem;color:var(--text-muted);white-space:nowrap;">近${homeN}场</span>
+      <div style="display:flex;gap:3px;">${homeRecent.length > 0 ? renderBadges(homeRecent, false) : homeFormBadges.map(c => `<span class="mini-badge ${c}">${c}</span>`).join('')}</div>
     </div>
-  </div>
-  <a class="detail-link" href="match-detail-${fid}.html" target="_blank">📊 详细分析 →</a>`;
+    ${buildFormRow(homeSummary)}
+    <div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.05);">
+      ${renderMiniTrendSVG(homeRecent, '#00e676', 'home')}
+    </div>
+  </div>`;
+
+  // === 中间：VS ===
+  html += `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 8px;min-width:32px;background:linear-gradient(180deg,rgba(255,215,0,0.08),rgba(255,215,0,0.02));border-top:1px solid var(--border-primary);border-bottom:1px solid var(--border-primary);">
+    <div style="font-size:0.95rem;font-weight:800;color:var(--accent-gold);font-family:var(--font-mono);letter-spacing:1px;text-shadow:0 0 8px rgba(255,215,0,0.4);">VS</div>
+  </div>`;
+
+  // === 右侧：客队（右对齐，镜像） ===
+  html += `<div style="background:var(--bg-card);border:1px solid var(--border-primary);border-radius:0 8px 8px 0;padding:10px 12px;border-left:none;text-align:right;">
+    <div style="display:flex;align-items:center;gap:4px;margin-bottom:8px;justify-content:flex-end;">
+      <span style="font-size:0.7rem;color:${aArrow.cls};">${aArrow.icon}</span>
+      <span style="font-size:0.82rem;font-weight:600;color:var(--text-primary);">${esc(awayName)}</span>
+    </div>
+    ${buildStatBlock(awaySummary, false)}
+    <div style="margin-top:8px;display:flex;align-items:center;gap:5px;justify-content:flex-end;">
+      <div style="display:flex;gap:3px;">${awayRecent.length > 0 ? renderBadges(awayRecent, true) : awayFormBadges.map(c => `<span class="mini-badge ${c}">${c}</span>`).join('')}</div>
+      <span style="font-size:0.62rem;color:var(--text-muted);white-space:nowrap;">近${awayN}场</span>
+    </div>
+    ${buildFormRow(awaySummary)}
+    <div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.05);">
+      ${renderMiniTrendSVG(awayRecent, '#448aff', 'away')}
+    </div>
+  </div>`;
+
+  html += `</div>`;
+
+  // H2H 历史交锋
+  const h2h = fundData.h2h;
+  if (h2h && h2h.summary && (h2h.summary.home_wins + h2h.summary.draws + h2h.summary.away_wins > 0)) {
+    const s = h2h.summary;
+    const total = s.home_wins + s.draws + s.away_wins;
+    const homePct = total ? (s.home_wins/total*100).toFixed(0) : 0;
+    const drawPct = total ? (s.draws/total*100).toFixed(0) : 0;
+    const awayPct = total ? (s.away_wins/total*100).toFixed(0) : 0;
+    html += `<div style="margin-top:8px;padding:8px 10px;background:rgba(255,255,255,0.02);border:1px solid var(--border-primary);border-radius:6px;">
+      <div style="font-size:0.6rem;color:var(--text-muted);margin-bottom:6px;text-align:center;">🤝 历史交锋（近${total}场）</div>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;">
+        <div style="text-align:right;">
+          <div style="font-family:var(--font-mono);font-size:1.1rem;font-weight:700;color:var(--accent-green);">${s.home_wins}</div>
+          <div style="font-size:0.55rem;color:var(--text-muted);">${homePct}%</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-mono);font-size:0.85rem;font-weight:700;color:var(--accent-gold);">${s.draws}</div>
+          <div style="font-size:0.55rem;color:var(--text-muted);">${drawPct}%</div>
+        </div>
+        <div style="text-align:left;">
+          <div style="font-family:var(--font-mono);font-size:1.1rem;font-weight:700;color:var(--accent-blue);">${s.away_wins}</div>
+          <div style="font-size:0.55rem;color:var(--text-muted);">${awayPct}%</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;font-size:0.58rem;color:var(--text-muted);margin-top:2px;">
+        <span style="text-align:right;">主胜</span>
+        <span style="text-align:center;">平</span>
+        <span>客胜</span>
+      </div>
+    </div>`;
+  }
 
   el.innerHTML = html;
 }
