@@ -1656,25 +1656,35 @@ async function loadOddsData(fid) {
     const anData = await anResp.json();
     const oqData = await oqResp.json();
 
-    // fundamental: bypass fetch interceptor to get live API data (preloaded cache is placeholder)
-    let fundData;
-    try {
-      fundData = await new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', `/api/v1/matches/${fid}/fundamental`, true);
-        xhr.onload = () => { try { resolve(JSON.parse(xhr.responseText)); } catch(e) { reject(e); } };
-        xhr.onerror = () => reject(new Error('xhr failed'));
-        xhr.send();
-      });
-    } catch(e) {
-      fundData = (await (await fetch(`/api/v1/matches/${fid}/fundamental`)).json());
-    }
-
     // Find the match to determine if it's live
     const match = matchData.find(m => m.fixture_id === fid);
+    // VPS PostgreSQL uses schedule_id (long ID from 500.com); page fixture_id is sandbox short ID.
+    // fundamental API must use the VPS match_id = schedule_id, otherwise it returns empty.
+    const vpsId = (match && match.schedule_id) ? match.schedule_id : fid;
     const isMatchLive = match && match.status === 'live';
     const hasStarted = match && (match.status === 'live' || match.status === 'finished');
     const isFinished = match && match.status === 'finished';
+
+    // fundamental: bypass fetch interceptor to get live API data (preloaded cache is placeholder).
+    // Also fall back to fid if vpsId returns nothing useful.
+    let fundData;
+    const tryFund = (id) => new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', `/api/v1/matches/${id}/fundamental`, true);
+      xhr.onload = () => { try { resolve(JSON.parse(xhr.responseText)); } catch(e) { reject(e); } };
+      xhr.onerror = () => reject(new Error('xhr failed'));
+      xhr.send();
+    });
+    try {
+      fundData = await tryFund(vpsId);
+      if (vpsId !== fid && (!fundData || (!fundData.home_team_form && !fundData.match_info))) {
+        // vpsId returned empty; try the short fid as fallback
+        try { fundData = await tryFund(fid); } catch(e2) { /* keep original */ }
+      }
+    } catch(e) {
+      try { fundData = await tryFund(fid); }
+      catch(e2) { fundData = (await (await fetch(`/api/v1/matches/${fid}/fundamental`)).json()); }
+    }
 
     renderAsianTable(fid, tlData, isMatchLive, hasStarted, isFinished);
     renderEuroTable(fid, tlData, isMatchLive, hasStarted, isFinished);
