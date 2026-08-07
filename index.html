@@ -1439,27 +1439,30 @@ function renderDate() {
 
 async function loadMatches() {
   try {
-    // Use the multi-day PRELOADED data
-    const json = PRELOADED[currentDate];
-    if (json && json.data) {
+    // Always fetch fresh data from API first; PRELOADED is offline fallback only
+    let data = null;
+    try {
+      const resp = await fetch('/api/v1/matches/today', {cache: 'no-store'});
+      data = await resp.json();
+    } catch(fetchErr) {
+      console.warn('API fetch failed, using PRELOADED fallback:', fetchErr);
+    }
+    if (data && data.status === 'ok' && data.data) {
+      matchData = data.data;
+      updateSummary(data.summary);
+      renderMatches();
+      updateRefreshVisibility();
+    } else if (PRELOADED[currentDate] && PRELOADED[currentDate].data) {
+      const json = PRELOADED[currentDate];
       matchData = json.data;
       updateSummary(json.summary);
       renderMatches();
       updateRefreshVisibility();
     } else {
-      // Fallback: try fetch
-      const resp = await fetch('/api/v1/matches/today');
-      const data = await resp.json();
-      if (data.status === 'ok' && data.data) {
-        matchData = data.data;
-        updateSummary(data.summary);
-        renderMatches();
-      } else {
-        matchData = [];
-        updateSummary({total:0, live:0, not_started:0, finished:0});
-        renderMatches();
-        updateRefreshVisibility();
-      }
+      matchData = [];
+      updateSummary({total:0, live:0, not_started:0, finished:0});
+      renderMatches();
+      updateRefreshVisibility();
     }
   } catch(e) {
     console.error('加载比赛数据失败:', e);
@@ -1667,6 +1670,7 @@ async function loadOddsData(fid) {
     renderAsianTable(fid, tlData, isMatchLive, hasStarted, isFinished);
     renderEuroTable(fid, tlData, isMatchLive, hasStarted, isFinished);
     renderAnalysisTab(fid, anData, isMatchLive, hasStarted);
+    _fundCache[fid] = fundData;
     renderFundamentalTab(fid, fundData, match);
     renderOddsQuickTab(fid, oqData, match);
   } catch(e) {
@@ -2077,63 +2081,231 @@ function renderSignal(s) {
 }
 
 // ===================== FUNDAMENTAL TAB (V6) =====================
+function renderSparkline(klineArr, color) {
+  if (!klineArr || klineArr.length < 2) return '';
+  const w = 120, h = 36, pad = 2;
+  const closes = klineArr.map(k => k.close != null ? k.close : 0);
+  const min = Math.min(...closes), max = Math.max(...closes);
+  const range = max - min || 1;
+  const step = (w - pad*2) / (closes.length - 1);
+  let path = '';
+  klineArr.forEach((k, i) => {
+    const x = pad + i * step;
+    const y = h - pad - ((k.close - min) / range) * (h - pad*2);
+    path += (i===0?'M':'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+  });
+  // candle wicks
+  let candles = '';
+  klineArr.forEach((k, i) => {
+    const x = pad + i * step;
+    const yH = h - pad - ((k.high - min) / range) * (h - pad*2);
+    const yL = h - pad - ((k.low - min) / range) * (h - pad*2);
+    const isUp = k.close >= k.open;
+    candles += `<line x1="${x.toFixed(1)}" y1="${yH.toFixed(1)}" x2="${x.toFixed(1)}" y2="${yL.toFixed(1)}" stroke="${isUp?'var(--accent-green)':'var(--accent-red)'}" stroke-width="1"/>`;
+  });
+  return `<svg width="${w}" height="${h}" style="display:block;margin-top:4px;"><path d="${path}" fill="none" stroke="${color}" stroke-width="1.5"/>${candles}</svg>`;
+}
+
+function renderFormBadges(teamForm) {
+  if (!teamForm || !teamForm.recent_matches || teamForm.recent_matches.length === 0) {
+    return '<span style="color:var(--text-muted);font-size:0.7rem;">无数据</span>';
+  }
+  return teamForm.recent_matches.slice(0, 5).map(m =>
+    `<span class="mini-badge ${m.result}" title="${esc(m.date)} ${m.is_home?'主':'客'} vs ${esc(m.opponent)} ${m.score_for}-${m.score_against}">${m.result}</span>`
+  ).join('');
+}
+
+function renderTeamCard(name, form, emaOverall, emaSide) {
+  const summary = (form && form.summary) || {};
+  const w = summary.wins || 0, d = summary.draws || 0, l = summary.losses || 0;
+  const gf = summary.goals_for_avg != null ? summary.goals_for_avg.toFixed(2) : '0.00';
+  const ga = summary.goals_against_avg != null ? summary.goals_against_avg.toFixed(2) : '0.00';
+  const pts = w*3 + d;
+  const trend = (form && form.trend) || 'stable';
+  const trendIcon = trend === 'up' ? '📈' : trend === 'down' ? '📉' : '➡️';
+
+  // EMA kline sparkline
+  const kline = (emaOverall && emaOverall.kline_pts) || [];
+  const sparkline = renderSparkline(kline, 'var(--accent-blue)');
+
+  // Side-specific (home/away) kline
+  const sideKline = (emaSide && emaSide.kline_pts) || [];
+  const sideSparkline = sideKline.length >= 2 ? renderSparkline(sideKline, 'var(--accent-gold)') : '';
+
+  return `<div class="fund-team-card">
+    <div class="fund-team-name">${esc(name)} ${trendIcon}</div>
+    <div class="fund-stats">
+      <div class="fund-stat-item">
+        <div class="fund-stat-val attack">${gf}</div>
+        <div class="fund-stat-label">场均进球</div>
+      </div>
+      <div class="fund-stat-item">
+        <div class="fund-stat-val defense">${ga}</div>
+        <div class="fund-stat-label">场均失球</div>
+      </div>
+      <div class="fund-stat-item">
+        <div class="fund-stat-val" style="color:var(--text-primary);">${pts}</div>
+        <div class="fund-stat-label">积分(W${w}D${d}L${l})</div>
+      </div>
+    </div>
+    <div class="fund-form-row">
+      <span class="fund-form-label">近${Math.min(w+d+l, 5)}场:</span>
+      <div class="fund-form-badges">${renderFormBadges(form)}</div>
+    </div>
+    ${sparkline ? `<div style="margin-top:6px;"><div style="font-size:0.6rem;color:var(--text-muted);">积分走势</div>${sparkline}</div>` : ''}
+    ${sideSparkline ? `<div style="margin-top:4px;"><div style="font-size:0.6rem;color:var(--text-muted);">主/客场走势</div>${sideSparkline}</div>` : ''}
+  </div>`;
+}
+
 function renderFundamentalTab(fid, fundData, match) {
   const el = document.getElementById(`tab-fundamental-${fid}`);
   if (!el) return;
 
-  if (!fundData || fundData.error || !fundData.home_attack) {
+  if (!fundData || fundData.error) {
     el.innerHTML = `<div class="empty-state" style="padding:20px;"><span style="color:var(--text-muted);">暂无基本面数据</span></div>`;
     return;
   }
 
-  const homeName = match ? match.home_team : '主队';
-  const awayName = match ? match.away_team : '客队';
+  const homeName = (fundData.match_info && fundData.match_info.home_team) || (match ? match.home_team : '主队');
+  const awayName = (fundData.match_info && fundData.match_info.away_team) || (match ? match.away_team : '客队');
+
+  const homeForm = fundData.home_team_form;
+  const awayForm = fundData.away_team_form;
+  const emaHome = (fundData.ema_data && fundData.ema_data.home) || {};
+  const emaAway = (fundData.ema_data && fundData.ema_data.away) || {};
+
+  const hasAnyData = homeForm || awayForm || (emaHome.overall && emaHome.overall.kline_pts && emaHome.overall.kline_pts.length)
+    || (emaAway.overall && emaAway.overall.kline_pts && emaAway.overall.kline_pts.length);
+
+  if (!hasAnyData) {
+    el.innerHTML = `<div class="empty-state" style="padding:20px;"><span style="color:var(--text-muted);">暂无基本面数据</span></div>`;
+    return;
+  }
+
+  // H2H summary
+  const h2hSummary = (fundData.h2h && fundData.h2h.summary) || {};
+  const h2hCount = (fundData.h2h && fundData.h2h.matches || []).length;
+
+  // League table (top 5 + highlight teams)
+  const table = fundData.league_table || [];
+  let tableHtml = '';
+  if (table.length > 0) {
+    const topTeams = table.slice(0, 8);
+    tableHtml = `<div style="margin-top:10px;">
+      <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:4px;">联赛积分榜</div>
+      <div style="font-size:0.65rem;max-height:180px;overflow-y:auto;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="color:var(--text-muted);border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:2px 4px;">#</th>
+            <th style="text-align:left;padding:2px 4px;">球队</th>
+            <th style="padding:2px 2px;">场</th>
+            <th style="padding:2px 2px;">胜</th>
+            <th style="padding:2px 2px;">平</th>
+            <th style="padding:2px 2px;">负</th>
+            <th style="padding:2px 2px;">净</th>
+            <th style="padding:2px 4px;">分</th>
+          </tr></thead>
+          <tbody>
+          ${topTeams.map(t => {
+            const isHome = t.team === homeName;
+            const isAway = t.team === awayName;
+            const bg = isHome ? 'background:rgba(0,230,118,0.1);' : isAway ? 'background:rgba(68,138,255,0.1);' : '';
+            return `<tr style="${bg}border-bottom:1px solid rgba(255,255,255,0.03);">
+              <td style="padding:2px 4px;">${t.position}</td>
+              <td style="padding:2px 4px;${isHome||isAway?'font-weight:600;':''}">${esc(t.team)}</td>
+              <td style="text-align:center;padding:2px 2px;">${t.played}</td>
+              <td style="text-align:center;padding:2px 2px;">${t.won}</td>
+              <td style="text-align:center;padding:2px 2px;">${t.drawn}</td>
+              <td style="text-align:center;padding:2px 2px;">${t.lost}</td>
+              <td style="text-align:center;padding:2px 2px;">${t.gd > 0 ? '+' : ''}${t.gd}</td>
+              <td style="text-align:center;padding:2px 4px;font-weight:600;">${t.points}</td>
+            </tr>`;
+          }).join('')}
+          ${table.length > 8 ? `<tr><td colspan="8" style="text-align:center;padding:4px;color:var(--text-muted);font-size:0.6rem;">... 共${table.length}队</td></tr>` : ''}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  }
 
   let html = `<div class="fund-summary">
-    <div class="fund-team-card">
-      <div class="fund-team-name">${esc(homeName)}</div>
-      <div class="fund-stats">
-        <div class="fund-stat-item">
-          <div class="fund-stat-val attack">${fundData.home_attack.toFixed(2)}</div>
-          <div class="fund-stat-label">攻击力</div>
-        </div>
-        <div class="fund-stat-item">
-          <div class="fund-stat-val defense">${fundData.home_defense.toFixed(2)}</div>
-          <div class="fund-stat-label">防御力</div>
-        </div>
-      </div>
-      <div class="fund-form-row">
-        <span class="fund-form-label">近5场:</span>
-        <div class="fund-form-badges">
-          ${(fundData.home_form || []).map(c => `<span class="mini-badge ${c}">${c}</span>`).join('')}
-          ${(!fundData.home_form || fundData.home_form.length === 0) ? '<span style="color:var(--text-muted);font-size:0.7rem;">无数据</span>' : ''}
-        </div>
-      </div>
-    </div>
-    <div class="fund-team-card">
-      <div class="fund-team-name">${esc(awayName)}</div>
-      <div class="fund-stats">
-        <div class="fund-stat-item">
-          <div class="fund-stat-val attack">${fundData.away_attack.toFixed(2)}</div>
-          <div class="fund-stat-label">攻击力</div>
-        </div>
-        <div class="fund-stat-item">
-          <div class="fund-stat-val defense">${fundData.away_defense.toFixed(2)}</div>
-          <div class="fund-stat-label">防御力</div>
-        </div>
-      </div>
-      <div class="fund-form-row">
-        <span class="fund-form-label">近5场:</span>
-        <div class="fund-form-badges">
-          ${(fundData.away_form || []).map(c => `<span class="mini-badge ${c}">${c}</span>`).join('')}
-          ${(!fundData.away_form || fundData.away_form.length === 0) ? '<span style="color:var(--text-muted);font-size:0.7rem;">无数据</span>' : ''}
-        </div>
-      </div>
-    </div>
+    ${renderTeamCard(homeName, homeForm, emaHome.overall, emaHome.side)}
+    ${renderTeamCard(awayName, awayForm, emaAway.overall, emaAway.side)}
   </div>
-  <a class="detail-link" href="match-detail-${fid}.html" target="_blank">📊 详细分析 →</a>`;
+  ${h2hCount > 0 ? `<div style="margin-top:8px;font-size:0.7rem;color:var(--text-muted);text-align:center;">历史交锋 ${h2hCount}场：主胜${h2hSummary.home_wins||0} 平${h2hSummary.draws||0} 客胜${h2hSummary.away_wins||0}</div>` : ''}
+  ${tableHtml}
+  <button class="detail-link" onclick="showFundDetail(${fid})" style="cursor:pointer;margin-top:10px;">📊 详细分析 →</button>
+  <div id="fund-detail-${fid}" style="display:none;"></div>`;
 
   el.innerHTML = html;
+}
+
+// Store fundamental data for detail modal
+const _fundCache = {};
+function showFundDetail(fid) {
+  const data = _fundCache[fid];
+  if (!data) { alert('数据加载中，请稍后'); return; }
+
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+  const homeForm = data.home_team_form || {};
+  const awayForm = data.away_team_form || {};
+  const h2h = data.h2h || {};
+  const table = data.league_table || [];
+  const mi = data.match_info || {};
+
+  function renderMatchList(matches, title) {
+    if (!matches || matches.length === 0) return `<div style="color:var(--text-muted);font-size:0.75rem;">无${title}数据</div>`;
+    return `<div style="margin-bottom:12px;">
+      <div style="font-size:0.8rem;font-weight:600;margin-bottom:6px;color:var(--accent-blue);">${title}</div>
+      ${matches.map(m => `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.75rem;">
+        <span>${m.date} ${m.is_home!=null?(m.is_home?'🏠':'✈️'):''} ${esc(m.opponent||m.home||'')}</span>
+        <span style="font-family:var(--font-mono);">${m.score_for!=null?m.score_for:m.score_h}-${m.score_against!=null?m.score_against:m.score_a}</span>
+        <span class="mini-badge ${m.result}">${m.result==='home_win'?'W':m.result==='away_win'?'L':m.result}</span>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  const fullTable = table.length > 0 ? `<div style="margin-bottom:12px;">
+    <div style="font-size:0.8rem;font-weight:600;margin-bottom:6px;color:var(--accent-blue);">完整积分榜 (${table.length}队)</div>
+    <div style="max-height:300px;overflow-y:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:0.7rem;">
+        <thead><tr style="color:var(--text-muted);position:sticky;top:0;background:#1a1a2e;">
+          <th style="text-align:left;padding:4px;">#</th><th style="text-align:left;padding:4px;">球队</th>
+          <th>场</th><th>胜</th><th>平</th><th>负</th><th>进</th><th>失</th><th>净</th><th>分</th>
+        </tr></thead>
+        <tbody>${table.map(t => {
+          const isH = t.team === mi.home_team, isA = t.team === mi.away_team;
+          return `<tr style="${isH?'background:rgba(0,230,118,0.1);':isA?'background:rgba(68,138,255,0.1);':''}">
+            <td style="padding:3px 4px;">${t.position}</td>
+            <td style="padding:3px 4px;">${esc(t.team)}</td>
+            <td style="text-align:center;">${t.played}</td><td style="text-align:center;">${t.won}</td>
+            <td style="text-align:center;">${t.drawn}</td><td style="text-align:center;">${t.lost}</td>
+            <td style="text-align:center;">${t.gf}</td><td style="text-align:center;">${t.ga}</td>
+            <td style="text-align:center;">${t.gd>0?'+':''}${t.gd}</td>
+            <td style="text-align:center;font-weight:600;">${t.points}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>
+  </div>` : '';
+
+  modal.innerHTML = `<div style="background:var(--bg-card,#1a1a2e);border-radius:12px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto;padding:20px;border:1px solid var(--border);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-size:1rem;font-weight:700;">${esc(mi.home_team||'')} vs ${esc(mi.away_team||'')}</div>
+      <button onclick="this.closest('div[style*=fixed]').remove()" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;">✕</button>
+    </div>
+    <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:12px;">${esc(mi.league||'')} · ${mi.match_time||''} · ${mi.status||''}</div>
+    ${renderMatchList(h2h.matches, '历史交锋')}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div>${renderMatchList(homeForm.recent_matches, esc(mi.home_team||'主队')+' 近期')}</div>
+      <div>${renderMatchList(awayForm.recent_matches, esc(mi.away_team||'客队')+' 近期')}</div>
+    </div>
+    ${fullTable}
+  </div>`;
+  document.body.appendChild(modal);
 }
 
 // ===================== POISSON ODDS TAB =====================
