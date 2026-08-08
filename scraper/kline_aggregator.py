@@ -261,6 +261,39 @@ def generate_variable_buckets(kickoff: datetime,
 #  OHLC聚合（变频率时间桶版）
 # ═══════════════════════════════════════════════════════════════════════
 
+def _percentile(sorted_vals: List[float], pct: float) -> float:
+    """线性插值百分位（sorted_vals必须已排序）。pct范围0~100。"""
+    if not sorted_vals:
+        return 0.0
+    if len(sorted_vals) == 1:
+        return sorted_vals[0]
+    k = (len(sorted_vals) - 1) * (pct / 100.0)
+    f = math.floor(k)
+    c = math.ceil(k)
+    if f == c:
+        return sorted_vals[int(k)]
+    return sorted_vals[f] + (sorted_vals[c] - sorted_vals[f]) * (k - f)
+
+
+def _robust_high_low(vals: List[float],
+                      open_v: float, close_v: float) -> Tuple[float, float]:
+    """分歧度K线的稳健high/low。
+
+    分歧度是计算值不是成交价，理论上应平滑迁移。raw max/min会被
+    单条快照的瞬时错位/异常拉长影线。策略：
+    - 样本<=5：用raw max/min（数据太少不裁剪）
+    - 样本>5：high取P92（截掉最高8%尖峰），low取P08（截掉最低8%），
+      同时必须包含open/close以保证实体始终在影线范围内。
+    """
+    if len(vals) <= 5:
+        return (max(max(vals), open_v, close_v),
+                min(min(vals), open_v, close_v))
+    sv = sorted(vals)
+    hi = max(_percentile(sv, 92), open_v, close_v)
+    lo = min(_percentile(sv, 8), open_v, close_v)
+    return hi, lo
+
+
 def aggregate_ohlc_var(snapshots: List[Dict],
                         buckets: List[Tuple[datetime, datetime, int]],
                         value_key: str = 'value') -> List[Dict]:
@@ -299,8 +332,7 @@ def aggregate_ohlc_var(snapshots: List[Dict],
         if vals:
             open_v = prev_close if prev_close is not None else vals[0]
             close_v = vals[-1]
-            high_v = max(max(vals), open_v, close_v)
-            low_v = min(min(vals), open_v, close_v)
+            high_v, low_v = _robust_high_low(vals, open_v, close_v)
         else:
             v = prev_close if prev_close is not None else 0.0
             open_v = close_v = high_v = low_v = v
@@ -352,8 +384,7 @@ def aggregate_ohlc(snapshots: List[Dict], window_minutes: int,
             if vals:
                 open_v = prev_close if prev_close is not None else vals[0]
                 close_v = vals[-1]
-                high_v = max(max(vals), open_v, close_v)
-                low_v = min(min(vals), open_v, close_v)
+                high_v, low_v = _robust_high_low(vals, open_v, close_v)
             else:
                 v = prev_close if prev_close is not None else 0.0
                 open_v = close_v = high_v = low_v = v
@@ -380,8 +411,7 @@ def aggregate_ohlc(snapshots: List[Dict], window_minutes: int,
         if vals:
             open_v = prev_close if prev_close is not None else vals[0]
             close_v = vals[-1]
-            high_v = max(max(vals), open_v, close_v)
-            low_v = min(min(vals), open_v, close_v)
+            high_v, low_v = _robust_high_low(vals, open_v, close_v)
         else:
             v = prev_close if prev_close is not None else 0.0
             open_v = close_v = high_v = low_v = v
