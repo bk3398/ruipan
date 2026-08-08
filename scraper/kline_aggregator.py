@@ -39,6 +39,9 @@ KLINE_WINDOWS = [30, 60, 120]
 PRE_MATCH_FINE_WINDOW = 10
 PRE_MATCH_FINE_HOURS = 2
 CROSS_ALIGN_MAX_GAP_MIN = 30
+# 欧赔多公司对齐：只允许向后看（last-known），且数据新鲜度容忍窗口（秒）
+# 超过此窗口的旧数据视为"该公司当时尚未更新"，不参与离散度计算，避免虚假分歧
+EURO_ALIGN_MAX_STALENESS_SEC = 180
 MIN_CANDLES_FOR_PATTERN = 3
 
 # 水位有效范围
@@ -73,7 +76,7 @@ def water_divergence(home_odds: float, away_odds: float) -> Optional[float]:
 
 
 def euro_dispersion(odds_list: List[Tuple[float, float, float]]) -> float:
-    """欧赔离散度 = 多家公司主胜赔率的变异系数(CV)"""
+    """欧赔离散度（已弃用，保留兼容）= 多家公司主胜赔率的变异系数(CV)"""
     valid = [o for o in odds_list if o and o[0] and EURO_MIN_VALID <= o[0] <= EURO_MAX_VALID]
     if len(valid) < 2:
         return 0.0
@@ -83,6 +86,82 @@ def euro_dispersion(odds_list: List[Tuple[float, float, float]]) -> float:
         return 0.0
     variance = sum((v - mean) ** 2 for v in vals) / len(vals)
     return round(math.sqrt(variance) / mean, 4)
+
+
+# 欧赔离散度优先级：皇冠 > 澳彩 > 易胜博
+EURO_FOCUS_PRIORITY = ['crown', 'macau', 'yibosheng']
+
+
+def euro_focus_deviation(
+    euro_by_bm: Dict[str, List[Dict]],
+) -> List[Dict]:
+    """计算"焦点机构 vs 市场平均"偏离度。
+
+    逻辑：
+    - 焦点机构优先级 crown > macau > yibosheng，一场比赛选定一个焦点后不变
+    - 对每个时间点，取焦点机构当时(last-known)的主胜赔率作为基准
+    - 同时取所有其它欧赔公司的主胜赔率，计算市场平均
+    - 偏离度 = (焦点赔率 - 市场平均) / 市场平均
+    - 至少需要2家其它公司才计算，否则视为单点无参考
+    - 只向后看(last-known)，避免使用未来值制造虚假分歧
+    """
+    # 选定本场焦点机构：取数据量最多的优先公司
+    focus_bm = None
+    focus_count = -1
+    for bm in EURO_FOCUS_PRIORITY:
+        snaps = euro_by_bm.get(bm, [])
+        if len(snaps) > focus_count:
+            focus_count = len(snaps)
+            focus_bm = bm
+    if focus_bm is None or focus_count == 0:
+        return []
+
+    focus_snaps = sorted(euro_by_bm[focus_bm], key=lambda s: s['time'])
+    focus_times = [s['time'] for s in focus_snaps]
+
+    # 其它公司数据
+    others = {bm: sorted(sl, key=lambda s: s['time'])
+              for bm, sl in euro_by_bm.items()
+              if bm != focus_bm and sl}
+    if len(others) < 2:
+        # 其它公司不足2家，市场平均不可信
+        return []
+
+    # 预建其它公司时间索引
+    other_indexed = {}
+    for bm, sl in others.items():
+        other_indexed[bm] = ([s['time'] for s in sl], sl)
+
+    result = []
+    for fs in focus_snaps:
+        fhw = fs.get('home_win')
+        if not fhw or not (EURO_MIN_VALID <= fhw <= EURO_MAX_VALID):
+            continue
+
+        other_vals = []
+        for bm, (times, sl) in other_indexed.items():
+            # bisect_right 只向后看
+            idx = bisect.bisect_right(times, fs['time'])
+            if idx == 0:
+                continue
+            closest = sl[idx - 1]
+            gap = (fs['time'] - closest['time']).total_seconds()
+            if gap > EURO_ALIGN_MAX_STALENESS_SEC:
+                continue
+            hw = closest.get('home_win')
+            if hw and EURO_MIN_VALID <= hw <= EURO_MAX_VALID:
+                other_vals.append(hw)
+
+        if len(other_vals) < 2:
+            continue
+
+        market_avg = sum(other_vals) / len(other_vals)
+        if market_avg == 0:
+            continue
+        deviation = round((fhw - market_avg) / market_avg, 4)
+        result.append({'time': fs['time'], 'value': deviation})
+
+    return result
 
 
 def cross_bookmaker_divergence(
@@ -338,7 +417,7 @@ def settle_handicap(home_score: int, away_score: int, handicap: float) -> str:
 # ═══════════════════════════════════════════════════════════════════════
 
 def _align_and_calc_cross(snaps1: List[Dict], snaps2: List[Dict]) -> List[Dict]:
-    """对齐两个机构快照并计算跨机构分歧度（bisect二分查找）"""
+    """对齐两个机构快照并计算跨机构分歧度（只向后看 last-known，不用未来值）"""
     result = []
     max_gap = CROSS_ALIGN_MAX_GAP_MIN * 60
 
@@ -349,30 +428,24 @@ def _align_and_calc_cross(snaps1: List[Dict], snaps2: List[Dict]) -> List[Dict]:
         if s1['home_odds'] is None:
             continue
 
-        idx = bisect.bisect_left(times2, s1['time'])
-        candidates = []
-        if idx < len(snaps2):
-            candidates.append(snaps2[idx])
-        if idx > 0:
-            candidates.append(snaps2[idx - 1])
+        # bisect_right 找 <= s1.time 的最近快照，绝不使用未来值
+        idx = bisect.bisect_right(times2, s1['time'])
+        if idx == 0:
+            continue
+        s2 = snaps2[idx - 1]
+        if s2['home_odds'] is None:
+            continue
 
-        best = None
-        best_gap = float('inf')
-        for s2 in candidates:
-            if s2['home_odds'] is None:
-                continue
-            gap = abs((s1['time'] - s2['time']).total_seconds())
-            if gap < best_gap:
-                best_gap = gap
-                best = s2
+        gap = (s1['time'] - s2['time']).total_seconds()
+        if gap > max_gap:
+            continue
 
-        if best and best_gap <= max_gap:
-            d = cross_bookmaker_divergence(
-                (s1['handicap'], s1['home_odds'], s1['away_odds']),
-                (best['handicap'], best['home_odds'], best['away_odds']),
-            )
-            if d is not None:
-                result.append({'time': s1['time'], 'value': d})
+        d = cross_bookmaker_divergence(
+            (s1['handicap'], s1['home_odds'], s1['away_odds']),
+            (s2['handicap'], s2['home_odds'], s2['away_odds']),
+        )
+        if d is not None:
+            result.append({'time': s1['time'], 'value': d})
     return result
 
 
@@ -500,38 +573,20 @@ def process_match(snaps: List[Dict], match_info: Dict = None) -> Dict:
                             'tags': classify_pattern(feats),
                         }
 
-        # 3. 欧赔离散度（bisect二分查找，避免O(n²)）
+        # 3. 欧赔偏离度（焦点机构 vs 市场平均，只向后看）
         if euro_w:
-            # 预建每个bookmaker的时间索引
-            euro_indexed = {}
-            for bm, bm_snaps in euro_w.items():
-                times = [s['time'] for s in bm_snaps]
-                euro_indexed[bm] = (times, bm_snaps)
-
-            all_times = sorted(set(
-                s['time'] for slist in euro_w.values() for s in slist
-            ))
-            disp_values = []
-            for t in all_times:
-                odds_at_t = []
-                for bm, (times, bm_snaps) in euro_indexed.items():
-                    idx = bisect.bisect_left(times, t)
-                    # 取最近的（idx或idx-1中gap更小的）
-                    candidates = []
-                    if idx < len(times):
-                        candidates.append(bm_snaps[idx])
-                    if idx > 0:
-                        candidates.append(bm_snaps[idx - 1])
-                    if not candidates:
-                        continue
-                    closest = min(candidates,
-                                  key=lambda s: abs((s['time'] - t).total_seconds()))
-                    if all(closest.get(k) for k in ['home_win', 'draw', 'away_win']):
-                        odds_at_t.append((closest['home_win'], closest['draw'],
-                                          closest['away_win']))
-                if len(odds_at_t) >= 2:
-                    d = euro_dispersion(odds_at_t)
-                    disp_values.append({'time': t, 'value': d})
+            # 一次性按全量数据算出对齐序列，再切窗口
+            disp_values_all = euro_focus_deviation(euro_w)
+            if disp_values_all and window != PRE_MATCH_FINE_WINDOW:
+                # 普通窗口：直接聚合
+                disp_values = disp_values_all
+            elif disp_values_all and window == PRE_MATCH_FINE_WINDOW and kickoff:
+                # 赛前细粒度窗口：只取赛前2小时数据
+                pre_start = kickoff - timedelta(hours=PRE_MATCH_FINE_HOURS)
+                disp_values = [d for d in disp_values_all
+                               if pre_start <= d['time'] <= kickoff]
+            else:
+                disp_values = []
 
             if disp_values:
                 candles = aggregate_ohlc(disp_values, window)

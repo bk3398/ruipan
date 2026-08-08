@@ -277,7 +277,8 @@ async def _upsert_euro(conn, sid: str, bk: str, h: float, d: float, a: float, ph
 
 async def write_odds_to_db(pool: asyncpg.Pool, sid: str,
                            asian_data: List[Dict], euro_data: List[Dict],
-                           write_closing: bool = False):
+                           write_closing: bool = False,
+                           crawl_batch: str = None):
     async with pool.acquire() as conn:
         if asian_data:
             for a in asian_data:
@@ -311,11 +312,11 @@ async def write_odds_to_db(pool: asyncpg.Pool, sid: str,
                         (match_id, bookmaker, market_type, odds_type,
                          handicap, home_odds, away_odds,
                          home_win, draw, away_win,
-                         snapshot_time, recorded_at)
-                    VALUES ($1,$2,'asia','live',$3,$4,$5,NULL,NULL,NULL,NOW(),NOW())
+                         snapshot_time, recorded_at, crawl_batch)
+                    VALUES ($1,$2,'asia','live',$3,$4,$5,NULL,NULL,NULL,NOW(),NOW(),$6)
                     ON CONFLICT (match_id, bookmaker, market_type, odds_type, snapshot_time)
                     DO NOTHING
-                """, sid, bk, a['live_handicap'], a['live_upper'], a['live_lower'])
+                """, sid, bk, a['live_handicap'], a['live_upper'], a['live_lower'], crawl_batch)
 
             for e in euro_data:
                 if e['company_id'] not in EURO_COMPANY_MAP:
@@ -326,11 +327,11 @@ async def write_odds_to_db(pool: asyncpg.Pool, sid: str,
                         (match_id, bookmaker, market_type, odds_type,
                          handicap, home_odds, away_odds,
                          home_win, draw, away_win,
-                         snapshot_time, recorded_at)
-                    VALUES ($1,$2,'euro','live',NULL,NULL,NULL,$3,$4,$5,NOW(),NOW())
+                         snapshot_time, recorded_at, crawl_batch)
+                    VALUES ($1,$2,'euro','live',NULL,NULL,NULL,$3,$4,$5,NOW(),NOW(),$6)
                     ON CONFLICT (match_id, bookmaker, market_type, odds_type, snapshot_time)
                     DO NOTHING
-                """, sid, bk, e['live_h'], e['live_d'], e['live_a'])
+                """, sid, bk, e['live_h'], e['live_d'], e['live_a'], crawl_batch)
         except Exception as _te:
             # timeline写入失败不影响赔率主流程
             logger.debug("timeline snapshot failed for %s: %s", sid, _te)
@@ -376,8 +377,10 @@ async def main():
     args = parser.parse_args()
 
     start = datetime.now()
+    # 本批次ID：同一次运行抓取的所有公司共用，便于后续对齐
+    batch_id = start.strftime('%Y%m%d%H%M%S')
     print(f"\n{'━'*50}")
-    print(f"  赔率抓取(并发{args.concurrency}) — {start.strftime('%H:%M:%S')}")
+    print(f"  赔率抓取(并发{args.concurrency}) — {start.strftime('%H:%M:%S')} batch={batch_id}")
     print(f"{'━'*50}")
 
     pool = await asyncpg.create_pool(DSN, min_size=2, max_size=5)
@@ -433,7 +436,7 @@ async def main():
 
                 if not args.dry_run:
                     write_closing = match['status'] in ('not_started', 'finished')
-                    await write_odds_to_db(pool, sid, asian_data, euro_data, write_closing)
+                    await write_odds_to_db(pool, sid, asian_data, euro_data, write_closing, crawl_batch=batch_id)
 
                 stats['processed'] += 1
 
