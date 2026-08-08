@@ -36,7 +36,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("odds_fetcher")
 
-CONCURRENCY = 8
+CONCURRENCY = 4
 REQUEST_TIMEOUT = 15
 PRE_MATCH_WINDOW_HOURS = 6  # 赛前6小时内开始抓赔率
 FINISHED_GRACE_HOURS = 2    # 完赛后2小时内仍抓（终盘修正）
