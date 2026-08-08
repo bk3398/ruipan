@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 """
-kline_aggregator.py — VPS端K线聚合引擎
+kline_aggregator.py — VPS端K线聚合引擎（变频率时间桶版）
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 直接从 odds_timeline 读取赔率快照，计算分歧度 → OHLC聚合 →
 形态特征提取 → 标签分类 → 写入 kline_cache / pattern_library。
+
+变频率时间桶（以开赛时间为锚点向前推导）：
+  Phase 1  初盘 ~ 比赛当天00:00   每180分钟
+  Phase 2  比赛当天00:00 ~ 赛前6h  每60分钟
+  Phase 3  赛前6h ~ 赛前1h        每30分钟
+  Phase 4  赛前1h ~ 开赛          每10分钟
+  约78~82根K线，越临近开赛越精细。
 
 数据流（全部在VPS本地闭环）：
   odds_fetcher → odds_timeline (append-only)
@@ -14,13 +21,14 @@ kline_aggregator.py — VPS端K线聚合引擎
 不含预测模型、回测参数、胜率计算。仅做数据聚合与模式标注。
 
 用法:
-  python3 kline_aggregator.py              # 增量聚合最近12小时
+  python3 kline_aggregator.py              # 增量聚合（有新数据的比赛全量重建其K线）
   python3 kline_aggregator.py --full       # 全量重建
-  python3 kline_aggregator.py --hours 24   # 指定时间窗口
+  python3 kline_aggregator.py --hours 24   # 指定增量时间窗口
 """
 
 import asyncio
 import bisect
+import json
 import math
 import logging
 from datetime import datetime, timedelta, timezone
@@ -35,12 +43,17 @@ logger = logging.getLogger(__name__)
 DSN = "postgresql://ruipan:Ruipan2026!@127.0.0.1:5432/ruipan"
 
 # ── 参数 ──────────────────────────────────────────────────────────────
-KLINE_WINDOWS = [30, 60, 120]
-PRE_MATCH_FINE_WINDOW = 10
-PRE_MATCH_FINE_HOURS = 2
+# 变频率时间桶宽度（分钟）
+BUCKET_WIDTH_FAR = 180      # 初盘 ~ 比赛当天
+BUCKET_WIDTH_MATCHDAY = 60  # 比赛当天 ~ 赛前6h
+BUCKET_WIDTH_NEAR = 30      # 赛前6h ~ 赛前1h
+BUCKET_WIDTH_FINE = 10      # 赛前1h ~ 开赛
+MAX_HISTORY_DAYS = 7        # 最多回溯7天
+
+# 增量模式：有新数据的比赛取全部快照重建（保证连续OHLC不断裂）
+INCREMENTAL_HOURS = 12
+
 CROSS_ALIGN_MAX_GAP_MIN = 30
-# 欧赔多公司对齐：只允许向后看（last-known），且数据新鲜度容忍窗口（秒）
-# 超过此窗口的旧数据视为"该公司当时尚未更新"，不参与离散度计算，避免虚假分歧
 EURO_ALIGN_MAX_STALENESS_SEC = 180
 MIN_CANDLES_FOR_PATTERN = 3
 
@@ -55,9 +68,8 @@ CONVERGENCE_THRESHOLD = 0.7
 DIVERGENCE_THRESHOLD = 1.4
 TREND_THRESHOLD = 0.001
 
-# EMA参数（球队状态用，本期暂不计算球队K线）
-EMA_SPAN = 5
-FORM_WINDOW = 10
+# 变量窗口标记（window_minutes=0 表示变频率时间桶）
+VAR_WINDOW_MARKER = 0
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -88,8 +100,7 @@ def euro_dispersion(odds_list: List[Tuple[float, float, float]]) -> float:
     return round(math.sqrt(variance) / mean, 4)
 
 
-# 欧赔偏离度焦点机构优先级：皇冠 > 澳彩 > 易胜博 > 数据丰满的欧洲老牌机构
-# 代码会自动从中选数据量最多的一家，缺失的自动跳过
+# 欧赔偏离度焦点机构优先级
 EURO_FOCUS_PRIORITY = ['crown', 'macau', 'yibosheng',
                        'bet365', 'pinnacle', 'ladbrokes', 'bwin', 'interwetten']
 
@@ -100,14 +111,13 @@ def euro_focus_deviation(
     """计算"焦点机构 vs 市场平均"偏离度。
 
     逻辑：
-    - 焦点机构优先级 crown > macau > yibosheng，一场比赛选定一个焦点后不变
+    - 焦点机构优先级 crown > macau > yibosheng > bet365 > pinnacle > ladbrokes > bwin > interwetten
     - 对每个时间点，取焦点机构当时(last-known)的主胜赔率作为基准
     - 同时取所有其它欧赔公司的主胜赔率，计算市场平均
     - 偏离度 = (焦点赔率 - 市场平均) / 市场平均
-    - 至少需要2家其它公司才计算，否则视为单点无参考
+    - 至少需要2家其它公司才计算
     - 只向后看(last-known)，避免使用未来值制造虚假分歧
     """
-    # 选定本场焦点机构：严格按优先级，选第一家有数据的
     focus_bm = None
     for bm in EURO_FOCUS_PRIORITY:
         if euro_by_bm.get(bm):
@@ -119,15 +129,12 @@ def euro_focus_deviation(
     focus_snaps = sorted(euro_by_bm[focus_bm], key=lambda s: s['time'])
     focus_times = [s['time'] for s in focus_snaps]
 
-    # 其它公司数据
     others = {bm: sorted(sl, key=lambda s: s['time'])
               for bm, sl in euro_by_bm.items()
               if bm != focus_bm and sl}
     if len(others) < 2:
-        # 其它公司不足2家，市场平均不可信
         return []
 
-    # 预建其它公司时间索引
     other_indexed = {}
     for bm, sl in others.items():
         other_indexed[bm] = ([s['time'] for s in sl], sl)
@@ -140,7 +147,6 @@ def euro_focus_deviation(
 
         other_vals = []
         for bm, (times, sl) in other_indexed.items():
-            # bisect_right 只向后看
             idx = bisect.bisect_right(times, fs['time'])
             if idx == 0:
                 continue
@@ -184,40 +190,138 @@ def cross_bookmaker_divergence(
 
 
 # ═══════════════════════════════════════════════════════════════════════
-#  OHLC聚合
+#  变频率时间桶生成
 # ═══════════════════════════════════════════════════════════════════════
 
-def _make_candle(bucket_time: datetime, values: List[float], volume: int,
-                 prev_close: float = None) -> Dict:
-    """生成单根K线。
-    股市连续K线规则：开盘价=上一根收盘价（首根取桶内首值），
-    high/low取桶内极值，收盘价=桶内末值。空桶用prev_close补十字星。
+def generate_variable_buckets(kickoff: datetime,
+                               earliest_time: datetime) -> List[Tuple[datetime, datetime, int]]:
+    """以开赛时间为锚点，向前生成变频率时间桶。
+
+    返回 [(bucket_start, bucket_end, width_minutes), ...] 按时间正序。
+
+    Phase 1 (180min): earliest_time ~ 比赛当天00:00（北京时间）
+    Phase 2 (60min):  比赛当天00:00 ~ kickoff - 6h
+    Phase 3 (30min):  kickoff - 6h ~ kickoff - 1h
+    Phase 4 (10min):  kickoff - 1h ~ kickoff
     """
-    if values:
-        open_v = prev_close if prev_close is not None else values[0]
-        close_v = values[-1]
-        high_v = max(values)
-        low_v = min(values)
-        # high/low 必须包含 open（跳空场景）
-        high_v = max(high_v, open_v, close_v)
-        low_v = min(low_v, open_v, close_v)
-    else:
-        # 空桶：十字星，延续前收
-        v = prev_close if prev_close is not None else 0.0
-        open_v = close_v = high_v = low_v = v
-    return {
-        'bucket_time': bucket_time,
-        'open': round(open_v, 4),
-        'high': round(high_v, 4),
-        'low': round(low_v, 4),
-        'close': round(close_v, 4),
-        'volume': volume,
-    }
+    buckets = []
+
+    # 比赛当天 00:00（kickoff已经是北京时间naive）
+    match_day = kickoff.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    # 各阶段边界
+    p4_start = kickoff - timedelta(hours=1)
+    p3_start = kickoff - timedelta(hours=6)
+    p2_start = match_day
+    p1_start = earliest_time
+
+    # ── Phase 1: 180min，对齐到 00:00/06:00/12:00/18:00 ──
+    if p1_start < p2_start:
+        day_start = p1_start.replace(hour=0, minute=0, second=0, microsecond=0)
+        hours_since_midnight = (p1_start - day_start).total_seconds() / 3600
+        first_bucket_hour = int(hours_since_midnight // 3) * 3
+        cur = day_start + timedelta(hours=first_bucket_hour)
+        while cur < p2_start:
+            nxt = min(cur + timedelta(hours=3), p2_start)
+            if nxt > cur:
+                buckets.append((cur, nxt, BUCKET_WIDTH_FAR))
+            cur = nxt
+
+    # ── Phase 2: 60min，对齐到整点 ──
+    if p2_start < p3_start:
+        cur = p2_start
+        while cur < p3_start:
+            nxt = min(cur + timedelta(hours=1), p3_start)
+            if nxt > cur:
+                buckets.append((cur, nxt, BUCKET_WIDTH_MATCHDAY))
+            cur = nxt
+
+    # ── Phase 3: 30min，对齐到 :00/:30 ──
+    if p3_start < p4_start:
+        cur = p3_start
+        while cur < p4_start:
+            nxt = min(cur + timedelta(minutes=30), p4_start)
+            if nxt > cur:
+                buckets.append((cur, nxt, BUCKET_WIDTH_NEAR))
+            cur = nxt
+
+    # ── Phase 4: 10min ──
+    if p4_start < kickoff:
+        cur = p4_start
+        while cur < kickoff:
+            nxt = min(cur + timedelta(minutes=10), kickoff)
+            if nxt > cur:
+                buckets.append((cur, nxt, BUCKET_WIDTH_FINE))
+            cur = nxt
+
+    return buckets
+
+
+# ═══════════════════════════════════════════════════════════════════════
+#  OHLC聚合（变频率时间桶版）
+# ═══════════════════════════════════════════════════════════════════════
+
+def aggregate_ohlc_var(snapshots: List[Dict],
+                        buckets: List[Tuple[datetime, datetime, int]],
+                        value_key: str = 'value') -> List[Dict]:
+    """将快照按预定义的变频率时间桶聚合成连续OHLC蜡烛。
+
+    股市连续K线规则：
+    - open = 上一根close（首根取桶内首值）
+    - close = 桶内末值
+    - high/low = 桶内极值（含open/close）
+    - 空桶 = 十字星（open=high=low=close=prev_close）
+    """
+    if not snapshots or not buckets:
+        return []
+
+    candles = []
+    prev_close = None
+    snap_idx = 0
+    n_snaps = len(snapshots)
+
+    for bucket_start, bucket_end, width in buckets:
+        vals = []
+        vol = 0
+
+        # 收集本桶内的快照（snap_idx 单调推进）
+        while snap_idx < n_snaps:
+            t = snapshots[snap_idx]['time']
+            if t >= bucket_end:
+                break
+            if t >= bucket_start:
+                v = snapshots[snap_idx].get(value_key)
+                if v is not None:
+                    vals.append(v)
+                vol += 1
+            snap_idx += 1
+
+        if vals:
+            open_v = prev_close if prev_close is not None else vals[0]
+            close_v = vals[-1]
+            high_v = max(max(vals), open_v, close_v)
+            low_v = min(min(vals), open_v, close_v)
+        else:
+            v = prev_close if prev_close is not None else 0.0
+            open_v = close_v = high_v = low_v = v
+
+        candles.append({
+            'bucket_time': bucket_start,
+            'open': round(open_v, 4),
+            'high': round(high_v, 4),
+            'low': round(low_v, 4),
+            'close': round(close_v, 4),
+            'volume': vol,
+            'bucket_width': width,
+        })
+        prev_close = close_v
+
+    return candles
 
 
 def aggregate_ohlc(snapshots: List[Dict], window_minutes: int,
                    value_key: str = 'value') -> List[Dict]:
-    """时间序列 → 连续OHLC蜡烛（股市标准：前收=后开，空桶补十字星）"""
+    """固定窗口聚合（保留作为无kickoff时的fallback）"""
     if not snapshots:
         return []
 
@@ -244,11 +348,25 @@ def aggregate_ohlc(snapshots: List[Dict], window_minutes: int,
         if hasattr(t, 'tzinfo') and t.tzinfo is not None:
             t = t.replace(tzinfo=None)
 
-        # 填充空桶（十字星延续前收），保证时间轴连续
         while t >= cur + wd:
-            candle = _make_candle(cur, vals, vol, prev_close)
-            candles.append(candle)
-            prev_close = candle['close']
+            if vals:
+                open_v = prev_close if prev_close is not None else vals[0]
+                close_v = vals[-1]
+                high_v = max(max(vals), open_v, close_v)
+                low_v = min(min(vals), open_v, close_v)
+            else:
+                v = prev_close if prev_close is not None else 0.0
+                open_v = close_v = high_v = low_v = v
+            candles.append({
+                'bucket_time': cur,
+                'open': round(open_v, 4),
+                'high': round(high_v, 4),
+                'low': round(low_v, 4),
+                'close': round(close_v, 4),
+                'volume': vol,
+                'bucket_width': window_minutes,
+            })
+            prev_close = close_v
             vals = []
             vol = 0
             cur += wd
@@ -259,8 +377,23 @@ def aggregate_ohlc(snapshots: List[Dict], window_minutes: int,
         vol += 1
 
     if vals or candles:
-        candle = _make_candle(cur, vals, vol, prev_close)
-        candles.append(candle)
+        if vals:
+            open_v = prev_close if prev_close is not None else vals[0]
+            close_v = vals[-1]
+            high_v = max(max(vals), open_v, close_v)
+            low_v = min(min(vals), open_v, close_v)
+        else:
+            v = prev_close if prev_close is not None else 0.0
+            open_v = close_v = high_v = low_v = v
+        candles.append({
+            'bucket_time': cur,
+            'open': round(open_v, 4),
+            'high': round(high_v, 4),
+            'low': round(low_v, 4),
+            'close': round(close_v, 4),
+            'volume': vol,
+            'bucket_width': window_minutes,
+        })
 
     return candles
 
@@ -279,19 +412,16 @@ def extract_pattern_features(candles: List[Dict],
     n = len(closes)
     mean_close = sum(closes) / n
 
-    # 线性回归斜率
     xm = (n - 1) / 2.0
     ym = mean_close
     num = sum((i - xm) * (c - ym) for i, c in enumerate(closes))
     den = sum((i - xm) ** 2 for i in range(n))
     slope = num / den if den > 0 else 0
 
-    # 振幅
     hi = max(c['high'] for c in candles)
     lo = min(c['low'] for c in candles)
     amp = (hi - lo) / ym if ym > 0 else 0
 
-    # 收敛/发散
     mid = n // 2
     first_half = closes[:mid]
     second_half = closes[mid:]
@@ -312,17 +442,14 @@ def extract_pattern_features(candles: List[Dict],
     else:
         pattern = 'stable'
 
-    # 尾部方向
     tail = candles[-3:]
     tail_dir = sum(1 for c in tail if c['close'] > c['open']) - \
                sum(1 for c in tail if c['close'] < c['open'])
 
-    # 量能趋势
     vf = sum(c.get('volume', 0) for c in candles[:mid]) / max(mid, 1)
     vs = sum(c.get('volume', 0) for c in candles[mid:]) / max(n - mid, 1)
     vol_trend = vs / vf if vf > 0 else 1.0
 
-    # 上影线
     shadows = []
     for c in candles:
         body = abs(c['close'] - c['open'])
@@ -417,18 +544,16 @@ def settle_handicap(home_score: int, away_score: int, handicap: float) -> str:
 # ═══════════════════════════════════════════════════════════════════════
 
 def _align_and_calc_cross(snaps1: List[Dict], snaps2: List[Dict]) -> List[Dict]:
-    """对齐两个机构快照并计算跨机构分歧度（只向后看 last-known，不用未来值）"""
+    """对齐两个机构快照并计算跨机构分歧度（只向后看 last-known）"""
     result = []
     max_gap = CROSS_ALIGN_MAX_GAP_MIN * 60
 
-    # 预建snaps2的时间索引
     times2 = [s['time'] for s in snaps2]
 
     for s1 in snaps1:
         if s1['home_odds'] is None:
             continue
 
-        # bisect_right 找 <= s1.time 的最近快照，绝不使用未来值
         idx = bisect.bisect_right(times2, s1['time'])
         if idx == 0:
             continue
@@ -454,10 +579,7 @@ def _align_and_calc_cross(snaps1: List[Dict], snaps2: List[Dict]) -> List[Dict]:
 # ═══════════════════════════════════════════════════════════════════════
 
 def process_match(snaps: List[Dict], match_info: Dict = None) -> Dict:
-    """
-    处理一场比赛的全部timeline快照。
-    返回 klines 和 patterns。
-    """
+    """处理一场比赛的全部timeline快照，使用变频率时间桶。"""
     match_id = snaps[0]['match_id'] if snaps else None
 
     asia = defaultdict(list)
@@ -467,7 +589,6 @@ def process_match(snaps: List[Dict], match_info: Dict = None) -> Dict:
         t = s.get('snapshot_time') or s.get('recorded_at')
         if isinstance(t, str):
             t = datetime.fromisoformat(t.replace('Z', '+00:00'))
-        # asyncpg 返回 aware UTC，统一转北京时间 naive，与 match_time 一致
         if hasattr(t, 'tzinfo') and t.tzinfo is not None:
             t = t.astimezone(timezone(timedelta(hours=8))).replace(tzinfo=None)
 
@@ -486,11 +607,13 @@ def process_match(snaps: List[Dict], match_info: Dict = None) -> Dict:
                 'away_win': s.get('away_win'),
             })
 
-    all_klines = {}
-    all_patterns = {}
+    # 各机构快照已按时间正序（DB查询保证），这里保险排序
+    for bm in asia:
+        asia[bm].sort(key=lambda x: x['time'])
+    for bm in euro:
+        euro[bm].sort(key=lambda x: x['time'])
 
-    # 开赛时间（用于赛前2小时细粒度窗口）
-    # match_time 存的是北京时间 naive；snapshot_time 已在上方统一转为北京时间 naive
+    # 开赛时间
     kickoff = None
     if match_info and match_info.get('match_time'):
         mt = match_info['match_time']
@@ -500,39 +623,32 @@ def process_match(snaps: List[Dict], match_info: Dict = None) -> Dict:
         elif isinstance(mt, datetime):
             kickoff = mt.replace(tzinfo=None) if mt.tzinfo else mt
 
-    # 切出赛前2小时快照子集
-    pre_snaps = None
+    all_klines = {}
+    all_patterns = {}
+
+    # 确定最早快照时间
+    all_times = []
+    for slist in asia.values():
+        all_times.extend(s['time'] for s in slist)
+    for slist in euro.values():
+        all_times.extend(s['time'] for s in slist)
+
+    if not all_times:
+        return {'match_id': match_id, 'klines': {}, 'patterns': {}}
+
+    earliest_snap = min(all_times)
+
     if kickoff is not None:
-        pre_start = kickoff - timedelta(hours=PRE_MATCH_FINE_HOURS)
-        pre_map_asia = defaultdict(list)
-        pre_map_euro = defaultdict(list)
-        for bm, slist in asia.items():
-            for s in slist:
-                if pre_start <= s['time'] <= kickoff:
-                    pre_map_asia[bm].append(s)
-        for bm, slist in euro.items():
-            for s in slist:
-                if pre_start <= s['time'] <= kickoff:
-                    pre_map_euro[bm].append(s)
-        if any(pre_map_asia.values()) or any(pre_map_euro.values()):
-            pre_snaps = (pre_map_asia, pre_map_euro)
+        # 变频率时间桶
+        earliest_time = min(earliest_snap, kickoff - timedelta(days=MAX_HISTORY_DAYS))
+        buckets = generate_variable_buckets(kickoff, earliest_time)
 
-    windows = list(KLINE_WINDOWS)
-    if pre_snaps is not None:
-        windows.append(PRE_MATCH_FINE_WINDOW)
-
-    for window in windows:
-        wkey = f'{window}min'
-        all_klines[wkey] = {}
-
-        if window == PRE_MATCH_FINE_WINDOW and pre_snaps is not None:
-            asia_w, euro_w = pre_snaps
-        else:
-            asia_w, euro_w = asia, euro
+        if not buckets:
+            return {'match_id': match_id, 'klines': {}, 'patterns': {}}
 
         # 1. 各机构亚盘水位分歧
         for bm in ['crown', 'macau']:
-            bm_snaps = asia_w.get(bm, [])
+            bm_snaps = asia.get(bm, [])
             values = []
             for s in bm_snaps:
                 d = water_divergence(s['home_odds'], s['away_odds'])
@@ -540,11 +656,11 @@ def process_match(snaps: List[Dict], match_info: Dict = None) -> Dict:
                     values.append({'time': s['time'], 'value': d})
 
             if values:
-                candles = aggregate_ohlc(values, window)
+                candles = aggregate_ohlc_var(values, buckets)
                 ktype = f'div_asia_{bm}'
-                all_klines[wkey][ktype] = candles
+                all_klines[ktype] = candles
 
-                if window == 60 and len(candles) >= MIN_CANDLES_FOR_PATTERN:
+                if len(candles) >= MIN_CANDLES_FOR_PATTERN:
                     hdp_set = set(s.get('handicap') for s in bm_snaps
                                   if s.get('handicap') is not None)
                     feats = extract_pattern_features(candles,
@@ -556,16 +672,16 @@ def process_match(snaps: List[Dict], match_info: Dict = None) -> Dict:
                         }
 
         # 2. 皇冠vs澳门跨机构分歧
-        crown = asia_w.get('crown', [])
-        macau = asia_w.get('macau', [])
+        crown = asia.get('crown', [])
+        macau = asia.get('macau', [])
         if crown and macau:
             cross = _align_and_calc_cross(crown, macau)
             if cross:
-                candles = aggregate_ohlc(cross, window)
+                candles = aggregate_ohlc_var(cross, buckets)
                 ktype = 'div_cross_crown_macau'
-                all_klines[wkey][ktype] = candles
+                all_klines[ktype] = candles
 
-                if window == 60 and len(candles) >= MIN_CANDLES_FOR_PATTERN:
+                if len(candles) >= MIN_CANDLES_FOR_PATTERN:
                     feats = extract_pattern_features(candles)
                     if feats:
                         all_patterns[ktype] = {
@@ -573,33 +689,39 @@ def process_match(snaps: List[Dict], match_info: Dict = None) -> Dict:
                             'tags': classify_pattern(feats),
                         }
 
-        # 3. 欧赔偏离度（焦点机构 vs 市场平均，只向后看）
-        if euro_w:
-            # 一次性按全量数据算出对齐序列，再切窗口
-            disp_values_all = euro_focus_deviation(euro_w)
-            if disp_values_all and window != PRE_MATCH_FINE_WINDOW:
-                # 普通窗口：直接聚合
-                disp_values = disp_values_all
-            elif disp_values_all and window == PRE_MATCH_FINE_WINDOW and kickoff:
-                # 赛前细粒度窗口：只取赛前2小时数据
-                pre_start = kickoff - timedelta(hours=PRE_MATCH_FINE_HOURS)
-                disp_values = [d for d in disp_values_all
-                               if pre_start <= d['time'] <= kickoff]
-            else:
-                disp_values = []
-
+        # 3. 欧赔偏离度（焦点机构 vs 市场平均）
+        if euro:
+            disp_values = euro_focus_deviation(euro)
             if disp_values:
-                candles = aggregate_ohlc(disp_values, window)
+                candles = aggregate_ohlc_var(disp_values, buckets)
                 ktype = 'euro_dispersion'
-                all_klines[wkey][ktype] = candles
+                all_klines[ktype] = candles
 
-                if window == 60 and len(candles) >= MIN_CANDLES_FOR_PATTERN:
+                if len(candles) >= MIN_CANDLES_FOR_PATTERN:
                     feats = extract_pattern_features(candles)
                     if feats:
                         all_patterns[ktype] = {
                             'features': feats,
                             'tags': classify_pattern(feats),
                         }
+    else:
+        # 无kickoff时fallback：60min固定窗口
+        logger.warning(f"Match {match_id} has no kickoff time, using 60min fallback")
+        for bm in ['crown', 'macau']:
+            bm_snaps = asia.get(bm, [])
+            values = []
+            for s in bm_snaps:
+                d = water_divergence(s['home_odds'], s['away_odds'])
+                if d is not None:
+                    values.append({'time': s['time'], 'value': d})
+            if values:
+                candles = aggregate_ohlc(values, 60)
+                all_klines[f'div_asia_{bm}'] = candles
+
+        if euro:
+            disp_values = euro_focus_deviation(euro)
+            if disp_values:
+                all_klines['euro_dispersion'] = aggregate_ohlc(disp_values, 60)
 
     return {
         'match_id': match_id,
@@ -654,16 +776,35 @@ async def fetch_timeline(conn, since: datetime,
     return by_match
 
 
-async def fetch_matches_info(conn, since: datetime) -> Dict[str, Dict]:
-    """读取比赛信息（开赛时间、比分、状态）"""
+async def fetch_recent_match_ids(conn, since: datetime) -> List[str]:
+    """查询有新快照的比赛ID列表"""
     rows = await conn.fetch("""
-        SELECT match_id, league, home_team, away_team,
-               home_score, away_score, match_time, status
-        FROM matches
-        WHERE match_time >= $1::timestamp - interval '6 hours'
-          AND match_time < (CURRENT_DATE + interval '2 day')::timestamp
-        ORDER BY match_time DESC
+        SELECT DISTINCT match_id
+        FROM odds_timeline
+        WHERE snapshot_time >= $1::timestamptz
     """, since)
+    return [r['match_id'] for r in rows]
+
+
+async def fetch_matches_info(conn, since: datetime,
+                              match_ids: List[str] = None) -> Dict[str, Dict]:
+    """读取比赛信息（开赛时间、比分、状态）"""
+    if match_ids:
+        rows = await conn.fetch("""
+            SELECT match_id, league, home_team, away_team,
+                   home_score, away_score, match_time, status
+            FROM matches
+            WHERE match_id = ANY($1::varchar[])
+        """, match_ids)
+    else:
+        rows = await conn.fetch("""
+            SELECT match_id, league, home_team, away_team,
+                   home_score, away_score, match_time, status
+            FROM matches
+            WHERE match_time >= $1::timestamp - interval '6 hours'
+              AND match_time < (CURRENT_DATE + interval '2 day')::timestamp
+            ORDER BY match_time DESC
+        """, since)
 
     return {
         r['match_id']: {
@@ -681,21 +822,22 @@ async def fetch_matches_info(conn, since: datetime) -> Dict[str, Dict]:
 
 
 async def write_klines(conn, kline_rows: List[Dict]):
-    """批量upsert K线缓存"""
+    """批量upsert K线缓存（含extra JSONB）"""
     count = 0
     for r in kline_rows:
         try:
+            extra_json = json.dumps(r.get('extra') or {})
             await conn.execute("""
                 INSERT INTO kline_cache
                     (match_id, kline_type, window_minutes, bucket_time,
-                     open, high, low, close, volume)
-                VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+                     open, high, low, close, volume, extra)
+                VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb)
                 ON CONFLICT (match_id, kline_type, window_minutes, bucket_time)
                 DO UPDATE SET open=$5, high=$6, low=$7, close=$8,
-                              volume=$9, aggregated_at=NOW()
+                              volume=$9, extra=$10::jsonb, aggregated_at=NOW()
             """, r['match_id'], r['kline_type'], r['window_minutes'],
                 r['bucket_time'], r['open'], r['high'], r['low'],
-                r['close'], r.get('volume', 0))
+                r['close'], r.get('volume', 0), extra_json)
             count += 1
         except Exception as e:
             logger.warning(f"kline write error: {e}")
@@ -704,7 +846,6 @@ async def write_klines(conn, kline_rows: List[Dict]):
 
 async def write_patterns(conn, pattern_rows: List[Dict]):
     """批量upsert形态特征"""
-    import json
     count = 0
     for r in pattern_rows:
         try:
@@ -733,7 +874,7 @@ async def write_patterns(conn, pattern_rows: List[Dict]):
 
 
 async def clear_stale_klines(conn, since: datetime):
-    """删除时间窗口内的旧K线（避免全量重跑时重复）"""
+    """删除时间窗口内的旧K线"""
     result = await conn.execute("""
         DELETE FROM kline_cache
         WHERE bucket_time >= $1::timestamptz
@@ -741,11 +882,17 @@ async def clear_stale_klines(conn, since: datetime):
     logger.info(f"Cleared stale klines: {result}")
 
 
+async def clear_all_klines(conn):
+    """全量重建时清空所有旧K线（包括旧版固定窗口数据）"""
+    result = await conn.execute("DELETE FROM kline_cache")
+    logger.info(f"Cleared ALL klines: {result}")
+
+
 # ═══════════════════════════════════════════════════════════════════════
 #  主流程
 # ═══════════════════════════════════════════════════════════════════════
 
-async def run(hours: int = 12, full: bool = False):
+async def run(hours: int = INCREMENTAL_HOURS, full: bool = False):
     conn = await asyncpg.connect(DSN)
     try:
         if full:
@@ -755,13 +902,36 @@ async def run(hours: int = 12, full: bool = False):
             since = datetime.utcnow() - timedelta(hours=hours)
             logger.info(f"Incremental aggregation since {since}")
 
-        # 1. 读取比赛信息
-        matches_info = await fetch_matches_info(conn, since)
-        logger.info(f"Matches in window: {len(matches_info)}")
+        if full:
+            # 全量模式：读取所有数据
+            matches_info = await fetch_matches_info(conn, since)
+            logger.info(f"Matches in window: {len(matches_info)}")
 
-        # 2. 读取timeline快照
-        by_match = await fetch_timeline(conn, since)
-        logger.info(f"Matches with timeline data: {len(by_match)}")
+            by_match = await fetch_timeline(conn, since)
+            logger.info(f"Matches with timeline data: {len(by_match)}")
+
+            if not by_match:
+                logger.info("No timeline data, exiting")
+                return
+
+            # 清空所有旧K线（包括旧版固定窗口10/30/60/120的数据）
+            await clear_all_klines(conn)
+        else:
+            # 增量模式：找出有新数据的比赛，然后取其全部快照重建
+            recent_ids = await fetch_recent_match_ids(conn, since)
+            logger.info(f"Matches with recent snapshots: {len(recent_ids)}")
+
+            if not recent_ids:
+                logger.info("No recent timeline data, exiting")
+                return
+
+            # 取这些比赛的全部快照（保证连续OHLC不断裂）
+            by_match = await fetch_timeline(conn, datetime(2026, 1, 1), recent_ids)
+            logger.info(f"Matches with timeline data: {len(by_match)}")
+
+            # 取这些比赛的信息
+            matches_info = await fetch_matches_info(conn, since, match_ids=recent_ids)
+
         total_snaps = sum(len(v) for v in by_match.values())
         logger.info(f"Total snapshots: {total_snaps}")
 
@@ -769,11 +939,7 @@ async def run(hours: int = 12, full: bool = False):
             logger.info("No timeline data, exiting")
             return
 
-        # 3. 全量重跑时清除旧K线
-        if full:
-            await clear_stale_klines(conn, since)
-
-        # 4. 逐场处理
+        # 逐场处理
         kline_rows = []
         pattern_rows = []
         matches_processed = 0
@@ -787,24 +953,23 @@ async def run(hours: int = 12, full: bool = False):
                 logger.info(f"  Processing... {matches_processed}/{len(by_match)} "
                             f"({len(kline_rows)} candles so far)")
 
-            # 收集K线行
-            for wkey, ktypes in result['klines'].items():
-                window = int(wkey.replace('min', ''))
-                for ktype, candles in ktypes.items():
-                    for c in candles:
-                        kline_rows.append({
-                            'match_id': match_id,
-                            'kline_type': ktype,
-                            'window_minutes': window,
-                            'bucket_time': c['bucket_time'],
-                            'open': c['open'],
-                            'high': c['high'],
-                            'low': c['low'],
-                            'close': c['close'],
-                            'volume': c.get('volume', 0),
-                        })
+            # 收集K线行（变频率窗口，window_minutes=0）
+            for ktype, candles in result['klines'].items():
+                for c in candles:
+                    kline_rows.append({
+                        'match_id': match_id,
+                        'kline_type': ktype,
+                        'window_minutes': VAR_WINDOW_MARKER,
+                        'bucket_time': c['bucket_time'],
+                        'open': c['open'],
+                        'high': c['high'],
+                        'low': c['low'],
+                        'close': c['close'],
+                        'volume': c.get('volume', 0),
+                        'extra': {'bw': c.get('bucket_width', 0)},
+                    })
 
-            # 收集形态行（完赛的标注赛果）
+            # 收集形态行
             for ktype, pdata in result['patterns'].items():
                 feats = pdata['features']
                 tags = pdata['tags']
@@ -824,7 +989,6 @@ async def run(hours: int = 12, full: bool = False):
                     row['away_score'] = as_
                     row['total_goals'] = hs + as_
 
-                    # 终盘盘口结算
                     final_hdp = None
                     for s in snaps:
                         if (s['bookmaker'] == 'crown'
@@ -841,7 +1005,7 @@ async def run(hours: int = 12, full: bool = False):
 
                 pattern_rows.append(row)
 
-        # 5. 写入数据库
+        # 写入数据库
         logger.info(f"Writing {len(kline_rows)} klines...")
         kc = await write_klines(conn, kline_rows)
         logger.info(f"  kline_cache: {kc} rows")
@@ -850,7 +1014,7 @@ async def run(hours: int = 12, full: bool = False):
         pc = await write_patterns(conn, pattern_rows)
         logger.info(f"  pattern_library: {pc} rows")
 
-        # 6. 统计
+        # 统计
         tag_dist = defaultdict(int)
         for p in pattern_rows:
             for tag in p['features'].get('tags', []):
@@ -871,7 +1035,7 @@ async def run(hours: int = 12, full: bool = False):
 
 def main():
     import sys
-    hours = 12
+    hours = INCREMENTAL_HOURS
     full = False
 
     if '--full' in sys.argv:
