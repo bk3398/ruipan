@@ -197,16 +197,26 @@ def parse_1x2d_euro(js: str) -> List[Dict]:
 # ── 异步抓取 ──────────────────────────────────────────────────────
 
 async def fetch_url(session: aiohttp.ClientSession, url: str, referer: str = None) -> Optional[str]:
+    if 'vip.titan007.com' in url:
+        ref = referer or 'https://vip.titan007.com/'
+    elif '1x2d.titan007.com' in url:
+        ref = referer or 'https://www.titan007.com/'
+    else:
+        ref = referer or 'https://www.titan007.com/'
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': '*/*',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        'Accept-Encoding': 'identity',
+        'Referer': ref,
+        'Connection': 'keep-alive',
     }
-    if referer:
-        headers['Referer'] = referer
     try:
         async with session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT)) as resp:
             if resp.status == 200:
                 return await resp.text(encoding='utf-8', errors='replace')
+            else:
+                logger.debug("fetch %s -> HTTP %s", url[:60], resp.status)
     except Exception as e:
         logger.debug("fetch %s failed: %s", url[:60], e)
     return None
@@ -357,11 +367,14 @@ async def main():
         total = len(targets)
 
         connector = aiohttp.TCPConnector(limit=args.concurrency * 2, ttl_dns_cache=300)
-        async with aiohttp.ClientSession(connector=connector) as session:
+        cookie_jar = aiohttp.CookieJar(unsafe=True)
+        async with aiohttp.ClientSession(connector=connector, cookie_jar=cookie_jar) as session:
 
             async def process_one(idx: int, match: Dict):
                 sid = match['match_id']
                 async with sem:
+                    # 小随机延迟，避免瞬时并发触发限速
+                    await asyncio.sleep(0.1 * (idx % 5))
                     asian_data, euro_data = await fetch_match_odds(session, sid)
 
                 if asian_data:
