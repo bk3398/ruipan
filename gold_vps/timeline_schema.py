@@ -239,13 +239,13 @@ async def export_timeline(dsn: str = DSN, since_hours: int = 24,
             ORDER BY match_id, recorded_at ASC
         """, since)
 
-        # 同时导出完赛比赛信息（供标注）
-        finished = await conn.fetch("""
+        # 导出近期所有比赛信息（供标注 + 供算法判断开赛时间）
+        matches_info = await conn.fetch("""
             SELECT match_id, league, home_team, away_team,
                    home_score, away_score, match_time, status
             FROM matches
-            WHERE status = 'finished'
-              AND match_time >= $1
+            WHERE match_time >= $1
+              AND match_time < CURRENT_DATE + interval '2 day'
             ORDER BY match_time DESC
         """, since - timedelta(hours=since_hours))
 
@@ -253,7 +253,7 @@ async def export_timeline(dsn: str = DSN, since_hours: int = 24,
             'exported_at': datetime.utcnow().isoformat(),
             'since': since.isoformat(),
             'timeline_count': len(rows),
-            'finished_count': len(finished),
+            'finished_count': len(matches_info),
             'timeline': [
                 {
                     'match_id': r['match_id'],
@@ -280,15 +280,16 @@ async def export_timeline(dsn: str = DSN, since_hours: int = 24,
                     'home_score': r['home_score'],
                     'away_score': r['away_score'],
                     'match_time': r['match_time'].isoformat() if r['match_time'] else None,
+                    'status': r['status'],
                 }
-                for r in finished
+                for r in matches_info
             ],
         }
 
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False)
 
-        logger.info(f"✅ Exported {len(rows)} timeline + {len(finished)} matches → {output_path}")
+        logger.info(f"✅ Exported {len(rows)} timeline + {len(matches_info)} matches → {output_path}")
     finally:
         await conn.close()
 

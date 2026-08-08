@@ -299,6 +299,42 @@ async def write_odds_to_db(pool: asyncpg.Pool, sid: str,
                 if write_closing:
                     await _upsert_euro(conn, sid, bk, e['live_h'], e['live_d'], e['live_a'], 'closing')
 
+        # ── append-only timeline快照（给K线管道用）──
+        # 只对live盘写快照；initial基本不变，closing是终盘快照
+        try:
+            for a in asian_data:
+                if a['company_id'] not in COMPANY_MAP:
+                    continue
+                bk = COMPANY_MAP[a['company_id']]
+                await conn.execute("""
+                    INSERT INTO odds_timeline
+                        (match_id, bookmaker, market_type, odds_type,
+                         handicap, home_odds, away_odds,
+                         home_win, draw, away_win,
+                         snapshot_time, recorded_at)
+                    VALUES ($1,$2,'asia','live',$3,$4,$5,NULL,NULL,NULL,NOW(),NOW())
+                    ON CONFLICT (match_id, bookmaker, market_type, odds_type, snapshot_time)
+                    DO NOTHING
+                """, sid, bk, a['live_handicap'], a['live_upper'], a['live_lower'])
+
+            for e in euro_data:
+                if e['company_id'] not in EURO_COMPANY_MAP:
+                    continue
+                bk = EURO_COMPANY_MAP[e['company_id']]
+                await conn.execute("""
+                    INSERT INTO odds_timeline
+                        (match_id, bookmaker, market_type, odds_type,
+                         handicap, home_odds, away_odds,
+                         home_win, draw, away_win,
+                         snapshot_time, recorded_at)
+                    VALUES ($1,$2,'euro','live',NULL,NULL,NULL,$3,$4,$5,NOW(),NOW())
+                    ON CONFLICT (match_id, bookmaker, market_type, odds_type, snapshot_time)
+                    DO NOTHING
+                """, sid, bk, e['live_h'], e['live_d'], e['live_a'])
+        except Exception as _te:
+            # timeline写入失败不影响赔率主流程
+            logger.debug("timeline snapshot failed for %s: %s", sid, _te)
+
 
 # ── 主流程 ────────────────────────────────────────────────────────
 
