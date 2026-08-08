@@ -108,20 +108,37 @@ def cross_bookmaker_divergence(
 #  OHLC聚合
 # ═══════════════════════════════════════════════════════════════════════
 
-def _make_candle(bucket_time: datetime, values: List[float], volume: int) -> Dict:
+def _make_candle(bucket_time: datetime, values: List[float], volume: int,
+                 prev_close: float = None) -> Dict:
+    """生成单根K线。
+    股市连续K线规则：开盘价=上一根收盘价（首根取桶内首值），
+    high/low取桶内极值，收盘价=桶内末值。空桶用prev_close补十字星。
+    """
+    if values:
+        open_v = prev_close if prev_close is not None else values[0]
+        close_v = values[-1]
+        high_v = max(values)
+        low_v = min(values)
+        # high/low 必须包含 open（跳空场景）
+        high_v = max(high_v, open_v, close_v)
+        low_v = min(low_v, open_v, close_v)
+    else:
+        # 空桶：十字星，延续前收
+        v = prev_close if prev_close is not None else 0.0
+        open_v = close_v = high_v = low_v = v
     return {
         'bucket_time': bucket_time,
-        'open': round(values[0], 4),
-        'high': round(max(values), 4),
-        'low': round(min(values), 4),
-        'close': round(values[-1], 4),
+        'open': round(open_v, 4),
+        'high': round(high_v, 4),
+        'low': round(low_v, 4),
+        'close': round(close_v, 4),
         'volume': volume,
     }
 
 
 def aggregate_ohlc(snapshots: List[Dict], window_minutes: int,
                    value_key: str = 'value') -> List[Dict]:
-    """时间序列 → OHLC蜡烛"""
+    """时间序列 → 连续OHLC蜡烛（股市标准：前收=后开，空桶补十字星）"""
     if not snapshots:
         return []
 
@@ -139,6 +156,7 @@ def aggregate_ohlc(snapshots: List[Dict], window_minutes: int,
     vals = []
     vol = 0
     cur = bucket
+    prev_close = None
 
     for snap in snapshots:
         t = snap['time']
@@ -147,9 +165,11 @@ def aggregate_ohlc(snapshots: List[Dict], window_minutes: int,
         if hasattr(t, 'tzinfo') and t.tzinfo is not None:
             t = t.replace(tzinfo=None)
 
+        # 填充空桶（十字星延续前收），保证时间轴连续
         while t >= cur + wd:
-            if vals:
-                candles.append(_make_candle(cur, vals, vol))
+            candle = _make_candle(cur, vals, vol, prev_close)
+            candles.append(candle)
+            prev_close = candle['close']
             vals = []
             vol = 0
             cur += wd
@@ -159,8 +179,9 @@ def aggregate_ohlc(snapshots: List[Dict], window_minutes: int,
             vals.append(v)
         vol += 1
 
-    if vals:
-        candles.append(_make_candle(cur, vals, vol))
+    if vals or candles:
+        candle = _make_candle(cur, vals, vol, prev_close)
+        candles.append(candle)
 
     return candles
 
