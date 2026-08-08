@@ -1595,6 +1595,84 @@ function switchTab(fid, tab, btn) {
   if (el) el.classList.add('active');
 }
 
+// ===================== POISSON MODEL (client-side) =====================
+function poissonPmf(k, lambda) {
+  if (lambda <= 0) return k === 0 ? 1 : 0;
+  let p = Math.exp(-lambda);
+  for (let i = 1; i <= k; i++) p *= lambda / i;
+  return p;
+}
+
+function calcPoissonFromOdds(h, d, a) {
+  if (!h || !d || !a || h < 1.01 || d < 1.01 || a < 1.01) return null;
+  // Implied probabilities (with margin removed)
+  const ph0 = 1 / h, pd0 = 1 / d, pa0 = 1 / a;
+  const s = ph0 + pd0 + pa0;
+  const ph = ph0 / s, pd = pd0 / s, pa = pa0 / s;
+
+  // Grid search for lambda_h, lambda_a matching the 1X2 probabilities
+  let bestLh = 1.3, bestLa = 1.1, bestErr = 1e9;
+  for (let lh = 0.1; lh <= 4.5; lh += 0.02) {
+    for (let la = 0.1; la <= 4.5; la += 0.02) {
+      let ch = 0, cd = 0, ca = 0;
+      for (let i = 0; i <= 8; i++) {
+        const pi = poissonPmf(i, lh);
+        for (let j = 0; j <= 8; j++) {
+          const p = pi * poissonPmf(j, la);
+          if (i > j) ch += p;
+          else if (i === j) cd += p;
+          else ca += p;
+        }
+      }
+      const err = (ch - ph) ** 2 + (cd - pd) ** 2 + (ca - pa) ** 2;
+      if (err < bestErr) { bestErr = err; bestLh = lh; bestLa = la; }
+    }
+  }
+
+  const lh = bestLh, la = bestLa;
+  // Build score grids
+  const homeScores = [], drawScores = [], awayScores = [];
+  for (let i = 0; i <= 7; i++) {
+    for (let j = 0; j <= 7; j++) {
+      const p = poissonPmf(i, lh) * poissonPmf(j, la);
+      if (p < 0.005) continue;
+      if (i > j) homeScores.push([[i, j], p]);
+      else if (i === j) drawScores.push([[i, j], p]);
+      else awayScores.push([[i, j], p]);
+    }
+  }
+  homeScores.sort((a, b) => b[1] - a[1]);
+  drawScores.sort((a, b) => b[1] - a[1]);
+  awayScores.sort((a, b) => b[1] - a[1]);
+
+  // Top 12 + other
+  const topN = (arr) => {
+    const top = arr.slice(0, 12);
+    const otherP = arr.slice(12).reduce((s, x) => s + x[1], 0);
+    if (otherP > 0.001) top.push(['other', otherP]);
+    return top;
+  };
+
+  // Total goals distribution
+  const totalDist = {};
+  for (let i = 0; i <= 8; i++) {
+    for (let j = 0; j <= 8; j++) {
+      const t = i + j;
+      totalDist[t] = (totalDist[t] || 0) + poissonPmf(i, lh) * poissonPmf(j, la);
+    }
+  }
+
+  return {
+    p1x2: [ph, pd, pa],
+    lambda_h: lh.toFixed(2),
+    lambda_a: la.toFixed(2),
+    home_scores: topN(homeScores),
+    draw_scores: topN(drawScores),
+    away_scores: topN(awayScores),
+    total_dist: totalDist
+  };
+}
+
 async function loadOddsData(fid) {
   try {
     const [tlResp, anResp, fundResp, oqResp] = await Promise.all([
@@ -1608,11 +1686,43 @@ async function loadOddsData(fid) {
     const fundData = await fundResp.json();
     const oqData = await oqResp.json();
 
+    // Compute poisson client-side if backend didn't return it
+    if (!oqData.poisson && tlData.data && tlData.data.euro) {
+      const euro = tlData.data.euro;
+      // Collect initial odds from crown/macau/williamhill (fallback to any available)
+      const initOdds = [];
+      for (const bk of ['crown', 'macau', 'williamhill', 'pinnacle', 'sbobet']) {
+        if (euro[bk] && euro[bk].initial) {
+          const ini = euro[bk].initial;
+          if (ini.home_win && ini.draw && ini.away_win) {
+            initOdds.push({h: ini.home_win, d: ini.draw, a: ini.away_win});
+          }
+        }
+      }
+      // If no initial odds, try average odds from odds-quick
+      if (initOdds.length === 0 && oqData.avg_odds) {
+        const ao = oqData.avg_odds;
+        if (ao.h && ao.d && ao.a) initOdds.push({h: ao.h, d: ao.d, a: ao.a});
+      }
+      if (initOdds.length > 0) {
+        const avgH = initOdds.reduce((s, o) => s + o.h, 0) / initOdds.length;
+        const avgD = initOdds.reduce((s, o) => s + o.d, 0) / initOdds.length;
+        const avgA = initOdds.reduce((s, o) => s + o.a, 0) / initOdds.length;
+        oqData.poisson = calcPoissonFromOdds(avgH, avgD, avgA);
+      }
+    }
+
     // Find the match to determine if it's live
     const match = matchData.find(m => m.fixture_id === fid);
-    const isMatchLive = match && match.status === 'live';
-    const hasStarted = match && (match.status === 'live' || match.status === 'finished');
+    let isMatchLive = match && match.status === 'live';
+    let hasStarted = match && (match.status === 'live' || match.status === 'finished');
     const isFinished = match && match.status === 'finished';
+    // Time-based fallback: if match time is >2 hours ago, treat as hasStarted
+    if (!hasStarted && match && match.match_time) {
+      const mt = new Date(match.match_time.replace(' ', 'T') + '+08:00');
+      const now = new Date();
+      if ((now - mt) > 2 * 60 * 60 * 1000) { hasStarted = true; }
+    }
 
     renderAsianTable(fid, tlData, isMatchLive, hasStarted, isFinished);
     renderEuroTable(fid, tlData, isMatchLive, hasStarted, isFinished);
@@ -1802,8 +1912,11 @@ function divgBinV3(d){
 }
 
 function calcUpperDivg(phase){
-  if(!phase||!phase.own_euro_odds||phase.handicap==null)return null;
-  if(phase.own_euro_odds<1.0)return null;
+  if(!phase||phase.handicap==null)return null;
+  // Prefer API-provided divg (backend-calculated, consistent with lookup table)
+  if(phase.divg!=null) return phase.divg;
+  // Fallback: calculate from euro odds
+  if(!phase.own_euro_odds||phase.own_euro_odds<1.0)return null;
   const upper=phase.actual_upper_odds;
   if(upper==null||upper<=0)return null;
   const coeff=getCoeff(phase.handicap);
