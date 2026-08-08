@@ -182,18 +182,20 @@ function drawKline(fid) {
   const chartW = W - padL - padR;
   const chartH = H - padT - padB;
 
-  // 计算Y范围
-  let minV=Infinity, maxV=-Infinity;
-  candles.forEach(c => {
-    minV = Math.min(minV, c.low);
-    maxV = Math.max(maxV, c.high);
-  });
+  // 计算Y范围（百分位法剔除离群值，避免极端值压扁主体K线）
+  const highs = candles.map(c=>c.high).sort((a,b)=>a-b);
+  const lows = candles.map(c=>c.low).sort((a,b)=>a-b);
+  const p95 = highs[Math.floor(highs.length*0.95)] || highs[highs.length-1];
+  const p5 = lows[Math.floor(lows.length*0.05)] || lows[0];
+  let minV = p5, maxV = p95;
   const range = maxV - minV || 0.01;
-  const yPad = range * 0.1;
+  const yPad = range * 0.15;
   minV -= yPad; maxV += yPad;
   const yRange = maxV - minV;
+  // 记录被裁剪的离群值
+  const outliers = candles.filter(c => c.high > maxV || c.low < minV);
 
-  const yOf = v => padT + chartH - ((v - minV) / yRange) * chartH;
+  const yOf = v => padT + chartH - Math.max(0,Math.min(1,((v - minV) / yRange))) * chartH;
   const candleW = Math.max(2, Math.min(12, chartW / candles.length * 0.6));
   const step = chartW / candles.length;
 
@@ -232,6 +234,34 @@ function drawKline(fid) {
     ctx.fillRect(x-candleW/2, top, candleW, h);
   });
 
+  // 离群值箭头标注
+  outliers.forEach((c,i) => {
+    const x = padL + step*candles.indexOf(c) + step/2;
+    if (c.high > maxV) {
+      // 上方箭头
+      const yTop = padT;
+      ctx.fillStyle = '#ff9800';
+      ctx.beginPath();
+      ctx.moveTo(x, yTop);
+      ctx.lineTo(x-4, yTop+7);
+      ctx.lineTo(x+4, yTop+7);
+      ctx.closePath();
+      ctx.fill();
+      ctx.font='8px monospace';ctx.textAlign='center';
+      ctx.fillText(c.high.toFixed(3), x, yTop-2);
+    }
+    if (c.low < minV) {
+      const yBot = padT + chartH;
+      ctx.fillStyle = '#ff9800';
+      ctx.beginPath();
+      ctx.moveTo(x, yBot);
+      ctx.lineTo(x-4, yBot-7);
+      ctx.lineTo(x+4, yBot-7);
+      ctx.closePath();
+      ctx.fill();
+    }
+  });
+
   // X轴时间标签（最多6个）
   ctx.fillStyle='#5a6a7a';ctx.font='8px monospace';ctx.textAlign='center';
   const labelStep=Math.max(1,Math.floor(candles.length/6));
@@ -254,12 +284,13 @@ function renderKlineLegend(fid, st) {
   if (!legendEl) return;
   const patterns = (st.data.patterns && st.data.patterns[st.currentType]) || [];
   const tagColors = st.data.tag_colors || {};
-  const ktypeInfo = st.data.kline_types && st.data.kline_types[st.currentType];
-  const count = ktypeInfo ? ktypeInfo.candle_count : 0;
+  // 当前窗口蜡烛数
+  const allCandles = st.data.candles[st.currentType] || [];
+  const winCount = allCandles.filter(c => c.window_minutes === st.currentWin).length;
 
   let html = `<span><span class="dot" style="background:#26a69a"></span>分歧收窄</span>
     <span><span class="dot" style="background:#ef5350"></span>分歧扩大</span>
-    <span style="color:var(--text-muted);">共${count}根</span>`;
+    <span style="color:var(--text-muted);">${st.currentWin}m窗口·${winCount}根</span>`;
 
   patterns.forEach(p => {
     (p.tags||[]).forEach(tag => {
