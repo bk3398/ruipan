@@ -20,6 +20,7 @@ kline_aggregator.py — VPS端K线聚合引擎
 """
 
 import asyncio
+import bisect
 import math
 import logging
 from datetime import datetime, timedelta
@@ -316,24 +317,33 @@ def settle_handicap(home_score: int, away_score: int, handicap: float) -> str:
 # ═══════════════════════════════════════════════════════════════════════
 
 def _align_and_calc_cross(snaps1: List[Dict], snaps2: List[Dict]) -> List[Dict]:
-    """对齐两个机构快照并计算跨机构分歧度"""
+    """对齐两个机构快照并计算跨机构分歧度（bisect二分查找）"""
     result = []
     max_gap = CROSS_ALIGN_MAX_GAP_MIN * 60
+
+    # 预建snaps2的时间索引
+    times2 = [s['time'] for s in snaps2]
 
     for s1 in snaps1:
         if s1['home_odds'] is None:
             continue
+
+        idx = bisect.bisect_left(times2, s1['time'])
+        candidates = []
+        if idx < len(snaps2):
+            candidates.append(snaps2[idx])
+        if idx > 0:
+            candidates.append(snaps2[idx - 1])
+
         best = None
         best_gap = float('inf')
-        for s2 in snaps2:
+        for s2 in candidates:
             if s2['home_odds'] is None:
                 continue
             gap = abs((s1['time'] - s2['time']).total_seconds())
             if gap < best_gap:
                 best_gap = gap
                 best = s2
-            if s2['time'] > s1['time']:
-                break
 
         if best and best_gap <= max_gap:
             d = cross_bookmaker_divergence(
@@ -467,16 +477,31 @@ def process_match(snaps: List[Dict], match_info: Dict = None) -> Dict:
                             'tags': classify_pattern(feats),
                         }
 
-        # 3. 欧赔离散度
+        # 3. 欧赔离散度（bisect二分查找，避免O(n²)）
         if euro_w:
+            # 预建每个bookmaker的时间索引
+            euro_indexed = {}
+            for bm, bm_snaps in euro_w.items():
+                times = [s['time'] for s in bm_snaps]
+                euro_indexed[bm] = (times, bm_snaps)
+
             all_times = sorted(set(
                 s['time'] for slist in euro_w.values() for s in slist
             ))
             disp_values = []
             for t in all_times:
                 odds_at_t = []
-                for bm, bm_snaps in euro_w.items():
-                    closest = min(bm_snaps,
+                for bm, (times, bm_snaps) in euro_indexed.items():
+                    idx = bisect.bisect_left(times, t)
+                    # 取最近的（idx或idx-1中gap更小的）
+                    candidates = []
+                    if idx < len(times):
+                        candidates.append(bm_snaps[idx])
+                    if idx > 0:
+                        candidates.append(bm_snaps[idx - 1])
+                    if not candidates:
+                        continue
+                    closest = min(candidates,
                                   key=lambda s: abs((s['time'] - t).total_seconds()))
                     if all(closest.get(k) for k in ['home_win', 'draw', 'away_win']):
                         odds_at_t.append((closest['home_win'], closest['draw'],
@@ -679,6 +704,10 @@ async def run(hours: int = 12, full: bool = False):
             minfo = matches_info.get(match_id)
             result = process_match(snaps, match_info=minfo)
             matches_processed += 1
+
+            if matches_processed % 50 == 0:
+                logger.info(f"  Processing... {matches_processed}/{len(by_match)} "
+                            f"({len(kline_rows)} candles so far)")
 
             # 收集K线行
             for wkey, ktypes in result['klines'].items():
