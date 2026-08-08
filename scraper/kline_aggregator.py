@@ -88,8 +88,10 @@ def euro_dispersion(odds_list: List[Tuple[float, float, float]]) -> float:
     return round(math.sqrt(variance) / mean, 4)
 
 
-# 欧赔离散度优先级：皇冠 > 澳彩 > 易胜博
-EURO_FOCUS_PRIORITY = ['crown', 'macau', 'yibosheng']
+# 欧赔偏离度焦点机构优先级：皇冠 > 澳彩 > 易胜博 > 数据丰满的欧洲老牌机构
+# 代码会自动从中选数据量最多的一家，缺失的自动跳过
+EURO_FOCUS_PRIORITY = ['crown', 'macau', 'yibosheng',
+                       'bet365', 'pinnacle', 'ladbrokes', 'bwin', 'interwetten']
 
 
 def euro_focus_deviation(
@@ -105,15 +107,13 @@ def euro_focus_deviation(
     - 至少需要2家其它公司才计算，否则视为单点无参考
     - 只向后看(last-known)，避免使用未来值制造虚假分歧
     """
-    # 选定本场焦点机构：取数据量最多的优先公司
+    # 选定本场焦点机构：严格按优先级，选第一家有数据的
     focus_bm = None
-    focus_count = -1
     for bm in EURO_FOCUS_PRIORITY:
-        snaps = euro_by_bm.get(bm, [])
-        if len(snaps) > focus_count:
-            focus_count = len(snaps)
+        if euro_by_bm.get(bm):
             focus_bm = bm
-    if focus_bm is None or focus_count == 0:
+            break
+    if focus_bm is None:
         return []
 
     focus_snaps = sorted(euro_by_bm[focus_bm], key=lambda s: s['time'])
