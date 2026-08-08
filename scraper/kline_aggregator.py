@@ -373,8 +373,9 @@ def process_match(snaps: List[Dict], match_info: Dict = None) -> Dict:
         t = s.get('snapshot_time') or s.get('recorded_at')
         if isinstance(t, str):
             t = datetime.fromisoformat(t.replace('Z', '+00:00'))
+        # asyncpg 返回 aware UTC，统一转北京时间 naive，与 match_time 一致
         if hasattr(t, 'tzinfo') and t.tzinfo is not None:
-            t = t.replace(tzinfo=None)
+            t = t.astimezone(timezone(timedelta(hours=8))).replace(tzinfo=None)
 
         if s['market_type'] == 'asia':
             asia[s['bookmaker']].append({
@@ -395,6 +396,7 @@ def process_match(snaps: List[Dict], match_info: Dict = None) -> Dict:
     all_patterns = {}
 
     # 开赛时间（用于赛前2小时细粒度窗口）
+    # match_time 存的是北京时间 naive；snapshot_time 已在上方统一转为北京时间 naive
     kickoff = None
     if match_info and match_info.get('match_time'):
         mt = match_info['match_time']
