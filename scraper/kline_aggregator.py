@@ -518,7 +518,7 @@ async def fetch_timeline(conn, since: datetime,
                    handicap, home_odds, away_odds, home_win, draw, away_win,
                    snapshot_time, recorded_at
             FROM odds_timeline
-            WHERE snapshot_time >= $1
+            WHERE snapshot_time >= $1::timestamptz
               AND match_id = ANY($2::varchar[])
             ORDER BY match_id, snapshot_time ASC
         """, since, match_ids)
@@ -528,7 +528,7 @@ async def fetch_timeline(conn, since: datetime,
                    handicap, home_odds, away_odds, home_win, draw, away_win,
                    snapshot_time, recorded_at
             FROM odds_timeline
-            WHERE snapshot_time >= $1
+            WHERE snapshot_time >= $1::timestamptz
             ORDER BY match_id, snapshot_time ASC
         """, since)
 
@@ -557,8 +557,8 @@ async def fetch_matches_info(conn, since: datetime) -> Dict[str, Dict]:
         SELECT match_id, league, home_team, away_team,
                home_score, away_score, match_time, status
         FROM matches
-        WHERE match_time >= $1 - interval '6 hours'
-          AND match_time < CURRENT_DATE + interval '2 day'
+        WHERE match_time >= $1::timestamp - interval '6 hours'
+          AND match_time < (CURRENT_DATE + interval '2 day')::timestamp
         ORDER BY match_time DESC
     """, since)
 
@@ -633,7 +633,7 @@ async def clear_stale_klines(conn, since: datetime):
     """删除时间窗口内的旧K线（避免全量重跑时重复）"""
     result = await conn.execute("""
         DELETE FROM kline_cache
-        WHERE bucket_time >= $1
+        WHERE bucket_time >= $1::timestamptz
     """, since)
     logger.info(f"Cleared stale klines: {result}")
 
