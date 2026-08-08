@@ -163,7 +163,7 @@ function drawKline(fid) {
   const candles = allCandles.filter(c => c.window_minutes === st.currentWin)
     .sort((a,b) => new Date(a.bucket_time) - new Date(b.bucket_time));
 
-  const W = canvas.parentElement.clientWidth || 600;
+  const W = Math.max(canvas.parentElement.clientWidth || 600, 42 + 8 + candles.length * 8);
   const H = 180;
   canvas.width = W;
   canvas.height = H;
@@ -196,8 +196,10 @@ function drawKline(fid) {
   const outliers = candles.filter(c => c.high > maxV || c.low < minV);
 
   const yOf = v => padT + chartH - Math.max(0,Math.min(1,((v - minV) / yRange))) * chartH;
-  const candleW = Math.max(2, Math.min(12, chartW / candles.length * 0.6));
-  const step = chartW / candles.length;
+  // 固定间距：每根蜡烛占8px，不足则左对齐留白，超出才压缩
+  const fixedStep = 8;
+  const step = Math.min(fixedStep, chartW / candles.length);
+  const candleW = Math.max(2, step * 0.6);
 
   // 网格线
   ctx.strokeStyle = '#1e2533'; ctx.lineWidth=1;
