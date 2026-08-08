@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 """
-kline_api.py — K线/形态数据API补丁
+kline_api.py — K线/形态数据API路由
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 纯数据查询，不含任何算法/计算/模型参数。
-从kline_cache和pattern_library表读取数据返回JSON。
+从 kline_cache 和 pattern_library 表读取数据返回JSON。
 
-部署：在app.py中 import 并调用 register_kline_routes(app)
+部署：在app.py中:
+  from kline_api import register_kline_routes
+  register_kline_routes(app, db_pool)
 """
 
-import asyncpg
+import json
 from fastapi import APIRouter
 from typing import Optional
 
-DSN = "postgresql://ruipan:Ruipan2026!@127.0.0.1:5432/ruipan"
-
 router = APIRouter()
+
+# 模块级连接池，由 register_kline_routes 注入
+_db_pool = None
 
 # K线类型中文映射
 KLINE_TYPE_MAP = {
@@ -36,12 +39,8 @@ TAG_COLORS = {
     "频繁变盘": "#ffa726",
     "尾盘回落": "#ab47bc",
     "上影试探": "#ff7043",
+    "缩量企稳": "#8d6e63",
 }
-
-
-async def _get_pool():
-    """获取或创建连接池（由app.state管理）"""
-    return None  # 由app.py注入
 
 
 @router.get("/api/v1/matches/{fixture_id}/kline")
@@ -50,18 +49,17 @@ async def get_kline(fixture_id: str, kline_type: Optional[str] = None):
     获取比赛的K线蜡烛和形态标签数据。
 
     Query params:
-      kline_type: 可选，指定K线类型。不传则返回全部。
+      kline_type: 可选，指定K线类型。不传则返回全部4种。
     """
-    pool = router.state.db_pool if hasattr(router, 'state') and hasattr(router.state, 'db_pool') else None
-    if not pool:
+    if not _db_pool:
         return {"status": "error", "message": "DB pool not available"}
 
-    async with pool.acquire() as conn:
+    async with _db_pool.acquire() as conn:
         # 查K线蜡烛
         if kline_type:
             rows = await conn.fetch(
                 """SELECT match_id, kline_type, window_minutes, bucket_time,
-                          open, high, low, close, volume
+                          open, high, low, close, volume, extra
                    FROM kline_cache
                    WHERE match_id = $1 AND kline_type = $2
                    ORDER BY bucket_time ASC""",
@@ -70,15 +68,22 @@ async def get_kline(fixture_id: str, kline_type: Optional[str] = None):
         else:
             rows = await conn.fetch(
                 """SELECT match_id, kline_type, window_minutes, bucket_time,
-                          open, high, low, close, volume
+                          open, high, low, close, volume, extra
                    FROM kline_cache
                    WHERE match_id = $1
                    ORDER BY kline_type, bucket_time ASC""",
                 fixture_id
             )
 
-        candles = [
-            {
+        candles = []
+        for r in rows:
+            extra = r["extra"]
+            if isinstance(extra, str):
+                try:
+                    extra = json.loads(extra)
+                except Exception:
+                    extra = {}
+            candles.append({
                 "kline_type": r["kline_type"],
                 "window_minutes": r["window_minutes"],
                 "bucket_time": r["bucket_time"].isoformat() if r["bucket_time"] else None,
@@ -87,27 +92,28 @@ async def get_kline(fixture_id: str, kline_type: Optional[str] = None):
                 "low": float(r["low"]) if r["low"] is not None else 0,
                 "close": float(r["close"]) if r["close"] is not None else 0,
                 "volume": r["volume"],
-            }
-            for r in rows
-        ]
+                "extra": extra or {},
+            })
 
         # 查形态标签
         pat_rows = await conn.fetch(
             """SELECT pattern_type, match_id, bookmaker, features,
                       home_score, away_score, handicap_result, total_goals,
-                      labeled_at
+                      confidence, labeled_at
                FROM pattern_library
                WHERE match_id = $1
                ORDER BY pattern_type""",
             fixture_id
         )
 
-        import json
         patterns = []
         for r in pat_rows:
             features = r["features"]
             if isinstance(features, str):
-                features = json.loads(features)
+                try:
+                    features = json.loads(features)
+                except Exception:
+                    features = {}
             patterns.append({
                 "pattern_type": r["pattern_type"],
                 "bookmaker": r["bookmaker"],
@@ -121,6 +127,11 @@ async def get_kline(fixture_id: str, kline_type: Optional[str] = None):
                 "handicap_changes": features.get("handicap_changes") if features else None,
                 "volume_trend": features.get("volume_trend") if features else None,
                 "labeled": r["labeled_at"] is not None,
+                "confidence": float(r["confidence"]) if r["confidence"] is not None else None,
+                "home_score": r["home_score"],
+                "away_score": r["away_score"],
+                "handicap_result": r["handicap_result"],
+                "total_goals": r["total_goals"],
             })
 
     # 按类型分组蜡烛
@@ -137,7 +148,7 @@ async def get_kline(fixture_id: str, kline_type: Optional[str] = None):
         kline_meta[kt] = {
             "label": KLINE_TYPE_MAP.get(kt, kt),
             "candle_count": len(items),
-            "window_minutes": items[0]["window_minutes"] if items else 30,
+            "windows": sorted(set(c["window_minutes"] for c in items)),
             "first_time": items[0]["bucket_time"] if items else None,
             "last_time": items[-1]["bucket_time"] if items else None,
         }
@@ -162,5 +173,6 @@ async def get_kline(fixture_id: str, kline_type: Optional[str] = None):
 
 def register_kline_routes(app, db_pool):
     """在FastAPI app上注册K线路由，注入db_pool"""
-    router.state.db_pool = db_pool
+    global _db_pool
+    _db_pool = db_pool
     app.include_router(router)
