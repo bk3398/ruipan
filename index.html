@@ -1390,7 +1390,10 @@ async function loadMatches() {
     const resp = await fetch('/api/v1/matches/today', {cache: 'no-store'});
     const data = await resp.json();
     if (data.status === 'ok' && data.data) {
-      matchData = data.data;
+      matchData = data.data.map(m => {
+        if (m.status === 'scheduled') m.status = 'not_started';
+        return m;
+      });
       updateSummary(data.summary);
       renderMatches();
       updateRefreshVisibility();
@@ -1892,9 +1895,25 @@ function renderAnalysisTab(fid, anData, isMatchLive, hasStarted) {
     const bk = bks[k];
     const name = bk.display_name || BK_NAMES[k] || k;
     const phases = bk.phases || {};
-    const ini = phases.initial || {};
-    const liv = phases.live || {};
-    const ter = phases.closing || {};
+    // Flatten nested {euro, asia} into flat fields for backward compat
+    const flattenPhase = (p) => {
+      if (!p) return {};
+      const asia = p.asia || {};
+      const euro = p.euro || {};
+      return {
+        ...p,
+        handicap: asia.handicap != null ? asia.handicap : p.handicap,
+        actual_upper_odds: asia.upper != null ? asia.upper : p.actual_upper_odds,
+        actual_lower_odds: asia.lower != null ? asia.lower : p.actual_lower_odds,
+        own_euro_odds: euro.home_win != null ? euro.home_win : p.own_euro_odds,
+        divg: asia.divg != null ? asia.divg : p.divg,
+        dev_upper: asia.dev_upper != null ? asia.dev_upper : p.dev_upper,
+        dev_lower: asia.dev_lower != null ? asia.dev_lower : p.dev_lower
+      };
+    };
+    const ini = flattenPhase(phases.initial);
+    const liv = flattenPhase(phases.live);
+    const ter = flattenPhase(phases.closing);
 
     // 盘口始终从主队视角显示：正值=主让，负值=主受
     const dh = (v) => fmtHandicap(v);
@@ -2025,7 +2044,17 @@ function renderSignal(s) {
 
 // ===================== FUNDAMENTAL TAB (V6) =====================
 function renderSparkline(klineArr, color) {
-  if (!klineArr || klineArr.length < 2) return '<span style="color:var(--text-muted);font-size:0.65rem;">数据不足</span>';
+  if (!klineArr || klineArr.length < 1) return '<span style="color:var(--text-muted);font-size:0.65rem;">暂无数据</span>';
+  if (klineArr.length === 1) {
+    // Single data point — show a dot
+    const k = klineArr[0];
+    const w = 120, h = 36, cx = w/2, cy = h/2;
+    const dotColor = k.result === 'W' ? '#00e676' : k.result === 'L' ? '#ff5252' : '#ffc107';
+    return `<svg width="${w}" height="${h}" style="display:block;">
+      <circle cx="${cx}" cy="${cy}" r="4" fill="${dotColor}" opacity="0.8"/>
+      <text x="${cx}" y="${cy-8}" text-anchor="middle" fill="var(--text-muted)" font-size="8">${k.date||''} 1场</text>
+    </svg>`;
+  }
   const closes = klineArr.map(k => k.close);
   const min = Math.min(...closes), max = Math.max(...closes);
   const range = max - min || 1;
