@@ -309,13 +309,13 @@ async def get_target_matches(pool: asyncpg.Pool) -> List[Dict]:
              AND match_time < CURRENT_DATE + interval '1 day'
              AND (
                (status = 'live')
-               OR (status = 'not_started' AND match_time <= $2)
-               OR (status = 'finished' AND match_time >= $3)
+               OR (status = 'not_started' AND match_time <= $1)
+               OR (status = 'finished' AND match_time >= $2)
              )
            ORDER BY
              CASE status WHEN 'live' THEN 0 WHEN 'not_started' THEN 1 ELSE 2 END,
              match_time ASC""",
-        now, pre_cutoff, finished_cutoff
+        pre_cutoff, finished_cutoff
     )
 
     return [dict(r) for r in rows]
