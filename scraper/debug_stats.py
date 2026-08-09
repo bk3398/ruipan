@@ -12,8 +12,14 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0
 
 print(f'Fetching {url}')
 resp = requests.get(url, headers=headers, timeout=15)
-resp.encoding = 'gb2312'
-html = resp.text
+# titan007 is gb2312/gbk
+for enc in ('gb18030', 'gbk', 'utf-8'):
+    try:
+        resp.encoding = enc
+        html = resp.text
+        break
+    except Exception:
+        continue
 print(f'HTML length: {len(html)}')
 
 # Show which file is being used

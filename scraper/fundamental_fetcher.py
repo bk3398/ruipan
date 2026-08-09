@@ -96,7 +96,14 @@ def fetch_analysis(sid):
         "Referer": "https://www.titan007.com/",
     })
     resp = urllib.request.urlopen(req, timeout=15)
-    return resp.read().decode("utf-8", errors="replace")
+    raw = resp.read()
+    # titan007 pages are GB2312/GBK encoded; use gb18030 (superset)
+    for enc in ("gb18030", "gbk", "gb2312", "utf-8"):
+        try:
+            return raw.decode(enc)
+        except (UnicodeDecodeError, LookupError):
+            continue
+    return raw.decode("utf-8", errors="replace")
 
 
 def parse_js_array(html, varname):
@@ -406,7 +413,13 @@ def try_fetch_standings(league_id):
                 "Referer": "https://zq.titan007.com/",
             })
             resp = urllib.request.urlopen(req, timeout=8)
-            content = resp.read().decode("utf-8", errors="replace")
+            raw = resp.read()
+            for enc in ("gb18030", "gbk", "utf-8"):
+                try:
+                    content = raw.decode(enc)
+                    break
+                except (UnicodeDecodeError, LookupError):
+                    content = raw.decode("utf-8", errors="replace")
             if content and len(content) > 50:
                 log.info("Standings found at %s (%d chars)", url, len(content))
                 return parse_standings_js(content)
