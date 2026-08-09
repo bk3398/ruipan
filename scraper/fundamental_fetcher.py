@@ -181,22 +181,76 @@ def parse_h2h_record(rec):
 
 def parse_team_stats_tables(html, home_team, away_team):
     """
-    Parse team statistics tables from HTML.
+    Parse team statistics tables from HTML using a proper HTML parser
+    that correctly handles nested <table> tags (regex cannot).
 
-    Table structure (6 rows):
-      Row 0: header — contains team name + '全場 賽 勝 平 負 得 失 凈 積分 排名 勝率'
-      Row 1: 總    — overall stats (10 numeric values)
-      Row 2: 主    — home stats (10 values)
-      Row 3: 客    — away stats (10 values)
-      Row 4: 近6   — recent 6 matches (9 values, no rank)
-      Row 5: (empty or extra)
-
-    Team name is ONLY in the header row. We first identify which table
-    belongs to which team, then parse all data rows in that table.
+    Leaf table structure (6 rows):
+      Row 0: team name with colspan (e.g. "[俄甲-18]SKA哈巴羅夫斯克")
+      Row 1: column labels (全場/賽/勝/平/負/得/失/凈/積分/排名/勝率)
+      Rows 2-5: data (總/主/客/近6)
 
     Scoring: our rule is win=2, draw=1, loss=0 (2-point system).
-    titan007 displays 3-point system. We recalculate points from W/D/L.
+    titan007 displays 3-point system; we recalculate from W/D/L.
     """
+    from html.parser import HTMLParser
+
+    class LeafTableParser(HTMLParser):
+        """Track nested table stack; collect rows per frame so nested
+        tables don't corrupt the outer table's row state."""
+        def __init__(self):
+            super().__init__()
+            self.completed = []   # finished tables (each = list of rows)
+            self.stack = []       # stack of frame dicts
+
+        def _frame(self):
+            return self.stack[-1] if self.stack else None
+
+        def handle_starttag(self, tag, attrs):
+            t = tag.lower()
+            if t == 'table':
+                self.stack.append({'rows': [], 'in_row': False,
+                                   'row_cells': [], 'in_cell': False,
+                                   'cell_buf': []})
+            elif t == 'tr':
+                f = self._frame()
+                if f is not None:
+                    f['in_row'] = True
+                    f['row_cells'] = []
+            elif t in ('td', 'th'):
+                f = self._frame()
+                if f is not None and f['in_row']:
+                    f['in_cell'] = True
+                    f['cell_buf'] = []
+
+        def handle_endtag(self, tag):
+            t = tag.lower()
+            f = self._frame()
+            if f is None:
+                return
+            if t in ('td', 'th') and f['in_cell']:
+                txt = ''.join(f['cell_buf']).replace('&nbsp;', ' ').strip()
+                f['row_cells'].append(txt)
+                f['in_cell'] = False
+                f['cell_buf'] = []
+            elif t == 'tr' and f['in_row']:
+                f['rows'].append(f['row_cells'])
+                f['in_row'] = False
+                f['row_cells'] = []
+            elif t == 'table':
+                self.stack.pop()
+                # Only leaf tables (no nested child) are useful: if this
+                # frame's rows were collected while no child table existed,
+                # it's a leaf. We detect leaf by checking that the frame
+                # never had a child pushed — but since child frames are
+                # popped already, we approximate by checking row count.
+                if f['rows']:
+                    self.completed.append(f['rows'])
+
+        def handle_data(self, data):
+            f = self._frame()
+            if f is not None and f['in_cell']:
+                f['cell_buf'].append(data)
+
     stats = {}
 
     def name_variants(name):
@@ -207,15 +261,6 @@ def parse_team_stats_tables(html, home_team, away_team):
 
     home_variants = name_variants(home_team)
     away_variants = name_variants(away_team)
-
-    def extract_cells(row_html):
-        cells_raw = re.findall(r'<t[dh][^>]*>(.*?)</t[dh]>', row_html, re.DOTALL)
-        cells = []
-        for c in cells_raw:
-            txt = re.sub(r'<[^>]+>', '', c)
-            txt = txt.replace('&nbsp;', ' ').strip()
-            cells.append(txt)
-        return cells
 
     def parse_numeric_row(cells):
         """Parse a data row: first non-numeric cell is section label, rest are numbers."""
@@ -237,27 +282,18 @@ def parse_team_stats_tables(html, home_team, away_team):
                 pass
         return section_label, vals
 
-    tables = re.findall(r'<table[^>]*>(.*?)</table>', html, re.DOTALL | re.IGNORECASE)
+    # Extract leaf tables via proper parser
+    parser = LeafTableParser()
+    parser.feed(html)
+    leaf_tables = parser.completed
 
-    for table_html in tables:
-        # Skip outer wrapper tables that contain nested <table> tags —
-        # their <tr> regex gets corrupted by inner table's </tr> tags.
-        # We only want to process leaf/innermost stats tables.
-        if '<table' in table_html.lower():
-            continue
-
-        rows = re.findall(r'<tr[^>]*>(.*?)</tr>', table_html, re.DOTALL | re.IGNORECASE)
+    for rows in leaf_tables:
         if len(rows) < 4:
             continue
 
-        # Row 0 = team name (colspan=11, e.g. "[俄甲-18]SKA哈巴羅夫斯克")
-        # Row 1 = column labels (全場/賽/勝/平/負/得/失/凈/積分/排名/勝率)
-        # Rows 2-5 = data (總/主/客/近6)
-        row0_cells = extract_cells(rows[0])
-        row0_text = ' '.join(row0_cells)
-
-        # Team name may be in row 0; also scan all rows for safety
-        all_rows_text = ' '.join(' '.join(extract_cells(r)) for r in rows[:3])
+        # Row 0 = team name (colspan), row 1 = column labels, rows 2+ = data
+        row0_text = ' '.join(rows[0])
+        all_rows_text = ' '.join(' '.join(r) for r in rows[:3])
 
         matched_team = None
         if any(v in row0_text or v in all_rows_text for v in home_variants):
@@ -268,7 +304,6 @@ def parse_team_stats_tables(html, home_team, away_team):
         if not matched_team:
             continue
 
-        # Keywords may be in row 1 (column labels), not row 0
         search_text = row0_text + ' ' + all_rows_text
         if not any(kw in search_text for kw in ('賽', '勝', '積分', '全場')):
             continue
@@ -276,10 +311,8 @@ def parse_team_stats_tables(html, home_team, away_team):
         if matched_team not in stats:
             stats[matched_team] = {}
 
-        # Parse data rows (rows after header)
         section_map = {'總': 'overall', '主': 'home', '客': 'away', '近6': 'recent6', '全場': 'overall'}
-        for row_html in rows[1:]:
-            cells = extract_cells(row_html)
+        for cells in rows[1:]:
             if not cells:
                 continue
             section_label, vals = parse_numeric_row(cells)
@@ -295,18 +328,18 @@ def parse_team_stats_tables(html, home_team, away_team):
             ga = vals[5] if len(vals) > 5 else 0
             gd = vals[6] if len(vals) > 6 else 0
 
-            # titan007 points (3-point system) at index 7
             titan_points = vals[7] if len(vals) > 7 else 0
-            # Our points (2-point system: win=2, draw=1, loss=0)
             our_points = won * 2 + drawn
 
-            # Rank at index 8 (not present in 近6 row)
-            rank = vals[8] if len(vals) > 8 else None
-            # Win rate at index 9
-            win_rate = None
-            if len(vals) > 9:
-                wr = vals[9]
-                win_rate = wr / 100.0 if wr > 1 else wr
+            # Normal rows (總/主/客) have 11 cells: ...points, rank, win_rate
+            # 近6 row has 10 cells (empty rank cell skipped): ...points, win_rate
+            if section_label == '近6':
+                rank = None
+                wr = vals[8] if len(vals) > 8 else None
+            else:
+                rank = vals[8] if len(vals) > 8 else None
+                wr = vals[9] if len(vals) > 9 else None
+            win_rate = wr / 100.0 if wr is not None and wr > 1 else wr
 
             stats[matched_team][sec_key] = {
                 'played': played,
