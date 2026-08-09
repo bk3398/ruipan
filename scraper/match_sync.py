@@ -80,6 +80,7 @@ async def sync_matches(dsn: str, dry_run: bool = False):
     pool = await asyncpg.create_pool(dsn, min_size=2, max_size=5)
     new_count = 0
     update_count = 0
+    current_sids = [int(s) for s in filtered.keys()]
 
     try:
         async with pool.acquire() as conn:
@@ -145,23 +146,36 @@ async def sync_matches(dsn: str, dry_run: bool = False):
                     )
                     new_count += 1
 
-        # 4. 收尾：bfdata 即时接口不返回已完场多时的比赛，
-        #    导致部分比赛 status 卡在 scheduled/not_started。
-        #    超过2.5小时未被更新的非完场比赛自动标记为 finished
-        #    (足球比赛含中场休息约2小时，2.5小时足够)。
+        # 4. 收尾：bfdata 即时接口完场后不再返回比赛。
+        #    (a) 之前是 live 但已不在 bfdata 返回中 -> 立即标记 finished（不等时间阈值）
+        #    (b) 有比分但停留在 scheduled/not_started 超过 2h15min（含补时）-> finished
         stale_finished = 0
         try:
             async with pool.acquire() as conn:
+                # (a) 之前 live 但本轮 bfdata 未返回（完场即消失）
+                if current_sids:
+                    result = await conn.execute(
+                        """UPDATE matches
+                           SET status = 'finished'
+                           WHERE status = 'live'
+                             AND match_id != ALL($1::bigint[])""",
+                        current_sids
+                    )
+                    parts = result.split()
+                    if len(parts) >= 2 and parts[-1].isdigit():
+                        stale_finished += int(parts[-1])
+
+                # (b) 有比分但状态停留在 scheduled/not_started 超过 2h15min
                 result = await conn.execute(
                     """UPDATE matches
                        SET status = 'finished'
                        WHERE status IN ('scheduled', 'not_started')
-                         AND match_time < NOW() - INTERVAL '2.5 hours'
+                         AND match_time < NOW() - INTERVAL '2 hours 15 minutes'
                          AND (home_score IS NOT NULL OR away_score IS NOT NULL)"""
                 )
                 parts = result.split()
                 if len(parts) >= 2 and parts[-1].isdigit():
-                    stale_finished = int(parts[-1])
+                    stale_finished += int(parts[-1])
         except Exception as e:
             print(f"  ⚠️ stale收尾失败: {e}")
     finally:
