@@ -147,7 +147,8 @@ async def sync_matches(dsn: str, dry_run: bool = False):
 
         # 4. 收尾：bfdata 即时接口不返回已完场多时的比赛，
         #    导致部分比赛 status 卡在 scheduled/not_started。
-        #    超过3小时未被更新的非完场比赛自动标记为 finished。
+        #    超过2.5小时未被更新的非完场比赛自动标记为 finished
+        #    (足球比赛含中场休息约2小时，2.5小时足够)。
         stale_finished = 0
         try:
             async with pool.acquire() as conn:
@@ -155,7 +156,8 @@ async def sync_matches(dsn: str, dry_run: bool = False):
                     """UPDATE matches
                        SET status = 'finished'
                        WHERE status IN ('scheduled', 'not_started')
-                         AND match_time < NOW() - INTERVAL '3 hours'"""
+                         AND match_time < NOW() - INTERVAL '2.5 hours'
+                         AND (home_score IS NOT NULL OR away_score IS NOT NULL)"""
                 )
                 parts = result.split()
                 if len(parts) >= 2 and parts[-1].isdigit():
