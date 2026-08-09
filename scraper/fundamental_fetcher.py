@@ -49,11 +49,15 @@ log = logging.getLogger("fundamental")
 try:
     import opencc
     _t2s = opencc.OpenCC('t2s')
+    _s2t = opencc.OpenCC('s2t')
     def t2s(text):
         return _t2s.convert(text) if text else text
+    def s2t(text):
+        return _s2t.convert(text) if text else text
 except ImportError:
-    # Fallback: strip HTML tags, keep traditional
     def t2s(text):
+        return text
+    def s2t(text):
         return text
 
 
@@ -180,45 +184,90 @@ def parse_team_stats_tables(html, home_team, away_team):
     Parse the team statistics tables from HTML.
     Each team has 4 rows: 總(all), 主(home), 客(away), 近6(recent6)
     Columns: 賽 勝 平 負 得 失 凈 積分 排名 勝率
+
+    Team names in HTML are traditional Chinese. We match both trad and simp.
     """
     stats = {}
+    # Build name variants for matching: try original (trad from page), simplified, stripped
+    def name_variants(name):
+        if not name:
+            return set()
+        variants = {name, t2s(name), s2t(name)}
+        # Also strip common suffixes/prefixes and whitespace
+        return {v.strip() for v in variants if v and len(v.strip()) >= 2}
 
-    # Find all tables in the page
+    home_variants = name_variants(home_team)
+    away_variants = name_variants(away_team)
+
     tables = re.findall(r'<table[^>]*>(.*?)</table>', html, re.DOTALL)
     for table_html in tables:
-        text = re.sub(r'<[^>]+>', '|', table_html)
-        text = re.sub(r'\|+', '|', text)
-        cells = [c.strip() for c in text.split('|') if c.strip()]
+        # Extract rows
+        rows = re.findall(r'<tr[^>]*>(.*?)</tr>', table_html, re.DOTALL)
+        for row_html in rows:
+            # Extract cells from row
+            cells_raw = re.findall(r'<t[dh][^>]*>(.*?)</t[dh]>', row_html, re.DOTALL)
+            cells = []
+            for c in cells_raw:
+                # Strip HTML tags but keep text
+                txt = re.sub(r'<[^>]+>', '', c)
+                txt = txt.replace('&nbsp;', ' ').strip()
+                cells.append(txt)
 
-        # Look for pattern: [league-pos]TeamName then stat rows
-        # Find team name and following numbers
-        for team_label in [home_team, away_team]:
-            # Try simplified and traditional variants
-            for name_variant in set([team_label, t2s(team_label)]):
-                if not name_variant or len(name_variant) < 2:
-                    continue
-                for i, cell in enumerate(cells):
-                    if name_variant in cell:
-                        # Next cells should have 賽 勝 平 負 得 失 凈 積分 排名 勝率 labels
-                        # followed by values in groups
-                        vals = []
-                        j = i + 1
-                        while j < len(cells) and len(vals) < 50:
-                            c = cells[j]
-                            # Skip header labels
-                            if c in ('總', '主', '客', '近6', '全場', '賽', '勝', '平', '負',
-                                     '得', '失', '凈', '積分', '排名', '勝率', ''):
-                                j += 1
-                                continue
-                            vals.append(c)
-                            j += 1
+            if not cells:
+                continue
 
-                        # Parse numeric values into structured rows
-                        if len(vals) >= 10:
-                            team_stats = parse_stat_values(vals)
-                            if team_stats:
-                                stats[team_label] = team_stats
+            cell_text = ' '.join(cells)
+            matched_team = None
+            for label, variants in [(home_team, home_variants), (away_team, away_variants)]:
+                for v in variants:
+                    if v in cell_text:
+                        matched_team = label
                         break
+                if matched_team:
+                    break
+
+            if not matched_team:
+                continue
+
+            # Extract all numeric values from the row (賽 勝 平 負 得 失 凈 積分 排名 勝率%)
+            # Format observed: row label (總/主/客/近6) followed by 10 values
+            vals = []
+            section_label = None
+            for c in cells:
+                if c in ('總', '主', '客', '近6', '全場'):
+                    section_label = c
+                    continue
+                # Check if it's a number or percentage
+                c_clean = c.replace('%', '').replace(',', '').strip()
+                try:
+                    if '.' in c_clean:
+                        vals.append(float(c_clean))
+                    elif c_clean.lstrip('-').isdigit():
+                        vals.append(int(c_clean))
+                except ValueError:
+                    pass
+
+            if len(vals) >= 9:
+                if matched_team not in stats:
+                    stats[matched_team] = {}
+                section_map = {'總': 'overall', '主': 'home', '客': 'away', '近6': 'recent6', '全場': 'overall'}
+                sec_key = section_map.get(section_label, 'overall')
+                row = {
+                    'played': vals[0],
+                    'won': vals[1] if len(vals) > 1 else 0,
+                    'drawn': vals[2] if len(vals) > 2 else 0,
+                    'lost': vals[3] if len(vals) > 3 else 0,
+                    'gf': vals[4] if len(vals) > 4 else 0,
+                    'ga': vals[5] if len(vals) > 5 else 0,
+                    'gd': vals[6] if len(vals) > 6 else 0,
+                    'points': vals[7] if len(vals) > 7 else 0,
+                    'rank': vals[8] if len(vals) > 8 else None,
+                }
+                if len(vals) > 9:
+                    wr = vals[9]
+                    row['win_rate'] = wr / 100.0 if wr > 1 else wr
+                stats[matched_team][sec_key] = row
+
     return stats
 
 
@@ -279,9 +328,74 @@ def try_fetch_standings(league_id):
     return None
 
 
+def extract_inline_standings(html):
+    """
+    Extract league standings from inline JS array embedded in analysis page.
+    The array appears immediately before 'var guestScoreStr' or 'var isShowIntegral',
+    format: [[rank, team_id, 'trad_team_name', points], ...]
+
+    There may be two similar arrays (overall and away/home). We pick the one
+    containing the most teams (typically 18 for a full league).
+    """
+    # Find all [[...]] arrays in the page that match standings pattern
+    # Standings rows always start with [number, number, 'name', number]
+    candidates = []
+    for m in re.finditer(r'\[\[(\d+),\d+,', html):
+        start = m.start()
+        # Find matching closing ]]
+        depth = 0
+        end = start
+        for i in range(start, min(start + 20000, len(html))):
+            ch = html[i]
+            if ch == '[':
+                depth += 1
+            elif ch == ']':
+                depth -= 1
+                if depth == 0:
+                    end = i + 1
+                    break
+        arr_text = html[start:end]
+        # Quick check: must contain quotes (team names) and be in the score/standings region
+        if "'" not in arr_text and '"' not in arr_text:
+            continue
+        try:
+            data = json.loads(arr_text)
+            if isinstance(data, list) and len(data) >= 4:
+                # Validate: each row should be [int, int, str, int/float]
+                valid = 0
+                for row in data:
+                    if (isinstance(row, list) and len(row) >= 4
+                        and isinstance(row[0], (int, float))
+                        and isinstance(row[1], (int, float))
+                        and isinstance(row[2], str)
+                        and isinstance(row[3], (int, float))):
+                        valid += 1
+                if valid >= len(data) * 0.7:
+                    candidates.append((len(data), data))
+        except (json.JSONDecodeError, IndexError):
+            continue
+
+    if not candidates:
+        return None
+
+    # Pick the array with most teams (full league table, not split home/away)
+    candidates.sort(key=lambda x: x[0], reverse=True)
+    best = candidates[0][1]
+
+    standings = []
+    for row in best:
+        if isinstance(row, list) and len(row) >= 4:
+            standings.append({
+                "position": int(row[0]),
+                "team_id": int(row[1]),
+                "team": clean_team_name(str(row[2])),
+                "points": row[3],
+            })
+    return standings if standings else None
+
+
 def parse_standings_js(content):
-    """Parse standings JS data into structured list."""
-    # Try to find array of arrays
+    """Parse standings JS data from external JS file into structured list."""
     m = re.search(r'(\[\[.*?\]\])', content, re.DOTALL)
     if not m:
         return None
@@ -294,7 +408,7 @@ def parse_standings_js(content):
                     "position": row[0],
                     "team_id": row[1],
                     "team": clean_team_name(str(row[2])),
-                    "value": row[3] if len(row) > 3 else None,
+                    "points": row[3] if len(row) > 3 else None,
                 })
         return standings if standings else None
     except Exception:
@@ -367,12 +481,16 @@ def parse_analysis_page(html, sid):
     if home_team and away_team:
         result["team_stats"] = parse_team_stats_tables(html, home_team, away_team)
 
-    # 6. Try fetching full league standings
-    if league_id:
+    # 6. League standings: prefer inline array (most reliable), fallback to external JS
+    standings = extract_inline_standings(html)
+    if standings:
+        result["league_table"] = standings
+        log.info("  league_table (inline): %d teams", len(standings))
+    elif league_id:
         standings = try_fetch_standings(league_id)
         if standings:
             result["league_table"] = standings
-            log.info("  league_table: %d teams", len(standings))
+            log.info("  league_table (external): %d teams", len(standings))
 
     return result
 
