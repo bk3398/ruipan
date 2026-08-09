@@ -237,28 +237,34 @@ def parse_team_stats_tables(html, home_team, away_team):
                 pass
         return section_label, vals
 
-    tables = re.findall(r'<table[^>]*>(.*?)</table>', html, re.DOTALL)
+    tables = re.findall(r'<table[^>]*>(.*?)</table>', html, re.DOTALL | re.IGNORECASE)
 
     for table_html in tables:
-        rows = re.findall(r'<tr[^>]*>(.*?)</tr>', table_html, re.DOTALL)
+        rows = re.findall(r'<tr[^>]*>(.*?)</tr>', table_html, re.DOTALL | re.IGNORECASE)
         if len(rows) < 4:
             continue
 
-        # Check first row for team name
-        header_cells = extract_cells(rows[0])
-        header_text = ' '.join(header_cells)
+        # Row 0 = team name (colspan=11, e.g. "[俄甲-18]SKA哈巴羅夫斯克")
+        # Row 1 = column labels (全場/賽/勝/平/負/得/失/凈/積分/排名/勝率)
+        # Rows 2-5 = data (總/主/客/近6)
+        row0_cells = extract_cells(rows[0])
+        row0_text = ' '.join(row0_cells)
+
+        # Team name may be in row 0; also scan all rows for safety
+        all_rows_text = ' '.join(' '.join(extract_cells(r)) for r in rows[:3])
 
         matched_team = None
-        if any(v in header_text for v in home_variants):
+        if any(v in row0_text or v in all_rows_text for v in home_variants):
             matched_team = home_team
-        elif any(v in header_text for v in away_variants):
+        elif any(v in row0_text or v in all_rows_text for v in away_variants):
             matched_team = away_team
 
         if not matched_team:
             continue
 
-        # Check this is a stats table (should contain these keywords)
-        if not any(kw in header_text for kw in ('賽', '勝', '積分', '全場')):
+        # Keywords may be in row 1 (column labels), not row 0
+        search_text = row0_text + ' ' + all_rows_text
+        if not any(kw in search_text for kw in ('賽', '勝', '積分', '全場')):
             continue
 
         if matched_team not in stats:
