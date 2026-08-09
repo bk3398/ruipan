@@ -152,12 +152,15 @@ async def sync_matches(dsn: str, dry_run: bool = False):
         stale_finished = 0
         try:
             async with pool.acquire() as conn:
-                # (a) 之前 live 但本轮 bfdata 未返回（完场即消失）
+                # (a) 之前是 live 但本轮 bfdata 未返回（完场即消失）。
+                #     加 1h45min 下限防网络波动：正常比赛不可能在105分钟前完场，
+                #     加时赛/点球大战期间 bfdata 仍会返回，真正完场才消失。
                 if current_sids:
                     result = await conn.execute(
                         """UPDATE matches
                            SET status = 'finished'
                            WHERE status = 'live'
+                             AND match_time < NOW() - INTERVAL '1 hour 45 minutes'
                              AND match_id != ALL($1::bigint[])""",
                         current_sids
                     )
