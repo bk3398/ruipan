@@ -1,54 +1,41 @@
 #!/usr/bin/env python3
-"""Probe the actual encoding of titan007 analysis page."""
-import sys
-import urllib.request
-import gzip
-import io
+"""Probe encoding using the same UA as fundamental_fetcher."""
+import urllib.request, re
 
-SID = sys.argv[1] if len(sys.argv) > 1 else '3021929'
-url = f'https://zq.titan007.com/analysis/{SID}.htm'
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+url = "https://zq.titan007.com/analysis/3021929.htm"
 req = urllib.request.Request(url, headers={
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0",
+    "User-Agent": UA,
     "Referer": "https://www.titan007.com/",
-    "Accept-Encoding": "gzip, deflate",
 })
 resp = urllib.request.urlopen(req, timeout=15)
 
-# Check headers
-print("=== Response Headers ===")
-for k, v in resp.headers.items():
-    print(f"  {k}: {v}")
+print("Content-Encoding:", resp.headers.get("Content-Encoding"))
+print("Content-Type:", resp.headers.get("Content-Type"))
 
 raw = resp.read()
-print(f"\nRaw bytes length: {len(raw)}")
+print("Gzip magic:", raw[:2] == b'\x1f\x8b')
+print("Raw len:", len(raw))
 
-# Check gzip
-if raw[:2] == b'\x1f\x8b':
-    print("Content is gzipped, decompressing...")
-    raw = gzip.decompress(raw)
-    print(f"Decompressed length: {len(raw)}")
+# Find charset in meta
+meta = re.findall(rb'charset\s*=\s*["\']?([\w-]+)', raw[:3000], re.IGNORECASE)
+print("Meta charset:", meta)
 
-# Find charset in meta tags
-import re
-meta_matches = re.findall(rb'charset\s*=\s*["\']?([\w-]+)', raw[:2000], re.IGNORECASE)
-print(f"\nCharset declared in HTML: {meta_matches}")
+# Show bytes around first Chinese-looking area
+# Find SKA
+idx = raw.find(b'SKA')
+if idx >= 0:
+    print(f"\nBytes around SKA (offset {idx}):")
+    print(repr(raw[idx:idx+80]))
 
-# Show first 500 bytes as repr
-print(f"\n=== First 500 bytes (repr) ===")
-print(repr(raw[:500]))
-
-# Try each encoding on a section that should have Chinese
-# Find h_data or team name area
+# Try each encoding
 for enc in ['utf-8', 'gb18030', 'gbk', 'gb2312', 'big5']:
     try:
         text = raw.decode(enc)
-        # Find a known section - look for SKA
-        idx = text.find('SKA')
-        if idx >= 0:
-            sample = text[max(0,idx-20):idx+40]
+        i = text.find('SKA')
+        if i >= 0:
+            print(f"\n{enc}: ...{text[i:i+50]}...")
         else:
-            sample = text[200:300]
-        print(f"\n=== {enc} (first Chinese area) ===")
-        print(sample)
+            print(f"\n{enc}: (SKA not found, first 200): {text[:200]}")
     except Exception as e:
-        print(f"\n=== {enc} FAILED: {e} ===")
+        print(f"\n{enc}: FAILED {e}")

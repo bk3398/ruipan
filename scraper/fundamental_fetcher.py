@@ -311,8 +311,14 @@ def parse_team_stats_tables(html, home_team, away_team):
         if not matched_team:
             continue
 
-        search_text = row0_text + ' ' + all_rows_text
-        if not any(kw in search_text for kw in ('賽', '勝', '積分', '全場')):
+        # Only match the team W/D/L stats table: its header row (rows[1])
+        # must contain both "積分"/"积分" and "排名". Other tables (attack,
+        # handicap, over/under) also contain the team name but have different
+        # columns and would corrupt the stats if parsed as W/D/L.
+        if len(rows) < 2:
+            continue
+        header_text = ' '.join(rows[1])
+        if not (('積分' in header_text or '积分' in header_text) and '排名' in header_text):
             continue
 
         if matched_team not in stats:
