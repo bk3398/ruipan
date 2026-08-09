@@ -316,7 +316,7 @@ async def write_odds_to_db(pool: asyncpg.Pool, sid: str,
                     VALUES ($1,$2,'asia','live',$3,$4,$5,NULL,NULL,NULL,NOW(),NOW(),$6)
                     ON CONFLICT (match_id, bookmaker, market_type, odds_type, snapshot_time)
                     DO NOTHING
-                """, sid, bk, a['live_handicap'], a['live_upper'], a['live_lower'], crawl_batch)
+                """, sid, bk, a['live_handicap'], a['live_upper'], a['live_lower'], int(crawl_batch))
 
             for e in euro_data:
                 if e['company_id'] not in EURO_COMPANY_MAP:
@@ -331,7 +331,7 @@ async def write_odds_to_db(pool: asyncpg.Pool, sid: str,
                     VALUES ($1,$2,'euro','live',NULL,NULL,NULL,$3,$4,$5,NOW(),NOW(),$6)
                     ON CONFLICT (match_id, bookmaker, market_type, odds_type, snapshot_time)
                     DO NOTHING
-                """, sid, bk, e['live_h'], e['live_d'], e['live_a'], crawl_batch)
+                """, sid, bk, e['live_h'], e['live_d'], e['live_a'], int(crawl_batch))
         except Exception as _te:
             # timeline写入失败不影响赔率主流程
             logger.debug("timeline snapshot failed for %s: %s", sid, _te)
