@@ -240,6 +240,12 @@ def parse_team_stats_tables(html, home_team, away_team):
     tables = re.findall(r'<table[^>]*>(.*?)</table>', html, re.DOTALL | re.IGNORECASE)
 
     for table_html in tables:
+        # Skip outer wrapper tables that contain nested <table> tags —
+        # their <tr> regex gets corrupted by inner table's </tr> tags.
+        # We only want to process leaf/innermost stats tables.
+        if '<table' in table_html.lower():
+            continue
+
         rows = re.findall(r'<tr[^>]*>(.*?)</tr>', table_html, re.DOTALL | re.IGNORECASE)
         if len(rows) < 4:
             continue
