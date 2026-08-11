@@ -2,9 +2,10 @@
 """
 锐盘 K线图加高 + 分歧度K线Y轴刻度加密 补丁
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-幂等修改 /opt/ruipan/app.py 内嵌的前端 JS：
+幂等修改 /opt/ruipan/static/live-scores-preview-v6.html：
   1. 赔率K线 canvas 高度 180 → 260，Y轴网格 4格 → 6格
-  2. 战力EMA走势图(renderSparkline) 120×36 → 240×56，线条/影线加粗
+  2. 战力EMA走势图(renderSparkline) 120×36 → 240×56
+  注：影线/折线笔宽保持原值（影线0.5、折线1.5），放大画布后视觉更疏朗
 运行后重启 ruipan-api。
 """
 import re, sys, shutil, datetime, os
@@ -39,11 +40,6 @@ RULES = [
     ("const w = 120, h = 36, pad = 2;",
      "const w = 240, h = 56, pad = 3;",
      "sparkline多点尺寸 120×36→240×56"),
-
-    # 2c. 折线 stroke-width 1.5 → 2
-    ('stroke-width="1.5"/>',
-     'stroke-width="2"/>',
-     "sparkline折线加粗 1.5→2"),
 ]
 
 def main():
