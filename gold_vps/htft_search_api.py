@@ -200,18 +200,26 @@ async def htft_search(
     args = []
     if league:
         args.append(league); sql += f" AND m.league = ${len(args)}"
+    if country:
+        # 国家→联赛列表下推到 SQL，避免全表捞回内存再过滤
+        leagues = [lg for lg, c in LEAGUE_COUNTRY.items() if c == country]
+        if leagues:
+            args.append(leagues)
+            sql += f" AND m.league = ANY(${len(args)})"
+        else:
+            sql += " AND FALSE"
     if bookmaker:
         args.append(bookmaker); sql += f" AND oa.bookmaker = ${len(args)}"
     if handicap is not None:
         args.append(handicap); sql += f" AND oa.handicap = ${len(args)}"
     if ht_score and "-" in ht_score:
         h, a = ht_score.split("-", 1)
-        args.extend([int(h), int(a)])
-        sql += f" AND m.home_ht_score = ${len(args)-1} AND m.away_ht_score = ${len(args)}"
+        args.append(int(h)); sql += f" AND m.home_ht_score = ${len(args)}"
+        args.append(int(a)); sql += f" AND m.away_ht_score = ${len(args)}"
     if ft_score and "-" in ft_score:
         h, a = ft_score.split("-", 1)
-        args.extend([int(h), int(a)])
-        sql += f" AND m.home_score = ${len(args)-1} AND m.away_score = ${len(args)}"
+        args.append(int(h)); sql += f" AND m.home_score = ${len(args)}"
+        args.append(int(a)); sql += f" AND m.away_score = ${len(args)}"
     if ht_bucket:
         cond = _bucket_sql(ht_bucket, "m.home_ht_score", "m.away_ht_score")
         if cond:
@@ -222,16 +230,20 @@ async def htft_search(
             sql += f" AND {cond}"
 
     async with _db_pool.acquire() as conn:
-        rows = await conn.fetch(sql + " ORDER BY m.match_time DESC", *args)
+        # 先拿满足条件的总数，再分页取数据，避免全表捞回内存
+        count_sql = "SELECT COUNT(*) FROM (" + sql + ") c"
+        total = await conn.fetchval(count_sql, *args)
+        rows = await conn.fetch(
+            sql + " ORDER BY m.match_time DESC"
+            f" OFFSET ${len(args)+1} LIMIT ${len(args)+2}",
+            *args, offset, limit,
+        )
 
     results = []
     for r in rows:
-        c = country_of(r['league'])
-        if country and c != country:
-            continue
         results.append({
             "match_id": r['match_id'],
-            "country": c,
+            "country": country_of(r['league']),
             "league": r['league'],
             "home_team": r['home_team'],
             "away_team": r['away_team'],
@@ -245,20 +257,22 @@ async def htft_search(
             "handicap_label": _handicap_label(r['handicap']),
         })
 
-    total = len(results)
-    results = results[offset:offset + limit]
     return {"status": "ok", "total": total, "count": len(results), "results": results}
 
 
 def _bucket_sql(bucket: str, hcol: str, acol: str) -> str:
-    """把 0球/1球/.../6+球 转成SQL总进球条件。"""
-    bucket = bucket.strip()
-    if bucket == "6+球":
+    """把 0球/1球/.../6+球 或纯数字 0/1/.../6 转成SQL总进球条件。"""
+    if bucket is None:
+        return ""
+    bucket = str(bucket).strip()
+    if bucket == "6+球" or bucket == "6+":
         return f"(({hcol})::int + ({acol})::int) >= 6"
     if bucket.endswith("球"):
-        try:
-            n = int(bucket[:-1])
-            return f"(({hcol})::int + ({acol})::int) = {n}"
-        except ValueError:
-            return ""
-    return ""
+        bucket = bucket[:-1]
+    try:
+        n = int(bucket)
+    except ValueError:
+        return ""
+    if n >= 6:
+        return f"(({hcol})::int + ({acol})::int) >= 6"
+    return f"(({hcol})::int + ({acol})::int) = {n}"
