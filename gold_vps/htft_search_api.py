@@ -106,6 +106,7 @@ def _score_bucket(hs, as_):
         return None
     if total >= 6:
         return "6+球"
+    return f"{total}球"
 
 async def _fetch_filters():
     async with _db_pool.acquire() as conn:
@@ -201,11 +202,11 @@ async def htft_search(
     if league:
         args.append(league); sql += f" AND m.league = ${len(args)}"
     if country:
-        # 国家→联赛列表下推到 SQL，避免全表捞回内存再过滤
-        leagues = [lg for lg, c in LEAGUE_COUNTRY.items() if c == country]
+        # 国家→联赛列表下推到 SQL；用 LIKE 模糊匹配以兼容"2026賽季英超"等带前缀的联赛名
+        leagues = [f"%{lg}%" for lg, c in LEAGUE_COUNTRY.items() if c == country]
         if leagues:
             args.append(leagues)
-            sql += f" AND m.league = ANY(${len(args)})"
+            sql += f" AND m.league LIKE ANY(${len(args)})"
         else:
             sql += " AND FALSE"
     if bookmaker:
