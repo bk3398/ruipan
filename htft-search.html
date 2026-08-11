@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>半全场进球检索 — 锐盘 RAYPAN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070a0f; --panel:#0d1219; --panel2:#121a24; --line:#1d2733;
+  --txt:#d7e0ea; --mut:#7a8a9c; --dim:#46566b;
+  --gold:#e8c45a; --gold2:#f4d97a; --cyan:#4cc9f0; --green:#4ade80;
+  --red:#f87171; --blue:#60a5fa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:'Inter',system-ui,sans-serif;min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(232,196,90,0.07),transparent);}
+a{color:inherit;text-decoration:none}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--line);
+  background:rgba(7,10,15,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50}
+.nav-logo{font-family:'Orbitron',sans-serif;font-weight:900;letter-spacing:2px;font-size:20px;display:flex;align-items:center;gap:10px}
+.ndot{width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+.nav-right{display:flex;gap:22px;align-items:center}
+.nav-link{color:var(--mut);font-size:14px;font-weight:500;transition:color .2s}
+.nav-link:hover{color:var(--gold)}
+.wrap{max-width:1280px;margin:0 auto;padding:32px}
+.page-head{margin-bottom:28px}
+.page-head h1{font-family:'Orbitron',sans-serif;font-weight:900;font-size:30px;letter-spacing:1px;margin-bottom:8px}
+.page-head h1 .accent{color:var(--gold)}
+.page-head p{color:var(--mut);font-size:14px;line-height:1.6}
+.disclaimer{font-size:12px;color:var(--dim);margin-top:10px;padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+/* 检索面板 */
+.search-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+.search-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.field select,.field input{background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+  padding:10px 12px;border-radius:8px;font-size:13px;font-family:inherit;outline:none;transition:border .2s}
+.field select:focus,.field input:focus{border-color:var(--gold)}
+.field select:disabled{opacity:.5}
+.btn-row{display:flex;gap:12px;margin-top:20px;align-items:center;flex-wrap:wrap}
+.btn{padding:11px 26px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;
+  font-family:inherit;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,var(--gold),#c9a13a);color:#0a0d12}
+.btn-primary:hover{filter:brightness(1.1)}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--mut)}
+.btn-ghost:hover{color:var(--txt);border-color:var(--dim)}
+.stat-line{font-size:13px;color:var(--mut);font-family:'JetBrains Mono',monospace}
+.stat-line b{color:var(--gold)}
+/* 结果表 */
+.result-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{background:var(--panel2);color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:1px;
+  padding:12px 14px;text-align:left;font-weight:600;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl tr:hover td{background:rgba(232,196,90,0.04)}
+.lg{color:var(--cyan);font-weight:500}
+.team{font-weight:500}
+.ht{color:var(--mut);font-family:'JetBrains Mono',monospace}
+.ft{color:var(--txt);font-family:'JetBrains Mono',monospace;font-weight:600}
+.goal-tag{display:inline-block;padding:2px 8px;border-radius:5px;font-size:11px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.g0{background:rgba(74,222,128,0.12);color:var(--green)}
+.g1{background:rgba(96,165,250,0.12);color:var(--blue)}
+.g2{background:rgba(232,196,90,0.12);color:var(--gold)}
+.g3{background:rgba(248,113,113,0.12);color:var(--red)}
+.g4,.g5,.g6{background:rgba(248,113,113,0.2);color:var(--red)}
+.bk{font-size:11px;color:var(--mut)}
+.hdp{font-size:11px;color:var(--gold);font-family:'JetBrains Mono',monospace}
+.empty{padding:48px;text-align:center;color:var(--mut)}
+.empty .icon{font-size:36px;margin-bottom:12px;opacity:.4}
+.pager{display:flex;gap:10px;align-items:center;justify-content:center;padding:18px}
+.pager button{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:8px 16px;border-radius:6px;cursor:pointer;font-family:inherit}
+.pager button:disabled{opacity:.4;cursor:not-allowed}
+.loading{text-align:center;padding:40px;color:var(--mut)}
+.spin{display:inline-block;width:18px;height:18px;border:2px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* 大小球说明卡 */
+.ou-card{background:linear-gradient(135deg,rgba(76,201,240,0.05),rgba(232,196,90,0.04));
+  border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:24px}
+.ou-card h3{font-family:'Orbitron',sans-serif;font-size:16px;margin-bottom:12px;color:var(--cyan)}
+.ou-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.ou-item{font-size:13px;line-height:1.6}
+.ou-item .k{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px}
+.ou-item .v{color:var(--txt);font-weight:500}
+.footer{text-align:center;padding:32px;color:var(--dim);font-size:12px;border-top:1px solid var(--line);margin-top:40px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-logo"><span class="ndot"></span>RAYPAN</a>
+  <div class="nav-right">
+    <a href="/" class="nav-link">赛事数据</a>
+    <a href="https://bk3398.github.io/ruipan/jczq-recommend.html" class="nav-link">足彩攻略</a>
+    <a href="#" class="nav-link" style="color:var(--gold)">半全场检索</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-head">
+    <h1>半全场<span class="accent">进球分级检索</span></h1>
+    <p>国家 → 联赛 → 机构 → 盘口 → 半场比分 → 完场比分，逐层下钻历史赛果数据库。</p>
+    <div class="disclaimer">⚠️ 本页仅提供客观历史数据检索与统计，不构成任何投注建议、预测或方向引导。数据来源于公开赔率，仅供研究参考。</div>
+  </div>
+
+  <div class="ou-card">
+    <h3>大小球赔率数据</h3>
+    <div class="ou-grid">
+      <div class="ou-item"><span class="k">数据来源</span><span class="v">19家机构大小球盘口（Over/Under）实时采集</span></div>
+      <div class="ou-item"><span class="k">盘口维度</span><span class="v">2.5球 / 2.5-3球 / 3球等标准总进球盘口</span></div>
+      <div class="ou-item"><span class="k">采样频率</span><span class="v">与亚盘/欧赔同步，每轮快照写入时间线</span></div>
+      <div class="ou-item"><span class="k">应用场景</span><span class="v">配合半场/全场总进球分级，交叉验证进球分布规律</span></div>
+    </div>
+  </div>
+
+  <div class="search-card">
+    <div class="search-grid">
+      <div class="field">
+        <label>国家</label>
+        <select id="f-country"><option value="">全部国家</option></select>
+      </div>
+      <div class="field">
+        <label>联赛</label>
+        <select id="f-league" disabled><option value="">全部联赛</option></select>
+      </div>
+      <div class="field">
+        <label>机构</label>
+        <select id="f-book"><option value="">全部机构</option></select>
+      </div>
+      <div class="field">
+        <label>盘口</label>
+        <select id="f-hdp"><option value="">全部盘口</option></select>
+      </div>
+      <div class="field">
+        <label>半场总进球</label>
+        <select id="f-ht"><option value="">不限</option></select>
+      </div>
+      <div class="field">
+        <label>全场总进球</label>
+        <select id="f-ft"><option value="">不限</option></select>
+      </div>
+      <div class="field">
+        <label>精确半场比分</label>
+        <input id="f-ht-score" type="text" placeholder="如 1-0" maxlength="5">
+      </div>
+      <div class="field">
+        <label>精确全场比分</label>
+        <input id="f-ft-score" type="text" placeholder="如 2-1" maxlength="5">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="doSearch(0)">检索</button>
+      <button class="btn btn-ghost" onclick="resetForm()">重置</button>
+      <span class="stat-line" id="stat">准备就绪</span>
+    </div>
+  </div>
+
+  <div class="result-card">
+    <div id="result-body">
+      <div class="empty">
+        <div class="icon">⚽</div>
+        <div>设置筛选条件后点击「检索」查询历史比赛</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">锐盘 RAYPAN · 让赔率自己说话 · 数据仅供研究参考</div>
+
+<script>
+const API='/api/htft';
+let opts=null, curOffset=0, curLimit=50, curTotal=0;
+
+async function loadOptions(){
+  try{
+    const r=await fetch(API+'/options',{cache:'no-store'});
+    opts=await r.json();
+    fillSelect('f-country',opts.countries);
+    fillSelect('f-book',opts.bookmakers);
+    (opts.handicaps||[]).forEach(h=>{
+      const o=document.createElement('option');o.value=h.value;o.textContent=h.label;
+      document.getElementById('f-hdp').appendChild(o);
+    });
+    fillSelect('f-ht',opts.ht_buckets);
+    fillSelect('f-ft',opts.ft_buckets);
+    document.getElementById('stat').innerHTML=`数据库共 <b>${opts.total.toLocaleString()}</b> 场带半场数据的完赛记录`;
+    // 国家→联赛级联
+    document.getElementById('f-country').addEventListener('change',onCountryChange);
+  }catch(e){
+    document.getElementById('stat').textContent='选项加载失败：'+e.message;
+  }
+}
+function fillSelect(id,arr){
+  const el=document.getElementById(id);
+  (arr||[]).forEach(v=>{
+    const o=document.createElement('option');
+    o.value=(typeof v==='string')?v:v.value;
+    o.textContent=(typeof v==='string')?v:(v.label||v.value);
+    el.appendChild(o);
+  });
+}
+function onCountryChange(){
+  const c=document.getElementById('f-country').value;
+  const lg=document.getElementById('f-league');
+  lg.innerHTML='<option value="">全部联赛</option>';
+  lg.disabled=true;
+  if(c&&opts.leagues_by_country&&opts.leagues_by_country[c]){
+    opts.leagues_by_country[c].forEach(name=>{
+      const o=document.createElement('option');o.value=name;o.textContent=name;lg.appendChild(o);
+    });
+    lg.disabled=false;
+  }
+}
+function resetForm(){
+  ['f-country','f-league','f-book','f-hdp','f-ht','f-ft'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-league').disabled=true;
+  document.getElementById('f-ht-score').value='';
+  document.getElementById('f-ft-score').value='';
+  document.getElementById('result-body').innerHTML='<div class="empty"><div class="icon">⚽</div><div>已重置，设置条件后检索</div></div>';
+}
+function goalClass(n){return 'goal-tag g'+Math.min(n,6);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+async function doSearch(offset){
+  curOffset=offset||0;
+  const p=new URLSearchParams();
+  const get=id=>document.getElementById(id).value;
+  const map={country:'f-country',league:'f-league',bookmaker:'f-book',ht_bucket:'f-ht',ft_bucket:'f-ft'};
+  for(const[k,id]of Object.entries(map)){const v=get(id);if(v)p.append(k,v);}
+  const hdp=get('f-hdp');if(hdp)p.append('handicap',hdp);
+  const hts=get('f-ht-score').trim();if(hts)p.append('ht_score',hts);
+  const fts=get('f-ft-score').trim();if(fts)p.append('ft_score',fts);
+  p.append('limit',curLimit);p.append('offset',curOffset);
+
+  document.getElementById('result-body').innerHTML='<div class="loading"><span class="spin"></span>检索中…</div>';
+  try{
+    const r=await fetch(API+'/search?'+p.toString(),{cache:'no-store'});
+    const d=await r.json();
+    curTotal=d.total||0;
+    renderResults(d);
+  }catch(e){
+    document.getElementById('result-body').innerHTML='<div class="empty">检索失败：'+esc(e.message)+'</div>';
+  }
+}
+
+function renderResults(d){
+  const stat=document.getElementById('stat');
+  if(!d.results||d.results.length===0){
+    document.getElementById('result-body').innerHTML='<div class="empty"><div class="icon">∅</div><div>没有匹配的历史记录</div></div>';
+    stat.innerHTML=`命中 <b>0</b> 条`;
+    return;
+  }
+  stat.innerHTML=`命中 <b>${d.total.toLocaleString()}</b> 条，显示 ${curOffset+1}–${curOffset+d.results.length}`;
+  let rows=d.results.map(r=>{
+    const dt=r.match_time?new Date(r.match_time):null;
+    const ds=dt?dt.toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'}):'';
+    return `<tr>
+      <td class="lg">${esc(r.country)}</td>
+      <td class="lg">${esc(r.league)}</td>
+      <td>${ds}</td>
+      <td class="team">${esc(r.home_team)}</td>
+      <td class="team">${esc(r.away_team)}</td>
+      <td><span class="ht">${esc(r.ht_score)}</span> <span class="${goalClass(r.ht_total)}">${r.ht_total}球</span></td>
+      <td><span class="ft">${esc(r.ft_score)}</span> <span class="${goalClass(r.ft_total)}">${r.ft_total}球</span></td>
+      <td class="bk">${esc(r.bookmaker||'-')}</td>
+      <td class="hdp">${esc(r.handicap_label||'-')}</td>
+    </tr>`;
+  }).join('');
+  const pages=Math.ceil(d.total/curLimit);
+  const cur=Math.floor(curOffset/curLimit)+1;
+  let pager='';
+  if(pages>1){
+    pager=`<div class="pager">
+      <button onclick="doSearch(${Math.max(0,curOffset-curLimit)})" ${curOffset===0?'disabled':''}>上一页</button>
+      <span class="stat-line">第 <b>${cur}</b> / ${pages} 页</span>
+      <button onclick="doSearch(${curOffset+curLimit})" ${curOffset+d.results.length>=d.total?'disabled':''}>下一页</button>
+    </div>`;
+  }
+  document.getElementById('result-body').innerHTML=
+    `<table class="tbl"><thead><tr>
+      <th>国家</th><th>联赛</th><th>日期</th><th>主队</th><th>客队</th>
+      <th>半场</th><th>全场</th><th>机构</th><th>初盘</th>
+    </tr></thead><tbody>${rows}</tbody></table>${pager}`;
+}
+loadOptions();
+</script>
+</body>
+</html>

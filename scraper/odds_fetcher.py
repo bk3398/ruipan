@@ -222,21 +222,34 @@ async def fetch_url(session: aiohttp.ClientSession, url: str, referer: str = Non
     return None
 
 
-async def fetch_match_odds(session: aiohttp.ClientSession, sid: str) -> Tuple[List[Dict], List[Dict]]:
-    """并发抓取同一场比赛的亚盘+欧赔"""
+def parse_vip_overunder(html: str) -> List[Dict]:
+    """解析大小球页面（OverUnder_n.aspx），结构与亚盘页一致。
+    handicap=盘口(2.5等)，upper=大球赔率，lower=小球赔率。
+    不做负数翻转（大小球盘口恒为正）。
+    """
+    # 大小球与亚盘表格结构完全相同，复用解析器；仅去掉亚盘的负数翻转
+    # parse_vip_asian 对 init_hcp<0 会翻转上下盘，大小球无负数，安全直接复用
+    return parse_vip_asian(html)
+
+
+async def fetch_match_odds(session: aiohttp.ClientSession, sid: str) -> Tuple[List[Dict], List[Dict], List[Dict]]:
+    """并发抓取同一场比赛的亚盘+欧赔+大小球"""
     asian_url = f"https://vip.titan007.com/AsianOdds_n.aspx?id={sid}"
     euro_url = f"https://1x2d.titan007.com/{sid}.js"
+    ou_url = f"https://vip.titan007.com/OverUnder_n.aspx?id={sid}"
 
-    asian_html, euro_js = await asyncio.gather(
+    asian_html, euro_js, ou_html = await asyncio.gather(
         fetch_url(session, asian_url, referer=f"https://vip.titan007.com/AsianOdds_n.aspx?id={sid}"),
         fetch_url(session, euro_url, referer=f"https://1x2d.titan007.com/{sid}.js"),
+        fetch_url(session, ou_url, referer=f"https://vip.titan007.com/OverUnder_n.aspx?id={sid}"),
         return_exceptions=True
     )
 
     asian_data = parse_vip_asian(asian_html) if isinstance(asian_html, str) else []
     euro_data = parse_1x2d_euro(euro_js) if isinstance(euro_js, str) else []
+    ou_data = parse_vip_overunder(ou_html) if isinstance(ou_html, str) else []
 
-    return asian_data, euro_data
+    return asian_data, euro_data, ou_data
 
 
 # ── DB写入 ────────────────────────────────────────────────────────
@@ -277,6 +290,7 @@ async def _upsert_euro(conn, sid: str, bk: str, h: float, d: float, a: float, ph
 
 async def write_odds_to_db(pool: asyncpg.Pool, sid: str,
                            asian_data: List[Dict], euro_data: List[Dict],
+                           ou_data: List[Dict] = None,
                            write_closing: bool = False,
                            crawl_batch: str = None):
     async with pool.acquire() as conn:
@@ -332,6 +346,23 @@ async def write_odds_to_db(pool: asyncpg.Pool, sid: str,
                     ON CONFLICT (match_id, bookmaker, market_type, odds_type, snapshot_time)
                     DO NOTHING
                 """, sid, bk, e['live_h'], e['live_d'], e['live_a'], int(crawl_batch))
+
+            # ── 大小球快照（market_type='ou'，handicap=盘口，home_odds=大球，away_odds=小球）──
+            if ou_data:
+                for o in ou_data:
+                    if o['company_id'] not in COMPANY_MAP:
+                        continue
+                    bk = COMPANY_MAP[o['company_id']]
+                    await conn.execute("""
+                        INSERT INTO odds_timeline
+                            (match_id, bookmaker, market_type, odds_type,
+                             handicap, home_odds, away_odds,
+                             home_win, draw, away_win,
+                             snapshot_time, recorded_at, crawl_batch)
+                        VALUES ($1,$2,'ou','live',$3,$4,$5,NULL,NULL,NULL,NOW(),NOW(),$6)
+                        ON CONFLICT (match_id, bookmaker, market_type, odds_type, snapshot_time)
+                        DO NOTHING
+                    """, sid, bk, o['live_handicap'], o['live_upper'], o['live_lower'], int(crawl_batch))
         except Exception as _te:
             # timeline写入失败不影响赔率主流程
             logger.debug("timeline snapshot failed for %s: %s", sid, _te)
@@ -402,7 +433,7 @@ async def main():
 
         # 并发抓取
         sem = asyncio.Semaphore(args.concurrency)
-        stats = {'asian_ok': 0, 'asian_fail': 0, 'euro_ok': 0, 'euro_fail': 0, 'processed': 0}
+        stats = {'asian_ok': 0, 'asian_fail': 0, 'euro_ok': 0, 'euro_fail': 0, 'ou_ok': 0, 'ou_fail': 0, 'processed': 0}
         total = len(targets)
 
         connector = aiohttp.TCPConnector(limit=args.concurrency * 2, ttl_dns_cache=300)
@@ -414,7 +445,7 @@ async def main():
                 async with sem:
                     # 小随机延迟，避免瞬时并发触发限速
                     await asyncio.sleep(0.1 * (idx % 5))
-                    asian_data, euro_data = await fetch_match_odds(session, sid)
+                    asian_data, euro_data, ou_data = await fetch_match_odds(session, sid)
 
                 if asian_data:
                     stats['asian_ok'] += 1
@@ -424,6 +455,10 @@ async def main():
                     stats['euro_ok'] += 1
                 else:
                     stats['euro_fail'] += 1
+                if ou_data:
+                    stats['ou_ok'] = stats.get('ou_ok', 0) + 1
+                else:
+                    stats['ou_fail'] = stats.get('ou_fail', 0) + 1
 
                 status_icon = '🔴' if match['status'] == 'live' else (
                     '✅' if match['status'] == 'finished' else '⏰')
@@ -432,11 +467,11 @@ async def main():
                 away = (match.get('away_team') or '')[:10]
 
                 if idx <= 5 or idx % 20 == 0 or idx == total:
-                    print(f"  [{idx:3d}/{total}] {status_icon} {league:8s} | {home:10s} vs {away:10s} | 亚{len(asian_data):2d} 欧{len(euro_data):2d}")
+                    print(f"  [{idx:3d}/{total}] {status_icon} {league:8s} | {home:10s} vs {away:10s} | 亚{len(asian_data):2d} 欧{len(euro_data):2d} 大{len(ou_data):2d}")
 
                 if not args.dry_run:
                     write_closing = match['status'] in ('not_started', 'finished')
-                    await write_odds_to_db(pool, sid, asian_data, euro_data, write_closing, crawl_batch=batch_id)
+                    await write_odds_to_db(pool, sid, asian_data, euro_data, ou_data, write_closing, crawl_batch=batch_id)
 
                 stats['processed'] += 1
 
@@ -447,6 +482,7 @@ async def main():
         print(f"\n  ✅ 完成 — {elapsed:.0f}s")
         print(f"  亚盘: 成功{stats['asian_ok']} 失败{stats['asian_fail']}")
         print(f"  欧赔: 成功{stats['euro_ok']} 失败{stats['euro_fail']}")
+        print(f"  大小球: 成功{stats['ou_ok']} 失败{stats['ou_fail']}")
 
     finally:
         await pool.close()
