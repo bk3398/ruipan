@@ -2161,7 +2161,7 @@ function renderSparkline(klineArr, color) {
   if (klineArr.length === 1) {
     // Single data point — show a dot
     const k = klineArr[0];
-    const w = 120, h = 36, cx = w/2, cy = h/2;
+    const w = 240, h = 56, cx = w/2, cy = h/2;
     const dotColor = k.result === 'W' ? '#00e676' : k.result === 'L' ? '#ff5252' : '#ffc107';
     return `<svg width="${w}" height="${h}" style="display:block;">
       <circle cx="${cx}" cy="${cy}" r="4" fill="${dotColor}" opacity="0.8"/>
@@ -2171,7 +2171,7 @@ function renderSparkline(klineArr, color) {
   const closes = klineArr.map(k => k.close);
   const min = Math.min(...closes), max = Math.max(...closes);
   const range = max - min || 1;
-  const w = 120, h = 36, pad = 2;
+  const w = 240, h = 56, pad = 3;
   const step = (w - pad*2) / (closes.length - 1);
   let path = '';
   let hiLo = '';
@@ -2183,7 +2183,7 @@ function renderSparkline(klineArr, color) {
     path += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + yClose.toFixed(1) + ' ';
     hiLo += `<line x1="${x.toFixed(1)}" y1="${yHigh.toFixed(1)}" x2="${x.toFixed(1)}" y2="${yLow.toFixed(1)}" stroke="${color}" stroke-width="0.5" opacity="0.4"/>`;
   });
-  return `<svg width="${w}" height="${h}" style="display:block;"><path d="${hiLo}"/><path d="${path}" fill="none" stroke="${color}" stroke-width="1.5"/></svg>`;
+  return `<svg width="${w}" height="${h}" style="display:block;"><path d="${hiLo}"/><path d="${path}" fill="none" stroke="${color}" stroke-width="2"/></svg>`;
 }
 
 function renderFormBadges(teamForm) {
