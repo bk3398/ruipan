@@ -242,7 +242,8 @@ async def export_timeline(dsn: str = DSN, since_hours: int = 24,
         # 导出近期所有比赛信息（供标注 + 供算法判断开赛时间）
         matches_info = await conn.fetch("""
             SELECT match_id, league, home_team, away_team,
-                   home_score, away_score, match_time, status
+                   home_score, away_score, home_ht_score, away_ht_score,
+                   match_time, status
             FROM matches
             WHERE match_time >= $1
               AND match_time < CURRENT_DATE + interval '2 day'

@@ -679,10 +679,10 @@ def get_matches_to_fetch(conn, limit=BATCH_LIMIT):
     with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
         cutoff = datetime.now() - timedelta(hours=REFRESH_HOURS)
         cur.execute("""
-            SELECT m.match_id, m.home_team, m.away_team, m.league_id,
+            SELECT m.match_id, m.home_team, m.away_team,
                    m.match_time, m.status
             FROM matches m
-            LEFT JOIN team_fundamentals tf ON m.match_id = tf.match_id
+            LEFT JOIN team_fundamentals tf ON m.match_id::bigint = tf.match_id
             WHERE m.status IN ('scheduled', 'live')
               AND m.match_time >= NOW() - INTERVAL '6 hours'
               AND m.match_time <= NOW() + INTERVAL '48 hours'
